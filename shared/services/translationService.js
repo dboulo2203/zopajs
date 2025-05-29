@@ -1,0 +1,78 @@
+
+import { currentApplicationPath } from '../assets/constants.js'
+import { getAppPath } from '../functions/commonFunctions.js'
+/**
+ * Load the translation files in the localstorage
+ * 
+ * TODO : the function can load translations from languages
+ */
+export async function loadTranslations() {
+
+    // *** Load french language
+    const responsefr = await fetch(`${getAppPath()}/shared/assets/locales/fr/translation.json`);
+    const datafr = await responsefr.json();
+    if (responsefr.ok) {
+        localStorage.setItem("frTranslation", JSON.stringify(datafr));
+        console.log("LoadTranslations fr  ok ");
+    } else {
+        console.log(`loadTranslations fr Error : ${JSON.stringify(responsefr)}`);
+        throw new Error("loadTranslations fr Error message : " + responsefr.status + " " + responsefr.statusText);
+    }
+
+    // *** Load english language 
+    const responseen = await fetch(`${getAppPath()}/shared/assets/locales/en/translation.json`);
+    const dataen = await responseen.json();
+
+    if (responsefr.ok) {
+        // *** Get the data and save in the localstorage
+        localStorage.setItem("enTranslation", JSON.stringify(dataen));
+        console.log("LoadTranslations en  ok ");
+    } else {
+        console.log(`LoadTranslations en Error : ${JSON.stringify(responsefr)}`);
+        throw new Error("LoadTranslations en Error message : " + responsefr.status + " " + responsefr.statusText);
+    }
+
+    // } catch (error) {
+    //  console.log('There was an error', error);
+
+    // }
+}
+
+/**
+ * Get the main language set in the browser
+ * Some browser return the language with 4chararcter (en-US)
+ * @returns 
+ */
+export function getCurrentLanguage() {
+    let browserLanguage = window.navigator.userLanguage || window.navigator.language;
+    if (browserLanguage.length > 2)
+        browserLanguage = browserLanguage.substring(0, 2);
+    return browserLanguage;
+}
+
+/**
+ * Translate a string in the current browser language
+ * @param {} wordToTranslate 
+ * @returns 
+ */
+export function getTranslation(wordToTranslate) {
+
+    // let listresult = null;
+    // *** Get the database according to the current language in the browser
+    let frBase = localStorage.getItem(getCurrentLanguage() + "Translation");
+    let base = JSON.parse(frBase);
+
+    //if (base) {
+    let foundIndex = Object.keys(base).indexOf(wordToTranslate);
+    //}
+    let valeur = '';
+    if (foundIndex >= 0)
+        valeur = (Object.values(base)[foundIndex]);
+
+
+    return valeur;
+
+}
+
+
+
