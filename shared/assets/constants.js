@@ -7,7 +7,7 @@ export const wsUrlformel = "https://kusala.fr/dolibarr/api/index.php/";
 
 export const DOLAPIKEY = '0YA7ggq4c7LbP9c8smi2zFrD96YRHPY3';
 // Pour kudale.fr/dolibarr export const DOLAPIKEY = Zf7oy3IBY77aJR1H50iEg1foUhe27WsT
-export const currentApplicationPath = window.location.protocol + "//" + window.location.hostname + '/zopahosting';
+export const currentApplicationPath = window.location.protocol + "//" + window.location.hostname + '/zopajs';
 
 
 export const bookfillIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-fill" viewBox="0 0 16 16">

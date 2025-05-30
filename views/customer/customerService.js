@@ -9,8 +9,13 @@ export async function getCustomer(customerID) {
     let responsefr = await fetch(wsUrl + params, {
         method: "GET",
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
+        },
+        params: {
+            sortfield: "name",
+            limit: 500,
         }
+
     });
     if (responsefr.ok) {
         // *** Get the data and save in the localstorage

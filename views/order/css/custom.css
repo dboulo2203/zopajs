@@ -1,9 +1,9 @@
 body {
-    font-size: 0.95rem;
+    font-size: 0.90rem;
 }
 
 .fs-5 {
-    font-size: 1.1rem !important;
+    font-size: 1, 1rem !important;
 }
 
 .btn {
@@ -25,8 +25,4 @@ input {
 
 modal-title {
     font-size: 1, 1rem !important;
-}
-
-td {
-    font-size: 0.8rem !important;
 }

@@ -5,14 +5,16 @@ import { getCustomer, getCustomerOrders } from './customerService.js'
 import { headerViewDisplay } from '../../shared/components/global/headerViewCont.js'//***  shared ressources
 import { getProducts, getintakeplacesTypesFromAPI, getMealTypesFromAPI, getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI } from '../../shared/services/productService.js'
 import { loadTranslations } from '../../shared/services/translationService.js'
+import { addMultipleEnventListener, getAppPath } from '../../shared/functions/commonFunctions.js'
 /**
  * when called from the url
  * get the parameters and launch the controller
  */
 export async function startCustomerController() {
 
+    // *** Initialisations
     try {
-        // *** Initialisations
+
         await loadTranslations();
         await getProducts();
         await getintakeplacesTypesFromAPI();
@@ -26,7 +28,7 @@ export async function startCustomerController() {
         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
     }
 
-    // *** Get url params
+    // *** Get url params and launch controller
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('customerID'))
         displayCustomerContent("mainActiveSection", searchParams.get('customerID'));
@@ -50,13 +52,10 @@ export async function displayCustomerContent(htlmPartId, customerID) {
            <div class="row" id="customerOrders"> 
            </div>
     </div>
-`;
-
-    // *** Display skeleton
+    `;
     document.querySelector("#" + htlmPartId).innerHTML = initString;
 
     try {
-
 
         // *** Load data from API
         let customer = await getCustomer(customerID);
@@ -64,7 +63,7 @@ export async function displayCustomerContent(htlmPartId, customerID) {
 
         let output = '';
 
-        // *** Notice titles
+        // *** Display entity
         output += `<div style="margin-bottom:10px">`;
         output += `<div style="padding-top:10px;padding-bottom:5px"><span class="fs-6" style="color:#8B2331">Customer Identity</span></div>`;
         output += `<div class="col-md-12 main" " > <span class="fw - light" style ="color:grey">Nom</span> : ${customer.name}`;
@@ -80,37 +79,37 @@ export async function displayCustomerContent(htlmPartId, customerID) {
 
         document.querySelector("#customerIdentity").innerHTML = output;
 
-        // output += JSON.stringify(customerOrders);
         let customerOrdersString = '';
         if (customerOrders) {
             customerOrders.map((customerOrder, index) => {
                 customerOrdersString += `
                     <div class="row">
+
                         <div class="col-2" > 
-                            <span class="customerLink" customerid="${customerOrder.total_ttc}" style="cursor: pointer">${customerOrder.ref}</span>
+                            <span class="customerLink"  orderID="${customerOrder.id}"style="cursor: pointer">${customerOrder.ref}</span>
                         </div> 
-                        <div class="col-2"> 
-                            ${new Intl.NumberFormat("fr-FR",
-                    {
-                        style: "currency", currency: "EUR", maximumSignificantDigits: 3,
-                        maximumFractionDigits: 2
-                    }).format(customerOrder.total_ttc)}
-
-                        </div> 
-                        <div class="col-2">   
-                        ${customerOrder.statut == 3 ? 'Clôturé' : customerOrder.statut == 1 ? 'Validé' : customerOrder.statut == 0 ? 'Brouillon' : customerOrder.statut == -1 ? 'Annulée' : 'Inconnu'}
-                            
-                        </div>
-                        <div class="col-2">
+                       
+                        <div class="col-4">
+                            ${getevaluateSession(customerOrder, true)}
+                        </div>      
+                                         
+                       <div class="col-2">
                             ${new Intl.DateTimeFormat("fr-FR",
-                        {
-                            year: "numeric",
-                            month: "numeric",
-                            day: "numeric",
-                        }).format(customerOrder.date_creation * 1000)}
-
+                    {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                    }).format(customerOrder.date_creation * 1000)}
                         </div>
-                    </div>
+                        
+                        <div class="col-2"> 
+                            ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumSignificantDigits: 3, maximumFractionDigits: 2 }).format(customerOrder.total_ttc)}
+                        </div> 
+
+                        <div class="col-2">   
+                            ${customerOrder.statut == 3 ? 'Clôturé' : customerOrder.statut == 1 ? 'Validé' : customerOrder.statut == 0 ? 'Brouillon' : customerOrder.statut == -1 ? 'Annulée' : 'Inconnu'}                            
+                        </div>
+                     </div>
                     <hr/>`;
 
             });
@@ -123,22 +122,17 @@ export async function displayCustomerContent(htlmPartId, customerID) {
             </div><hr/>`;
         }
 
-
-
-        // *** Display skeleton  //    ${result.address}, ${result.zip}, ${result.town} 
         document.querySelector("#customerOrders").innerHTML = customerOrdersString;
 
+        // *** Add actions
+        addMultipleEnventListener(".customerLink", function () {
+            console.log("click person details");
+            window.location.href = `${getAppPath()}/views/order/order.html?orderID=` + $(this).attr('orderID') + `&indep=false`;
+            // launchNoticeController(mainDisplay, $(this).attr('searid'));
+        });
 
-        // //***  Actions
-        // document.querySelector("#searchString").addEventListener("keypress", function (event) {
-        //     if (event.keyCode === 13) {
-        //         getSearch();
-        //     }
-        // });
 
-        // document.querySelector("#myBtnCompute").onclick = async function () {
-        //     getSearch();
-        // };
+
 
     } catch (error) {
         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
@@ -146,3 +140,43 @@ export async function displayCustomerContent(htlmPartId, customerID) {
 
 }
 
+//*** Function needed */
+
+/**
+ * 
+ * @param {*} order 
+ * @param {*} fullDescription 
+ * @returns 
+ */
+export function getevaluateSession(order, fullDescription) {
+    // Fulldescription : the function must returns the session and the product list
+    let session = "";
+    let otherProducts = [];
+    order.lines.forEach((orderLine, index) => {
+        if (orderLine.ref) {
+            if (orderLine.ref.startsWith('STA')) {
+                // *** Build a session label with short date and libelle
+                let dateDebut = new Intl.DateTimeFormat("fr-FR",
+                    {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                    }).format(orderLine.array_options.options_lin_datedebut * 1000);
+
+
+                session = dateDebut + " - " + orderLine.libelle
+            } else {
+                // *** if the product is not a session, keep the products used in the order
+                if (otherProducts.find(element => element === orderLine.ref.substring(0, 3)) === undefined)
+                    otherProducts.push(orderLine.ref.substring(0, 3));
+            }
+        }
+    });
+    if (fullDescription)
+        return session + " - " + otherProducts.join(', ');
+    else
+        if (session)
+            return session;
+        else
+            return otherProducts.join(', ');
+}

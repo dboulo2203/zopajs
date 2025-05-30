@@ -272,7 +272,7 @@ export function getTableView(tabFullResult) {
         tabdataline.map((cellule, indexCell) => {
             if (cellule === 0 || cellule === 'x0') {
                 //         ? /* // Nothing in the cell to display */
-                output += `<Td style=" font-Size:1rem; padding:0; border-Left:1px solid #CACAC8" id=${index + "-" + indexCell} align="center" key=${indexCell}>`;
+                output += `<Td style=" padding:0; border-Left:1px solid #CACAC8" id=${index + "-" + indexCell} align="center" key=${indexCell}>`;
                 if (cellule[0] === 'x')
                     output += ` X`;
 
@@ -281,14 +281,14 @@ export function getTableView(tabFullResult) {
                 if (indexCell > 0) {
                     if (cellule.substring(cellule.indexOf('|') + 1, cellule.length) == '0') {
                         //                 /* // ** first day of a reservation */
-                        output += `<Td class="fst-normal fw-light" style="padding:0;background-color:#D9D583;cursor:pointer" id="${cellule}" onClick={handleGridClick}
+                        output += `<Td class="" style="padding:0;background-color:#D9D583;cursor:pointer" id="${cellule}" onClick={handleGridClick}
                                  align="center" key=${indexCell}>`;
                         if (cellule[0] === 'x') {
                             output += ` X`;
                         }
                         output += `</Td>`;
                     } else {
-                        output += `<Td class="fst-normal fw-light" style="padding:0;background-Color: #FCF8A2;cursor:pointer" id="${cellule}" onClick={handleGridClick}
+                        output += `<Td class="" style="padding:0;background-Color: #FCF8A2;cursor:pointer" id="${cellule}" onClick={handleGridClick}
                                                 align="center" key=${indexCell}>`;
                         if (cellule[0] === 'x') {
                             output += ` X`;
@@ -296,7 +296,7 @@ export function getTableView(tabFullResult) {
                         output += `</Td>`;
                     }
                 } else {
-                    output += `<Td class="fst-normal fw-light" style="padding:0; padding-Left:5px;border-Left:1px solid #CACAC8 " align="left" key="{indexCell}">${cellule.place + " - " + cellule.label}
+                    output += `<Td class="" style="padding:0; padding-Left:5px;border-Left:1px solid #CACAC8 " align="left" key="{indexCell}">${cellule.place + " - " + cellule.label}
                         </Td>`;
                 }
             }
