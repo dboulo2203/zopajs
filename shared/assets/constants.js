@@ -5,7 +5,7 @@ console.log(" Site courant :" + getAppPath());
 // export const wsUrlformel = window.location.protocol + "//" + window.location.hostname + "/dolibarr/api/index.php/";
 export const wsUrlformel = "https://kusala.fr/dolibarr/api/index.php/";
 
-export const DOLAPIKEY = '0YA7ggq4c7LbP9c8smi2zFrD96YRHPY3';
+export const DOLAPIKEY = 'UB5WX87soyr87k5C1zus59uZZkYV3KFp';
 // Pour kudale.fr/dolibarr export const DOLAPIKEY = Zf7oy3IBY77aJR1H50iEg1foUhe27WsT
 export const currentApplicationPath = window.location.protocol + "//" + window.location.hostname + '/zopajs';
 

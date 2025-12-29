@@ -116,8 +116,8 @@ async function getSearch() {
     // *** Display the HTML string
     document.querySelector("#resultDisplay").innerHTML = resultDisplay;
 
-    addMultipleEnventListener(".customerLink", function () {
-        window.location.href = `${getAppPath()}/views/customer/customer.html?customerID=` + $(this).attr('customerid');
+    addMultipleEnventListener(".customerLink", function (event) {
+        window.location.href = `${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid');
     });
 
 }

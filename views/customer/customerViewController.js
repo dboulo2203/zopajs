@@ -125,9 +125,9 @@ export async function displayCustomerContent(htlmPartId, customerID) {
         document.querySelector("#customerOrders").innerHTML = customerOrdersString;
 
         // *** Add actions
-        addMultipleEnventListener(".customerLink", function () {
+        addMultipleEnventListener(".customerLink", function (event) {
             console.log("click person details");
-            window.location.href = `${getAppPath()}/views/order/order.html?orderID=` + $(this).attr('orderID') + `&indep=false`;
+            window.location.href = `${getAppPath()}/views/order/order.html?orderID=` + event.currentTarget.getAttribute('orderID') + `&indep=false`;
             // launchNoticeController(mainDisplay, $(this).attr('searid'));
         });
 
