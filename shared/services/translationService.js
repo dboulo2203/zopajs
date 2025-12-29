@@ -1,6 +1,6 @@
 
 import { currentApplicationPath } from '../assets/constants.js'
-import { getAppPath } from '../functions/commonFunctions.js'
+import { getAppPath } from './commonFunctions.js'
 /**
  * Load the translation files in the localstorage
  * 

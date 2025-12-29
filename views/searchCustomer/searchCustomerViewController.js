@@ -3,9 +3,10 @@ import { getcustomerSearch } from './searchCustomerService.js'
 
 // *** Shared ressoucres
 import { getProducts, getintakeplacesTypesFromAPI, getMealTypesFromAPI } from '../../shared/services/productService.js'
-import { headerViewDisplay } from '../../shared/components/global/headerViewCont.js'//***  shared ressources
-import { addMultipleEnventListener, getAppPath } from '../../shared/functions/commonFunctions.js'
+import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
+import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js'
 import { loadTranslations } from '../../shared/services/translationService.js'
+import { footerViewDisplay } from '../../shared/services/footerViewCont.js'
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -30,7 +31,9 @@ export async function startSearchCustomerController() {
     // console.log(searchParams);
 
     // if (searchParams.has('searchStr'))
-    displaySearchCustomerContent("mainActiveSection");
+    displaySearchCustomerContent("mainActiveSection")
+
+    footerViewDisplay("#footerDisplay")
 }
 
 /**
@@ -60,6 +63,8 @@ export async function displaySearchCustomerContent(htlmPartId) {
     </div> 
 
     <div class="col-md-12 main" style="padding:10px" id="resultDisplay">
+    </div >
+       <div class="col-md-12 main" style="padding:10px" id="footerDisplay">
     </div >`;
 
     // *** Display skeleton
@@ -79,7 +84,7 @@ export async function displaySearchCustomerContent(htlmPartId) {
         };
 
     } catch (except) {
-        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
     }
 }
 /**
@@ -95,7 +100,7 @@ async function getSearch() {
     let resultDisplay = '';
     searchResults.map((result, index) => {
         resultDisplay += `
-                   <div class="row">
+        <div class="row" >
                        <div class="col-3" > 
                            <span class="customerLink" customerid="${result.id}" style="cursor: pointer">${result.name}</span>
                        </div> 
@@ -105,7 +110,7 @@ async function getSearch() {
                        <div class="col-5">   
                            ${result.address}, ${result.zip}, ${result.town}      
                        </div>
-                   </div><hr/>`;
+                   </div > <hr />`;
     });
 
     // *** Display the HTML string

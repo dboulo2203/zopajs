@@ -1,10 +1,10 @@
 // *** Shared ressources
-import { getTranslation } from '../../services/translationService.js'
-import { currentApplicationPath } from '../../assets/constants.js'
-import { loginViewDisplay } from '../../components/login/loginViewCont.js'
+import { getTranslation } from './translationService.js'
+import { currentApplicationPath } from '../assets/constants.js'
+import { loginViewDisplay } from './login/loginViewCont.js'
 
 import { leftMenuViewDisplay } from './leftMenuViewCont.js'
-import { getLoggedUserPseudo, logout } from '../../components/login/loginService.js'
+import { getLoggedUserPseudo, logout } from './login/loginService.js'
 
 // TODO : Manage callback
 export function headerViewDisplay(htlmPartId, callbackFunction) {

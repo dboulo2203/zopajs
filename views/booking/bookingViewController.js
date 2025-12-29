@@ -47,7 +47,7 @@ export async function displayBookingContent(htlmPartId) {
 
     // *** Display the controller skeleton
     output += `
-    <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331">Display hosting booking</p></div><hr/>
+    <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331">Display hosting booking DKL</p></div><hr/>
     <div id='componentMessage'></div>
     <div class="col-6">
         <div class="row">    

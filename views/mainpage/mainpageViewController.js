@@ -1,7 +1,7 @@
 // *** shared services
 import { currentApplicationPath } from '../../shared/assets/constants.js'
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
-import { headerViewDisplay } from '../../shared/components/global/headerViewCont.js'
+import { headerViewDisplay } from '../../shared/services/headerViewCont.js'
 
 // *** Menu string
 const mainStringPage = ` 

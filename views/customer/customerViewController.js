@@ -2,10 +2,10 @@
 import { getCustomer, getCustomerOrders } from './customerService.js'
 
 // *** Shared ressoucres
-import { headerViewDisplay } from '../../shared/components/global/headerViewCont.js'//***  shared ressources
+import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
 import { getProducts, getintakeplacesTypesFromAPI, getMealTypesFromAPI, getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI } from '../../shared/services/productService.js'
 import { loadTranslations } from '../../shared/services/translationService.js'
-import { addMultipleEnventListener, getAppPath } from '../../shared/functions/commonFunctions.js'
+import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js'
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -103,7 +103,7 @@ export async function displayCustomerContent(htlmPartId, customerID) {
                         </div>
                         
                         <div class="col-2"> 
-                            ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumSignificantDigits: 3, maximumFractionDigits: 2 }).format(customerOrder.total_ttc)}
+                            ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(customerOrder.total_ttc)}
                         </div> 
 
                         <div class="col-2">   

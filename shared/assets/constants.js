@@ -1,4 +1,4 @@
-import { getAppPath } from '../functions/commonFunctions.js'
+import { getAppPath } from '../services/commonFunctions.js'
 console.log(" Site courant :" + getAppPath());
 
 // *** API URL 
