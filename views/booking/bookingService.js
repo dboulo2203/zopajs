@@ -15,9 +15,9 @@ export async function getHostingBooking(startDate, endDate, addedOrderId) {
     });
 
     if (responsefr.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         const data = await responsefr.json();
-        localStorage.setItem("bookingdata", JSON.stringify(data));
+        sessionStorage.setItem("bookingdata", JSON.stringify(data));
         console.log("getHostingBooking  await ok ");
         return (data);
 

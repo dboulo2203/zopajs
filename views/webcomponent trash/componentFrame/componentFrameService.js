@@ -20,9 +20,9 @@ export async function getcomponentFrame(customerID) {
 
     });
     if (responsefr.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         const data = await responsefr.json();
-        localStorage.setItem("customer", JSON.stringify(data));
+        sessionStorage.setItem("customer", JSON.stringify(data));
         console.log("getCustomer  await ok ");
         return (data);
 

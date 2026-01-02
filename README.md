@@ -2,32 +2,46 @@
 
 ## Release notes
 ### V0.0.1
+- Utilisation de fontawesome,
+- NEW : general : sauve les données dans session storage.
+
 - NEW : customer search page
 - NEW : customer page
     - Display customer orders
+    - TODO : listes income level, publipostage, adhésion
+    - TODO : Paginer les commandes
+    - TODO : LIen vers invvoice
 - NEW : order page
     - Display order identity
     - Display order lines
     - Display order invoice
+- NEW : Booking page : 
+    - Affichage Résumé de la commande avec lien vers commande
+
+### Structure services
+- Global list 
+- products services
 
 ## App structure
-- customer search page
+- **customer search page**
     - Add a new customer
     - Search by phone, email, town
-- Customer page
+- **Customer page**
     - Display customer identity
-    - Display customer orders
+    - **Display customer orders**
+        
     - Display Invoices list,
+        
     - Edit customer identity (Save)
     - Add new order
     - Pay multiple invoices (Modal)
-- Order page
+- **Order page**
     - Display order identity
         - Change status to Draft
         - Display badge
         - Display devis
         - Validatee order
-    - Display order lines
+    - **Display order lines**
         - Tool session (modal)
         - Tool retreat (modal)
         - Add hosting (modal)
@@ -54,10 +68,10 @@
     - Display order summary (modal)
 - Lists page
 - Restaurant page
-- Hosting page
-    - Display hosting planning
+- **Hosting page**
+    - **Display hosting planning**
     - Copy hosting planning in clipboard
-    - Display order summary
+    - **Display order summary**
     - Close order
 - Session page
     - Display session planning

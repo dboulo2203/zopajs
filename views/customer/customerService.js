@@ -18,9 +18,9 @@ export async function getCustomer(customerID) {
 
     });
     if (responsefr.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         const data = await responsefr.json();
-        localStorage.setItem("customer", JSON.stringify(data));
+        sessionStorage.setItem("customer", JSON.stringify(data));
         console.log("getCustomer  await ok ");
         return (data);
 
@@ -38,17 +38,17 @@ export async function getCustomerOrders(customerID) {
 
 
     let responsefr = await fetch(wsUrl
-        //     , {
-        //     method: "GET",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     params: {
-        //         sortfield: "datec",
-        //         sortorder: "DESC",
-        //         limit: "400"
-        //     },
-        // }
+        , {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            params: {
+                sortfield: "datec",
+                sortorder: "DESC",
+                limit: "400"
+            },
+        }
     );
 
     // ***no order for this customer
@@ -56,14 +56,13 @@ export async function getCustomerOrders(customerID) {
         if (responsefr.status == '404')
             return null;
 
-
     if (responsefr.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         if (responsefr.status == '404')
             return null;
-        const data = await responsefr.json();
-        localStorage.setItem("customerOrders", JSON.stringify(data));
-        console.log("getCustomerOrders  await ok ");
+        const data = responsefr.json();
+        sessionStorage.setItem("customerOrders", JSON.stringify(data));
+        // console.log("getCustomerOrders  await ok ");
         return (data);
 
     } else {
@@ -74,6 +73,48 @@ export async function getCustomerOrders(customerID) {
 
 }
 
+
+export async function getCustomerInvoices(customerID) {
+
+    // TODO : tester la validité des paramètres
+    var wsUrl = wsUrlformel + `invoices?thirdparty_ids=${customerID}&DOLAPIKEY=${DOLAPIKEY}`;
+
+
+    let responsefr = await fetch(wsUrl
+        , {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            params: {
+                sortfield: "datec",
+                sortorder: "DESC",
+                limit: "500"
+            },
+        }
+    );
+
+    // ***no order for this customer
+    if (responsefr.ok == false)
+        if (responsefr.status == '404')
+            return null;
+
+    if (responsefr.ok) {
+        // *** Get the data and save in the sessionStorage
+        if (responsefr.status == '404')
+            return null;
+        const data = responsefr.json();
+        sessionStorage.setItem("customerInvoices", JSON.stringify(data));
+        // console.log("getCustomerOrders  await ok ");
+        return (data);
+
+    } else {
+        console.log(`getCustomerOrders Error: ${JSON.stringify(responsefr)
+            } `);
+        throw new Error("getCustomerOrders Error message : " + responsefr.status + " " + responsefr.statusText);
+    }
+
+}
 
 
 
@@ -101,9 +142,9 @@ export async function getPaymentsByAccountCode(customerID) {
     });
 
     if (responsefr.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         const data = await responsefr.json();
-        localStorage.setItem("customerOrders", JSON.stringify(data));
+        sessionStorage.setItem("customerOrders", JSON.stringify(data));
         console.log("getCustomerOrders  await ok ");
         return (data);
 

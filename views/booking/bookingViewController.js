@@ -1,12 +1,15 @@
 // *** Component ressources
 import { getHostingBooking } from './bookingService.js';
 // *** Shared ressoucres
-import { getProducts, getResourceProducts, getHostingProducts, getintakeplacesTypesFromAPI, getintakeplacesTypes, getMealTypesFromAPI } from '../../shared/services/productService.js'
-// import { launchInitialisation } from '../../shared/services/initialisationService.js'
-import { headerViewDisplay } from '../../shared/components/global/headerViewCont.js'//***  shared ressources
-import { loadTranslations } from '../../shared/services/translationService.js'
-// import { currentApplicationPath, imagePath } from '../../shared/assets/constants.js'
-import { bookIcon, personIcon, keyIcon, printerIcon, publisherIcon, questionIcon } from '../../shared/assets/constants.js'
+import { getResourceProducts, getHostingProducts } from '../../shared/services/zopaProductServices.js'
+import { getintakeplacesTypes } from '../../shared/services/zopaListsServices.js'
+import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
+import { addMultipleEnventListener } from '../../shared/services/commonFunctions.js'
+
+import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
+// import { bookIcon, personIcon, keyIcon, printerIcon, publisherIcon, questionIcon } from '../../shared/assets/constants.js'
 
 /**
  * when called from the url
@@ -16,23 +19,18 @@ export async function startBookingController() {
 
     try {
         // *** Initialisations
-        // await launchInitialisation();
-        await loadTranslations();
-        await getProducts();
-        await getintakeplacesTypesFromAPI();
-        await getMealTypesFromAPI();
-
+        await launchInitialisation();
         headerViewDisplay("#menuSection");
+
+        // const searchParams = new URLSearchParams(window.location.search);
+        // console.log(searchParams);
+
+        // if (searchParams.has('searchStr'))
+        displayBookingContent("mainActiveSection");
 
     } catch (error) {
         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
     }
-
-    const searchParams = new URLSearchParams(window.location.search);
-    console.log(searchParams);
-
-    // if (searchParams.has('searchStr'))
-    displayBookingContent("mainActiveSection");
 }
 
 /**
@@ -42,66 +40,84 @@ export async function startBookingController() {
  */
 export async function displayBookingContent(htlmPartId) {
 
-    // *** Build the html string 
-    let output = '';
-
-    // *** Display the controller skeleton
-    output += `
-    <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331">Display hosting booking DKL</p></div><hr/>
-    <div id='componentMessage'></div>
-    <div class="col-6">
-        <div class="row">    
-            <label for="startDate" class="form-label col-3">Start date </label>
-            <div class="col" style="margin:2px">
-                <input type="date" class="form-control" name="startDate" id="startDate" placeholder="" value=""/>
-            </div>
-        </div>
-        <div class="row">
-            <label for="endDate" class="form-label col-3">End date</label>
-            <div class="col" style="margin:2px">
-                <input type="date" class="form-control " name="endDate" id="endDate" placeholder="" value=""/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col" style="margin:2px">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Calculer</button>
-            </div>
-        </div>
-    </div> 
-
-    <div class="col-md-12 main" style="padding:10px" id="resultDisplay">
-    </div >`;
-
-    // *** Display skeleton
-    document.querySelector("#" + htlmPartId).innerHTML = output;
-
     try {
+
+        // *** Display the initial screen
+        let output = '';
+        output += `
+            <div class="d-flex  justify-content-between" style="padding-top:30px"   >
+                <span class="fs-5" style="color:#8B2331">${bedIcon} Display hosting booking DKL</span>
+                <span id="extractButton" style="cursor: pointer">   ${copyIcon}</span>
+            </div>
+            <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem"  / >
+            <div id='componentMessage'></div>
+            <div class="col-6">
+                <div class="row">    
+                    <label for="startDate" class="form-label col-3">Start date </label>
+                    <div class="col" style="margin:2px">
+                        <input type="date" class="form-control" name="startDate" id="startDate" placeholder="" value=""/>
+                    </div>
+                </div>
+                <div class="row">
+                    <label for="endDate" class="form-label col-3">End date</label>
+                    <div class="col" style="margin:2px">
+                        <input type="date" class="form-control " name="endDate" id="endDate" placeholder="" value=""/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="margin:2px">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Calculer</button>
+                    </div>
+                </div>
+            </div> 
+
+            <div class="col-md-12 main" style="padding:10px" id="resultDisplay">
+            </div >`;
+
+        document.querySelector("#" + htlmPartId).innerHTML = output;
+
 
         //***  Actions
         document.querySelector("#myBtnCompute").onclick = async function () {
-            console.log("Compute button ");
+            try {
 
-            let startDate = document.querySelector("#startDate").value;
-            let endDate = document.querySelector("#endDate").value;
+                document.querySelector("#messageSection").innerHTML = ``;
+
+                let startDate = document.querySelector("#startDate").value;
+                let endDate = document.querySelector("#endDate").value;
 
 
-            // TODO : voir ce dernier paramètre de getHostingBooking
-            // *** Load order list
-            let bookinglines = await getHostingBooking(startDate, startDate, null);
+                // TODO : voir ce dernier paramètre de getHostingBooking
+                // *** Load order list
+                let bookinglines = await getHostingBooking(startDate, startDate, null);
 
-            // *** Analyse order list and build array
-            let bookingresults = bookinglines[0];
-            let bookingunavailables = bookinglines[1];
+                // *** Analyse order list and build array
+                let bookingresults = bookinglines[0];
+                let bookingunavailables = bookinglines[1];
 
-            // TODO : l'original comportait un second filtre
-            let filteredResults = bookingresults.filter((orderline) => (orderline.order.statut > '0'));
+                // TODO : l'original comportait un second filtre
+                let filteredResults = bookingresults.filter((orderline) => (orderline.order.statut > '0'));
 
-            let tabFullResult = buildHostingTable(filteredResults, bookingunavailables, startDate, endDate);
-            let tableView = getTableView(tabFullResult);
-            let resultDisplay = tableView;
+                let tabFullResult = buildHostingTable(filteredResults, bookingunavailables, startDate, endDate);
+                let tableView = getTableView(tabFullResult);
+                let resultDisplay = tableView;
 
-            // *** Display the HTML string
-            document.querySelector("#resultDisplay").innerHTML = resultDisplay;
+                // *** Display the HTML string
+                document.querySelector("#resultDisplay").innerHTML = resultDisplay;
+
+                addMultipleEnventListener(".gridCellOrder", function (event) {
+                    // getLinkWithctrl(`${getAppPath()}/views/simpleEntity/simpleEntity.html?simpleEntityID=` + event.currentTarget.getAttribute('searid') + `&simpleEntitytype=33`, event.ctrlKey)
+                    console.log("Clicked");
+                    let orderIdraw = event.currentTarget.getAttribute('id')
+                    let orderID = orderIdraw.substring(0, orderIdraw.indexOf('|'));
+                    orderExtractViewDisplay("modaleSection", orderID);
+
+                });
+
+            } catch (error) {
+                document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
+            }
+
 
         };
 
@@ -123,6 +139,9 @@ export async function displayBookingContent(htlmPartId) {
 export function buildHostingTable(hosting, bookingunavailables, startDate, endDate) {
 
     // *** Initialisations 
+    if (startDate.length < 1 || endDate.length < 1 || Date(endDate) < Date(startDate))
+        throw new Error("Invalid dates");
+
     // *** Get the rooms details, sort the rooms by place and room label
     let productRessourcestemp = getResourceProducts();
     let productRessources = productRessourcestemp.sort(
@@ -281,14 +300,14 @@ export function getTableView(tabFullResult) {
                 if (indexCell > 0) {
                     if (cellule.substring(cellule.indexOf('|') + 1, cellule.length) == '0') {
                         //                 /* // ** first day of a reservation */
-                        output += `<Td class="" style="padding:0;background-color:#D9D583;cursor:pointer" id="${cellule}" onClick={handleGridClick}
+                        output += `<Td class="gridCellOrder" style="padding:0;background-color:#D9D583;cursor:pointer" id="${cellule}" 
                                  align="center" key=${indexCell}>`;
                         if (cellule[0] === 'x') {
                             output += ` X`;
                         }
                         output += `</Td>`;
                     } else {
-                        output += `<Td class="" style="padding:0;background-Color: #FCF8A2;cursor:pointer" id="${cellule}" onClick={handleGridClick}
+                        output += `<Td class="gridCellOrder" style="padding:0;background-Color: #FCF8A2;cursor:pointer" id="${cellule}" 
                                                 align="center" key=${indexCell}>`;
                         if (cellule[0] === 'x') {
                             output += ` X`;
@@ -296,7 +315,7 @@ export function getTableView(tabFullResult) {
                         output += `</Td>`;
                     }
                 } else {
-                    output += `<Td class="" style="padding:0; padding-Left:5px;border-Left:1px solid #CACAC8 " align="left" key="{indexCell}">${cellule.place + " - " + cellule.label}
+                    output += `<Td class="gridCellOrder" style="padding:0; padding-Left:5px;border-Left:1px solid #CACAC8 " align="left" key="{indexCell}">${cellule.place + " - " + cellule.label}
                         </Td>`;
                 }
             }

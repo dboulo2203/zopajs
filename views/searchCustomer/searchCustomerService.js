@@ -2,7 +2,7 @@ import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
 
 /**
  * Load the language list from the database
- * the languages list is saved in the localStorage 
+ * the languages list is saved in the sessionStorage 
  */
 export async function getcustomerSearch(searchString, searchType) {
 
@@ -43,7 +43,7 @@ export async function getcustomerSearch(searchString, searchType) {
     let responseWS = await fetch(wsUrl + params);
 
     if (responseWS.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         let data = await responseWS.json();
 
         console.log("getcustomerSearch ok ");

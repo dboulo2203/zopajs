@@ -1,6 +1,6 @@
 
 import { currentApplicationPath } from '../assets/constants.js'
-
+import { bedIcon, personIcon } from '../assets/constants.js'
 //***
 // catalog
 //  -> categories
@@ -12,18 +12,17 @@ import { currentApplicationPath } from '../assets/constants.js'
 // *** Menu string
 const leftmenuString = ` 
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-        <div class="offcanvas-header">
+       <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasExampleLabel" style="color:#8B2331">Zopa V3 JS</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <hr/>
+        </div> 
         <div class="offcanvas-body">
-                <div>
+            <!--     <div>
                     Présentation du menu principal de l'application        
-                </div>
+                </div>-->
             <hr/>
-            <div id="searchCustomer">Adhérents</div>
-            <div id="Hosting">Hosting</div>
+            <div id="searchCustomer" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${personIcon} Adhérents</span></div>
+            <div id="Hosting" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${bedIcon} Hôtellerie</span></div>
            </div>
     </div>
  `;

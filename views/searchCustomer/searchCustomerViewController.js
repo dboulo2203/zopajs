@@ -2,11 +2,11 @@
 import { getcustomerSearch } from './searchCustomerService.js'
 
 // *** Shared ressoucres
-import { getProducts, getintakeplacesTypesFromAPI, getMealTypesFromAPI } from '../../shared/services/productService.js'
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
+
+import { headerViewDisplay } from '../../shared/services/headerViewCont.js'
 import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js'
-import { loadTranslations } from '../../shared/services/translationService.js'
 import { footerViewDisplay } from '../../shared/services/footerViewCont.js'
+import { launchInitialisation } from '../../shared/services/initialisationService.js'
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -15,25 +15,17 @@ export async function startSearchCustomerController() {
 
     try {
         // *** Initialisations
-        // await launchInitialisation();
-        await loadTranslations();
-        await getProducts();
-        await getintakeplacesTypesFromAPI();
-        await getMealTypesFromAPI();
-
+        await launchInitialisation();
         headerViewDisplay("#menuSection");
 
+        displaySearchCustomerContent("mainActiveSection")
+
+        footerViewDisplay("#footerDisplay")
+
     } catch (error) {
-        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} </div > `;
     }
 
-    // const searchParams = new URLSearchParams(window.location.search);
-    // console.log(searchParams);
-
-    // if (searchParams.has('searchStr'))
-    displaySearchCustomerContent("mainActiveSection")
-
-    footerViewDisplay("#footerDisplay")
 }
 
 /**
@@ -48,7 +40,7 @@ export async function displaySearchCustomerContent(htlmPartId) {
 
     // *** Display the controller skeleton
     output += `
-    <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331">Search customer</p></div><hr/>
+    <div style=""><p class="fs-5" style="color:#8B2331">Search customer</p></div><hr/>
     <div id='componentMessage'></div>
     <div class="col-6">
           <div class="row">

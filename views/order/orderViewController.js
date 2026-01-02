@@ -3,14 +3,9 @@ import { getOrder } from './orderService.js'
 
 // *** Shared ressoucres
 import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
-import { getProducts, getintakeplacesTypesFromAPI, getMealTypesFromAPI, getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI } from '../../shared/services/productService.js'
-import { loadTranslations } from '../../shared/services/translationService.js'
-// import { addMultipleEnventListener } from '../../shared/functions/commonFunctions.js'
+import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { threedotsvertical } from '../../shared/assets/constants.js'
 
-
-const threedotsvertical = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-</svg>`;
 
 /**
  * when called from the url
@@ -21,23 +16,17 @@ export async function startOrderController() {
     // *** Initialisations
     try {
 
-        await loadTranslations();
-        await getProducts();
-        await getintakeplacesTypesFromAPI();
-        await getMealTypesFromAPI();
-        await getIncomeLevelsTypesFromAPI();
-        await getPublipostageTypesFromAPI();
-
+        launchInitialisation();
         headerViewDisplay("#menuSection");
+
+        // *** Get url params and launch controller
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has('orderID'))
+            displayOrderContent("mainActiveSection", searchParams.get('orderID'));
 
     } catch (error) {
         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
     }
-
-    // *** Get url params and launch controller
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.has('orderID'))
-        displayOrderContent("mainActiveSection", searchParams.get('orderID'));
 }
 
 /**
@@ -51,19 +40,16 @@ export async function displayOrderContent(htlmPartId, orderID) {
     let initString = `
     <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331">Order</p></div><hr/>
     <div id='componentMessage'></div>
-    
-          <div class="row" id="orderIdentity" >   
+        <div class="row" >
+          <div class="col" id="orderIdentity" >   
            </div>
+           <div class="col" id="linkedInvoices">
+           </div>
+        </div>
 
            <div class="row" id="orderLines"> 
            </div>
 
-           <div class="row" id="linkedInvoices">
-           </div>
-
-
-
-        
 
     </div>
     `;
@@ -74,7 +60,7 @@ export async function displayOrderContent(htlmPartId, orderID) {
         // *** Load data from API
         let order = await getOrder(orderID);
 
-        console.log(JSON.stringify(order));
+        // console.log(JSON.stringify(order));
         let output = '';
 
         // *** Display order

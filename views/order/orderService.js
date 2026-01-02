@@ -3,8 +3,6 @@ import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
 
 export async function getOrder(orderID) {
 
-    // TODO : tester la validité des paramètres
-
     let wsUrl = wsUrlformel + `dklaccueil/fullorders?sortorder=ASC&limit=1&sqlfilters=t.rowid%3D${orderID}&DOLAPIKEY=${DOLAPIKEY}`
 
     let responsefr = await fetch(wsUrl, {
@@ -14,10 +12,10 @@ export async function getOrder(orderID) {
         }
     });
     if (responsefr.ok) {
-        // *** Get the data and save in the localstorage
+        // *** Get the data and save in the sessionStorage
         const data = await responsefr.json();
-        localStorage.setItem("order", JSON.stringify(data[0]));
-        console.log("getOrder  await ok ");
+        sessionStorage.setItem("order", JSON.stringify(data[0]));
+        // console.log("getOrder  await ok ");
         return (data[0]);
 
     } else {
