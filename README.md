@@ -1,7 +1,7 @@
 # zopajs
 
 ## Release notes
-### V0.0.1
+### V0.0.1 
 - Utilisation de fontawesome,
 - NEW : general : sauve les données dans session storage.
 
@@ -17,6 +17,7 @@
     - Display order invoice
 - NEW : Booking page : 
     - Affichage Résumé de la commande avec lien vers commande
+    - Copier planning dans clipboard
 
 ### Structure services
 - Global list 
@@ -70,7 +71,7 @@
 - Restaurant page
 - **Hosting page**
     - **Display hosting planning**
-    - Copy hosting planning in clipboard
+    - **Copy hosting planning in clipboard**
     - **Display order summary**
     - Close order
 - Session page
