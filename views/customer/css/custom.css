@@ -1,4 +1,6 @@
-body {
+body,
+span,
+li {
     font-size: 0.90rem;
 }
 

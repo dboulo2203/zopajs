@@ -1,5 +1,5 @@
 // *** Component ressources
-import { getHostingBooking } from './bookingService.js';
+import { getHostingBooking, copyToClipboard, sendToast } from './bookingService.js';
 // *** Shared ressoucres
 import { getResourceProducts, getHostingProducts } from '../../shared/services/zopaProductServices.js'
 import { getintakeplacesTypes } from '../../shared/services/zopaListsServices.js'
@@ -43,6 +43,14 @@ export async function displayBookingContent(htlmPartId) {
     try {
 
         // *** Display the initial screen
+        // let =Date();
+        let tabFullResult = null;
+        let bookinglines = null;
+
+        let startDateInput = new Date();
+        let endDateinput = new Date();
+        endDateinput.setDate(endDateinput.getDate() + 20);
+
         let output = '';
         output += `
             <div class="d-flex  justify-content-between" style="padding-top:30px"   >
@@ -55,13 +63,13 @@ export async function displayBookingContent(htlmPartId) {
                 <div class="row">    
                     <label for="startDate" class="form-label col-3">Start date </label>
                     <div class="col" style="margin:2px">
-                        <input type="date" class="form-control" name="startDate" id="startDate" placeholder="" value=""/>
+                        <input type="date" class="form-control" name="startDate" id="startDate" placeholder="" value="${startDateInput.toISOString().split('T')[0]}"/>
                     </div>
                 </div>
                 <div class="row">
                     <label for="endDate" class="form-label col-3">End date</label>
                     <div class="col" style="margin:2px">
-                        <input type="date" class="form-control " name="endDate" id="endDate" placeholder="" value=""/>
+                        <input type="date" class="form-control " name="endDate" id="endDate" placeholder="" value="${endDateinput.toISOString().split('T')[0]}"/>
                     </div>
                 </div>
                 <div class="row">
@@ -72,12 +80,34 @@ export async function displayBookingContent(htlmPartId) {
             </div> 
 
             <div class="col-md-12 main" style="padding:10px" id="resultDisplay">
-            </div >`;
+            </div >
+`;
 
         document.querySelector("#" + htlmPartId).innerHTML = output;
 
 
-        //***  Actions
+        //*************************  Actions
+        // *** Copy to clipboard
+        document.querySelector("#extractButton").onclick = async function () {
+            try {
+                copyToClipboard(tabFullResult, bookinglines);
+                document.querySelector("#messageSection").innerHTML = sendToast("Contenu copié dans le presse-papier")
+                // document.querySelector(".liveToast").shadowRoot();
+                const toastTrigger = document.getElementById('liveToastBtn')
+                const toastLiveExample = document.getElementById('liveToast')
+
+                // if (toastTrigger) {
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+                // toastTrigger.addEventListener('click', () => {
+                toastBootstrap.show()
+                // })
+                // }
+            } catch (error) {
+                document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
+            }
+        };
+
+        // ***  display the period booking
         document.querySelector("#myBtnCompute").onclick = async function () {
             try {
 
@@ -89,7 +119,7 @@ export async function displayBookingContent(htlmPartId) {
 
                 // TODO : voir ce dernier paramètre de getHostingBooking
                 // *** Load order list
-                let bookinglines = await getHostingBooking(startDate, startDate, null);
+                bookinglines = await getHostingBooking(startDate, endDate, null);
 
                 // *** Analyse order list and build array
                 let bookingresults = bookinglines[0];
@@ -98,7 +128,7 @@ export async function displayBookingContent(htlmPartId) {
                 // TODO : l'original comportait un second filtre
                 let filteredResults = bookingresults.filter((orderline) => (orderline.order.statut > '0'));
 
-                let tabFullResult = buildHostingTable(filteredResults, bookingunavailables, startDate, endDate);
+                tabFullResult = buildHostingTable(filteredResults, bookingunavailables, startDate, endDate);
                 let tableView = getTableView(tabFullResult);
                 let resultDisplay = tableView;
 

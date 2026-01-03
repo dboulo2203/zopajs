@@ -11,6 +11,11 @@ body {
 
 }
 
+
+.form-label {
+    font-size: 0.95rem;
+}
+
 h4 {
     font-size: calc(1.1rem + .3vw);
 }
@@ -28,5 +33,4 @@ modal-title {
 }
 
 td {
-    font-size: 0.8rem !important;
-}
+    font-size: 0.7rem

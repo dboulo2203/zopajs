@@ -4,7 +4,7 @@ import { currentApplicationPath } from '../assets/constants.js'
 import { getProducts } from './zopaProductServices.js'
 import {
     getintakeplacesTypesFromAPI, getMealTypesFromAPI,
-    getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI
+    getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI, loadUsersFromAPI
 } from './zopaListsServices.js'
 import { loadTranslations } from './translationService.js'
 
@@ -17,6 +17,7 @@ export async function launchInitialisation() {
     // await getMealTypesFromAPI();
     // await getLanguages();
     await loadTranslations();
+    await loadUsersFromAPI();
     await getProducts();
     await getintakeplacesTypesFromAPI();
     await getMealTypesFromAPI();

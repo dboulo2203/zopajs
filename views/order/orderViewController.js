@@ -1,10 +1,15 @@
 // *** Component ressources
-import { getOrder } from './orderService.js'
+import { getOrder } from '../../shared/services/zopaOrderServices.js'
 
 // *** Shared ressoucres
 import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
-import { threedotsvertical } from '../../shared/assets/constants.js'
+import {
+    threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
+    pencilsquareIcon, closeOrderIcon, invoiceIcon
+} from '../../shared/assets/constants.js'
+import { getLinkWithctrl, getAppPath } from '../../shared/services/commonFunctions.js'
+
 
 
 /**
@@ -36,51 +41,91 @@ export async function startOrderController() {
  */
 export async function displayOrderContent(htlmPartId, orderID) {
 
-    // *** Display the controller skeleton
-    let initString = `
-    <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331">Order</p></div><hr/>
-    <div id='componentMessage'></div>
-        <div class="row" >
-          <div class="col" id="orderIdentity" >   
-           </div>
-           <div class="col" id="linkedInvoices">
-           </div>
-        </div>
-
-           <div class="row" id="orderLines"> 
-           </div>
-
-
-    </div>
-    `;
-    document.querySelector("#" + htlmPartId).innerHTML = initString;
-
     try {
 
         // *** Load data from API
         let order = await getOrder(orderID);
 
+        // *** Display the controller skeleton
+        let initString = `
+            <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331"> ${orderIcon} Order : ${order.ref}</p></div><hr/>
+            <div id='componentMessage'></div>
+                <div class="row" >
+                <div class="col-12 col-md-5" id="orderIdentity" >   
+                </div>
+                <div class="col-12 col-md-7" id="linkedInvoices">
+                </div>
+                </div>
+
+                <div class="row" id="orderLines"> 
+                </div>
+
+            </div>
+            `;
+        document.querySelector("#" + htlmPartId).innerHTML = initString;
+
+
         // console.log(JSON.stringify(order));
         let output = '';
 
         // *** Display order
-        output += `<div style="margin-bottom:10px">`;
-        output += `<div style="padding-top:0px;padding-bottom:5px"><span class="fs-6" style="color:#8B2331">Order Identity</span></div>`;
-        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Ref. commande : </span> : ${order.ref} </div >`;
-        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> : ${order.customer.name}</div >`;
+
+        output += `<div style="margin-bottom:10px">     `;
+        output += `
+         <div class="d-flex  justify-content-between" style="padding-top:0px" >
+            <span class="fs-6" style="color:#8B2331">${orderIcon} Details</span>
+            <div class="col-8 flex float-right text-end" style="cursor: pointer">
+                <div class="dropdown">
+                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
+                    <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                        <li id=""><span>${validateIcon} Valider une commande</span></li>
+                        <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
+                        <li id=""><span>${cancelIcon} Annuler la commande</span></li>
+                        <li id=""><span>${closeOrderIcon} Clôturer la commande</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li id=""><span>${invoiceIcon} Générer un acompte</span></li>
+                        <li id=""><span>${invoiceIcon} Facturer partiellement</span></li>
+                        <li id=""><span>${invoiceIcon} Générer une facture</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li id=""><span>${mealIcon} Afficher badge</span></li>
+                        <li id=""><span>${addOrderIcon} Afficher devis</span></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>`;
+        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
+        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >`;
         output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date commande : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
         output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
         output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant ttc : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
         output += `</div > `
         output += `</div > `;
-        output += `<hr /> `;
-
         document.querySelector("#orderIdentity").innerHTML = output;
-
 
         // *** Display order lines
         let orderLInesString = '';
-        orderLInesString += `<div style = "padding-bottom:5px" > <span class="fs-6" style="color:#8B2331">Order lines</span></div > `;
+        orderLInesString += `
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:15px" />
+
+        <div class="d-flex  justify-content-between" style="padding-top:0px" >
+            <span class="fs-6" style="color:#8B2331">${orderIcon} Order lines</span>
+            <div class="col-4 flex float-right text-end" style="cursor: pointer">
+                <div class="dropdown">
+                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
+                    <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                        <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
+                        <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
+                         <li><hr class="dropdown-divider"></li>
+                        <li id=""><span>${bedIcon} Ajouter un hébergement</span></li>
+                        <li id=""><span>${mealIcon} Ajouter un repas</span></li>
+                        <li id=""><span>${addOrderIcon} Ajouter une adhésion</span></li>
+                         <li><hr class="dropdown-divider"></li>
+                        <li id=""><span>${plussquareIcon} Ajouter un produit</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>`;
 
 
         if (order.lines) {
@@ -112,21 +157,21 @@ export async function displayOrderContent(htlmPartId, orderID) {
                              </div> 
 
                              <!-- Action button -->
-                       <div class="col-2 flex float-right text-end" style="cursor: pointer">
-                              
+                       <div class="col-2 flex float-right text-end" style="cursor: pointer">                             
                             <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown" aria-expanded="false">${threedotsvertical}  </a>
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
 
-                            <ul class="dropdown-menu" style="padding:4px">
-                                <li id="deleteLine">Supprimer ligne</li>
-                                <li>Editer ligne</li>
-                                <li>scinder ligne</li>
-                                <li>Supprimer repas</li>
-                            </ul>
+                                <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                                    <li id="deleteLine">Supprimer ligne</li>
+                                    <li>Editer ligne</li>
+                                    <li>Scinder ligne</li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>Supprimer repas</li>
+                                </ul>
                             </div>                         
                         </div>                          
                     </div >
-            <hr style="color:grey" />
+            
             `;
 
             });
@@ -135,16 +180,16 @@ export async function displayOrderContent(htlmPartId, orderID) {
             orderLInesString += `
             < div class="row" >
                 <div class="col-3" >
-                    <span class="customerLink" >Pas de li   gne pour cette commande</span>
+                    <span class="customerLink" >Pas de ligne pour cette commande</span>
                 </div> 
-                    </div > <hr />`;
+            </div >`;
         }
 
         document.querySelector("#orderLines").innerHTML = orderLInesString;
 
         // *** Display order invoices
         let invoicesString = '';
-        invoicesString += `<div style = "padding-bottom:5px" > <span class="fs-6" style="color:#8B2331">Invoices</span></div > `;
+        invoicesString += `<div style = "padding-bottom:5px" > <span class="fs-6" style="color:#8B2331">${invoiceIcon} Invoices</span></div > `;
 
         if (order.linkedInvoices) {
             order.linkedInvoices.map((linkedInvoice, index) => {
@@ -191,7 +236,7 @@ export async function displayOrderContent(htlmPartId, orderID) {
                 </div>
 
             </div>
-            <hr style="color:grey" />
+           
             `;
 
             });
@@ -202,64 +247,28 @@ export async function displayOrderContent(htlmPartId, orderID) {
                 <div class="col-3" >
                     <span class="customerLink" >Pas de facture pour cette commande</span>
                 </div> 
-                    </div > <hr />`;
+                    </div >`;
         }
 
         document.querySelector("#linkedInvoices").innerHTML = invoicesString
 
 
         // *** Actions
-        document.querySelector("#deleteLine").onclick = function () {
-            console.log("deleteLine : ");
-            // personEditModalDisplay(mainDisplay, person, function (status) {
-            // });
+        // document.querySelector("#deleteLine").onclick = function () {
+        //     console.log("deleteLine : ");
+        //     // personEditModalDisplay(mainDisplay, person, function (status) {
+        //     // });
+        // };
+        document.querySelector("#customerLink").onclick = function (event) {
+            getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
         };
-        ;
+
         // const dropdownElementList = document.querySelectorAll('.dropdown-toggle')
         // const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl))
 
     } catch (error) {
-        document.querySelector("#messageSection").innerHTML = `< div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
     }
 }
 
 //*** Function needed */
-
-/**
- * 
- * @param {*} order 
- * @param {*} fullDescription 
- * @returns 
- */
-export function getevaluateSession(order, fullDescription) {
-    // Fulldescription : the function must returns the session and the product list
-    let session = "";
-    let otherProducts = [];
-    order.lines.forEach((orderLine, index) => {
-        if (orderLine.ref) {
-            if (orderLine.ref.startsWith('STA')) {
-                // *** Build a session label with short date and libelle
-                let dateDebut = new Intl.DateTimeFormat("fr-FR",
-                    {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                    }).format(orderLine.array_options.options_lin_datedebut * 1000);
-
-
-                session = dateDebut + " - " + orderLine.libelle
-            } else {
-                // *** if the product is not a session, keep the products used in the order
-                if (otherProducts.find(element => element === orderLine.ref.substring(0, 3)) === undefined)
-                    otherProducts.push(orderLine.ref.substring(0, 3));
-            }
-        }
-    });
-    if (fullDescription)
-        return session + " - " + otherProducts.join(', ');
-    else
-        if (session)
-            return session;
-        else
-            return otherProducts.join(', ');
-}

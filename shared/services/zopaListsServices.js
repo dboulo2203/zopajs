@@ -9,8 +9,38 @@ export function getPublipostageTable() { }
 export function getIncomesLevelTable() { }
 export function getPaymentTypes() { }
 export function getCountriesTable() { }
-export function getUsers() { }
-export function getUserLoginFromId(id) { }
+
+export async function loadUsersFromAPI() {
+    //  console.log("getMealTypesFromAPI Service start");
+    var wsUrl = wsUrlformel + `users/?DOLAPIKEY=${DOLAPIKEY}`;
+    let params = `&sortorder=ASC&limit=100&active=1`;
+    let responsefr = await fetch(wsUrl + params);
+
+    if (responsefr.ok) {
+        // *** Get the data and save in the sessionStorage
+        const data = await responsefr.json();
+        sessionStorage.setItem("users", JSON.stringify(data));
+        return true;
+
+    } else {
+        console.log(`loadUsersFromAPI Error : ${JSON.stringify(responsefr)}`);
+        throw new Error("loadUsersFromAPI Error message : " + responsefr.status + " " + responsefr.statusText);
+    }
+}
+
+export function getUserLoginFromId(id) {
+    let basejson = sessionStorage.getItem("users");
+    let base = JSON.parse(basejson);
+
+    let foundIndex = Object.keys(base).indexOf(id);
+    let valeur = null;
+    if (foundIndex >= 0)
+        valeur = (Object.values(base)[foundIndex].login);
+
+
+    return valeur;
+
+}
 export function getintakeplaces() { }
 export function getIntakePlacesTypesDirect() { }
 export function getmealTypesDirect() { }

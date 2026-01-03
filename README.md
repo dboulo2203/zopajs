@@ -10,11 +10,14 @@
     - Display customer orders
     - TODO : listes income level, publipostage, adhésion
     - TODO : Paginer les commandes
-    - TODO : LIen vers invvoice
+    - TODO : Lien vers invvoice
+        - Display customer invoices
+
 - NEW : order page
     - Display order identity
     - Display order lines
     - Display order invoice
+    
 - NEW : Booking page : 
     - Affichage Résumé de la commande avec lien vers commande
     - Copier planning dans clipboard

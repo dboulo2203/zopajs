@@ -7,6 +7,9 @@ import { headerViewDisplay } from '../../shared/services/headerViewCont.js'
 import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js'
 import { footerViewDisplay } from '../../shared/services/footerViewCont.js'
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { searchIcon } from '../../shared/assets/constants.js'
+
+
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -40,7 +43,7 @@ export async function displaySearchCustomerContent(htlmPartId) {
 
     // *** Display the controller skeleton
     output += `
-    <div style=""><p class="fs-5" style="color:#8B2331">Search customer</p></div><hr/>
+     <div style="padding-top:10px"><span class="fs-5" style="color:#8B2331">${searchIcon} Search customer</span></div><hr/>
     <div id='componentMessage'></div>
     <div class="col-6">
           <div class="row">
