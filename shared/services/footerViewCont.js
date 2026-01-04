@@ -8,7 +8,7 @@ export function footerViewDisplay(htlmPartId) {
     <div id="footerPart" style="margin-top:40px">
         <hr style="color:grey"></hr>
         <div class="d-flex justify-content-center" style="">
-            <small>Powered by Dhagpo Kagyu  - ZopaJS App - v 0.0.1 - 29/12/2025</small>
+            <small>Powered by Dhagpo Kagyu  - ZopaJS App - v 3.0.1 - 04/01/2026</small>
         </div>
         <hr style="color:grey"></hr>
     </div>

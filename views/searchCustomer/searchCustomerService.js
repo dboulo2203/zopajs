@@ -38,7 +38,7 @@ export async function getcustomerSearch(searchString, searchType) {
     }
 
     var wsUrl = wsUrlformel + ``;
-    let params = `thirdparties?sqlfilters=${searchStringBuild}&DOLAPIKEY=${DOLAPIKEY}`;
+    let params = `thirdparties?sqlfilters=${searchStringBuild}&DOLAPIKEY=${DOLAPIKEY}&sortfield=t.nom&sortorder=ASC`;
 
     let responseWS = await fetch(wsUrl + params);
 

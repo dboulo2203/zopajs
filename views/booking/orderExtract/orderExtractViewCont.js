@@ -1,5 +1,4 @@
-// import { getLogin } from '../../shared/services/loginService.js'
-import { getOrder, getevaluateSession, getevaluateOrderGlobalStatus } from './orderExtractervice.js'
+import { getOrder, getevaluateSession, getevaluateOrderGlobalStatus } from '../../../shared/services/zopaOrderServices.js'
 import { getAppPath } from '../../../shared/services/commonFunctions.js'
 
 const editModaleString = `

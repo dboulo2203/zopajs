@@ -8,7 +8,7 @@ import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon
 } from '../../shared/assets/constants.js'
-import { getLinkWithctrl, getAppPath } from '../../shared/services/commonFunctions.js'
+import { getLinkWithctrl, getAppPath, addMultipleEnventListener } from '../../shared/services/commonFunctions.js'
 
 
 
@@ -66,12 +66,51 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
 
         // console.log(JSON.stringify(order));
-        let output = '';
+        //  let output = '';
 
         // *** Display order
+        document.querySelector("#orderIdentity").innerHTML = displayOrderIdentity(order)
 
-        output += `<div style="margin-bottom:10px">     `;
-        output += `
+        // *** Display order lines
+        document.querySelector("#orderLines").innerHTML = displayOrderLines(order)
+
+        // *** Display order invvoices
+        document.querySelector("#linkedInvoices").innerHTML = displayOrderInvoices(order)
+
+
+        // *** Actions
+        // document.querySelector("#deleteLine").onclick = function () {
+        //     console.log("deleteLine : ");
+        //     // personEditModalDisplay(mainDisplay, person, function (status) {
+        //     // });
+        // };
+        document.querySelector("#customerLink").onclick = function (event) {
+            getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
+        };
+
+        // const dropdownElementList = document.querySelectorAll('.dropdown-toggle')
+        // const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl))
+        addMultipleEnventListener(".invoiceLink", function (event) {
+            window.location.href = `${getAppPath()}/views/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceid');
+        });
+
+
+    } catch (error) {
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
+    }
+}
+
+//*** Function needed */
+/**
+ * 
+ * @param {*} order 
+ * @returns 
+ */
+function displayOrderIdentity(order) {
+
+    let output = '';
+    output += `<div style="margin-bottom:10px">     `;
+    output += `
          <div class="d-flex  justify-content-between" style="padding-top:0px" >
             <span class="fs-6" style="color:#8B2331">${orderIcon} Details</span>
             <div class="col-8 flex float-right text-end" style="cursor: pointer">
@@ -94,119 +133,140 @@ export async function displayOrderContent(htlmPartId, orderID) {
                 </div>
             </div>
         </div>`;
-        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
-        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >`;
-        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date commande : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
-        output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
-        output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant ttc : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
-        output += `</div > `
-        output += `</div > `;
-        document.querySelector("#orderIdentity").innerHTML = output;
+    output += `<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
+    <div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date commande : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
+    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant ttc : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
+    output += `</div > `
+    output += `</div > `;
+    return output;
 
-        // *** Display order lines
-        let orderLInesString = '';
-        orderLInesString += `
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:15px" />
+}
 
-        <div class="d-flex  justify-content-between" style="padding-top:0px" >
-            <span class="fs-6" style="color:#8B2331">${orderIcon} Order lines</span>
-            <div class="col-4 flex float-right text-end" style="cursor: pointer">
-                <div class="dropdown">
-                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
-                    <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
-                        <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
-                        <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
-                         <li><hr class="dropdown-divider"></li>
-                        <li id=""><span>${bedIcon} Ajouter un hébergement</span></li>
-                        <li id=""><span>${mealIcon} Ajouter un repas</span></li>
-                        <li id=""><span>${addOrderIcon} Ajouter une adhésion</span></li>
-                         <li><hr class="dropdown-divider"></li>
-                        <li id=""><span>${plussquareIcon} Ajouter un produit</span></li>
-                    </ul>
+/**
+ * 
+ * @param {*} order 
+ * @returns 
+ */
+function displayOrderLines(order) {
+
+    let orderLInesString = '';
+    orderLInesString += `
+        <div style="margin-bottom:0px">
+            <div class="d-flex  justify-content-between" style="padding-top:0px" >
+                <span class="fs-6" style="color:#8B2331">${orderIcon} Order lines</span>
+                
+                <div class="col-4 flex float-right text-end" style="cursor: pointer">
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
+                        <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                            <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
+                            <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li id=""><span>${bedIcon} Ajouter un hébergement</span></li>
+                            <li id=""><span>${mealIcon} Ajouter un repas</span></li>
+                            <li id=""><span>${addOrderIcon} Ajouter une adhésion</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li id=""><span>${plussquareIcon} Ajouter un produit</span></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 
 
-        if (order.lines) {
-            order.lines.map((orderLine, index) => {
-                orderLInesString += `
-            <div class="row" style = "margin-bottom:5px" >
-
-                        <div class="col-2" > 
-                            <span   orderLineID="${orderLine.id}" style="cursor: pointer">${orderLine.ref}</span>
-                        </div> 
+    if (order.lines) {
+        order.lines.map((orderLine, index) => {
+            orderLInesString += `
+            <div class="row" >
+                
+                <div class="col-2" > 
+                    <span   orderLineID="${orderLine.id}" style="cursor: pointer">${orderLine.ref}</span>
+                </div> 
+                
+                    <div class="col-4" >
+                    <span   orderLineID="${orderLine.id}"style="cursor: pointer">${orderLine.label}</span>
+                </div>     
+                
+                <div class="col-1" >
+                    <span   orderLineID="${orderLine.id}"style="cursor: pointer">${orderLine.qty}</span>
+                </div>              
                         
-                         <div class="col-4" >
-                            <span   orderLineID="${orderLine.id}"style="cursor: pointer">${orderLine.label}</span>
-                        </div>     
-                        
-                        <div class="col-1" >
-                            <span   orderLineID="${orderLine.id}"style="cursor: pointer">${orderLine.qty}</span>
-                        </div>              
-                               
-                        <div class="col-1"> 
-                            ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(orderLine.total_ttc))}
+                <div class="col-1"> 
+                    ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(orderLine.total_ttc))}
+                </div> 
+                <div class="col-1">
+                    ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(orderLine.array_options.options_lin_datedebut * 1000)} 
                         </div> 
-                        <div class="col-1">
-                            ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(orderLine.array_options.options_lin_datedebut * 1000)} 
-                             </div> 
 
-                       <div class="col-1">
-                            ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(orderLine.array_options.options_lin_datefin * 1000)} 
-                             </div> 
+                <div class="col-1">
+                    ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(orderLine.array_options.options_lin_datefin * 1000)} 
+                        </div> 
 
-                             <!-- Action button -->
-                       <div class="col-2 flex float-right text-end" style="cursor: pointer">                             
-                            <div class="dropdown">
-                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
+                        <!-- Action button -->
+                <div class="col-2 flex float-right text-end" style="cursor: pointer">                             
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
 
-                                <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
-                                    <li id="deleteLine">Supprimer ligne</li>
-                                    <li>Editer ligne</li>
-                                    <li>Scinder ligne</li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>Supprimer repas</li>
-                                </ul>
-                            </div>                         
-                        </div>                          
-                    </div >
+                        <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                            <li id="deleteLine">Supprimer ligne</li>
+                            <li>Editer ligne</li>
+                            <li>Scinder ligne</li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>Supprimer repas</li>
+                        </ul>
+                    </div>                         
+                </div>   
+                ${index < order.lines.length - 1 ? '<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:10px" />' : ''}
+                       
+            </div >
             
             `;
 
-            });
+        });
 
-        } else {
-            orderLInesString += `
+    } else {
+        orderLInesString += `
             < div class="row" >
                 <div class="col-3" >
                     <span class="customerLink" >Pas de ligne pour cette commande</span>
                 </div> 
             </div >`;
-        }
+    }
+    return orderLInesString;
+}
 
-        document.querySelector("#orderLines").innerHTML = orderLInesString;
+/**
+ * 
+ * @param {*} order 
+ * @returns 
+ */
+function displayOrderInvoices(order) {
 
-        // *** Display order invoices
-        let invoicesString = '';
-        invoicesString += `<div style = "padding-bottom:5px" > <span class="fs-6" style="color:#8B2331">${invoiceIcon} Invoices</span></div > `;
+    // *** Display order invoices
+    let invoicesString = '';
+    invoicesString += `<div   > <span class="fs-6" style="color:#8B2331">${invoiceIcon} Invoices</span></div >
+    <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" /> `;
 
-        if (order.linkedInvoices) {
-            order.linkedInvoices.map((linkedInvoice, index) => {
-                invoicesString += `
+    if (order.linkedInvoices) {
+        order.linkedInvoices.map((linkedInvoice, index) => {
+            invoicesString += `
             <div class="row" style = "" >
-
+                
                 <div class="col-2" > 
-                    <span   orderLineID="${linkedInvoice.id}" style="cursor: pointer">${linkedInvoice.ref}</span>
+                    <span class="invoiceLink"  invoiceid="${linkedInvoice.id}" style="cursor: pointer">${linkedInvoice.ref}</span>
                 </div> 
                 <div class="col-2" > 
                     ${linkedInvoice.type === "3"
-                        ? "Acompte"
-                        : linkedInvoice.type === "2"
-                            ? "Avoir"
-                            : linkedInvoice.type === "0"
-                                ? "Standard"
-                                : "Type facture inconnu"}
+                    ? "Acompte"
+                    : linkedInvoice.type === "2"
+                        ? "Avoir"
+                        : linkedInvoice.type === "0"
+                            ? "Standard"
+                            : "Type facture inconnu"}
 
 
                 </div> 
@@ -217,58 +277,37 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
                 <div class="col-2">
                     ${new Intl.NumberFormat("fr-FR", {
-                                    style: "currency",
-                                    currency: "EUR",
-                                }).format(linkedInvoice.total_ttc)}
+                                style: "currency",
+                                currency: "EUR",
+                            }).format(linkedInvoice.total_ttc)}
                 </div>
 
                 <div class="col-2">
                     ${linkedInvoice.statut === "2" ?
-                        '<span>Payée</span>'
-                        : linkedInvoice.statut === "1" ?
-                            '<span >Validée</span>'
-                            : linkedInvoice.statut === "0" ?
-                                '<span >Brouillon</span>'
-                                : linkedInvoice.statut === "3"
-                                    ? '<span >Abandonnée</span>'
-                                    : "Statut inconnu"
-                    }
+                    '<span>Payée</span>'
+                    : linkedInvoice.statut === "1" ?
+                        '<span >Validée</span>'
+                        : linkedInvoice.statut === "0" ?
+                            '<span >Brouillon</span>'
+                            : linkedInvoice.statut === "3"
+                                ? '<span >Abandonnée</span>'
+                                : "Statut inconnu"
+                }
                 </div>
 
             </div>
            
             `;
 
-            });
+        });
 
-        } else {
-            invoicesString += `
+    } else {
+        invoicesString += `
             < div class="row" >
                 <div class="col-3" >
                     <span class="customerLink" >Pas de facture pour cette commande</span>
                 </div> 
                     </div >`;
-        }
-
-        document.querySelector("#linkedInvoices").innerHTML = invoicesString
-
-
-        // *** Actions
-        // document.querySelector("#deleteLine").onclick = function () {
-        //     console.log("deleteLine : ");
-        //     // personEditModalDisplay(mainDisplay, person, function (status) {
-        //     // });
-        // };
-        document.querySelector("#customerLink").onclick = function (event) {
-            getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
-        };
-
-        // const dropdownElementList = document.querySelectorAll('.dropdown-toggle')
-        // const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl))
-
-    } catch (error) {
-        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
     }
+    return invoicesString;
 }
-
-//*** Function needed */

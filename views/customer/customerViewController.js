@@ -7,7 +7,7 @@ import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***
 import { addMultipleEnventListener, getAppPath, getLinkWithctrl } from '../../shared/services/commonFunctions.js'
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
 import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
-import { personIcon, orderIcon, addOrderIcon, threedotsvertical } from '../../shared/assets/constants.js'
+import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../shared/assets/constants.js'
 import { getevaluateSession } from '../../shared/services/zopaOrderServices.js'
 /**
  * when called from the url
@@ -50,14 +50,15 @@ export async function displayCustomerContent(htlmPartId, customerID) {
         // *** Display the controller skeleton
         let initString = `
         <div style="padding-top:10px"><span class="fs-5" style="color:#8B2331">${personIcon} Customer</span></div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:5px;margin-bottom:20px" />
         <div id='componentMessage'></div>
         
             <div class="row" id="customerIdentity" > Customer identity    
             </div>
 
-            <div class="row" id="customerOrders"> 
+            <div class="row" id="customerOrders" style="margin-top:20px"> 
             </div>
-            <div class="row" id="customerInvoices">
+            <div class="row" id="customerInvoices" style="margin-top:20px">
             </div>
 
             </div>
@@ -103,9 +104,10 @@ export async function displayCustomerContent(htlmPartId, customerID) {
  */
 function displayCustomerIdentity(customer) {
     let output = '';
-    output += `<div style="margin-bottom:10px">`;
-    output += `<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:15px" />
-        <div style=""><span class="fs-6" style="color:#8B2331">Customer Identity</span></div>`;
+    output += `<div style="margin-bottom:2px">`;
+    output += `
+        <div style=""><span class="fs-6" style="color:#8B2331">Customer Identity</span></div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
     output += `<div class="col-md-12 main"  > <span  class="fw-light" style ="color:grey">Nom</span> : ${customer.name}`;
     output += `</div>`
     output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">email</span> : ${customer.email}`;
@@ -155,24 +157,21 @@ function displayCustomerIdentity(customer) {
  * @returns 
  */
 function displayCustomerorders(customer, customerOrders) {
-    let customerOrdersString = `<div style="margin-bottom:10px">
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:15px" />
-        
-        <div class="d-flex  justify-content-between" style="padding-top:0px" >
-            <span class="fs-6" style="color:#8B2331">${orderIcon} Customer orders</span>
-                    <div class="col-4 flex float-right text-end" style="cursor: pointer">
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:black">${threedotsvertical}  </a>
-                            <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
-                                <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
-                            </ul>
-                        </div>                         
-                    </div>                          
-
-            </div>`;
-
-    // document.querySelector("#customerIdentity").innerHTML = output;
-
+    let customerOrdersString = `
+        <div style="margin-bottom:0px">
+            <div class="d-flex  justify-content-between" style="padding-top:0px" >
+                <span class="fs-6" style="color:#8B2331">${orderIcon} Customer orders</span>
+                <div class="col-4 flex float-right text-end" style="cursor: pointer">
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:black">${threedotsvertical}  </a>
+                        <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
+                            <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
+                        </ul>
+                    </div>                         
+                </div>                          
+            </div>
+        </div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 
     // *** Display customer orders
 
@@ -180,7 +179,8 @@ function displayCustomerorders(customer, customerOrders) {
     if (customerOrders) {
         customerOrders.map((customerOrder, index) => {
             customerOrdersString += `
-            <div class="row" style = "margin-top:5px" >
+            <div class="row" style = "margin-top:0px" >
+            
 
                         <div class="col-2" > 
                             <span class="orderLink"  orderID="${customerOrder.id}"style="cursor: pointer">${customerOrder.ref}</span>
@@ -209,7 +209,9 @@ function displayCustomerorders(customer, customerOrders) {
                             ${customerOrder.statut == 3 ? 'Clôturé' : customerOrder.statut == 1 ? 'Validé' : customerOrder.statut == 0 ? 'Brouillon' : customerOrder.statut == -1 ? 'Annulée' : 'Inconnu'}                            
                         </div>
                      </div >
-            `;
+                ${index < customerOrders.length - 1 ? '<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:5px" />' : ''}
+
+                `;
 
         });
     } else {
@@ -235,59 +237,51 @@ function displayCustomerInvoices(customer, customerInvoices) {
 
     let customerInvoicesString = '';
     customerInvoicesString += `
-            <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:15px" />
-                <div style=""><p class="fs-6" style="color:#8B2331">Customer Invoices</p></div>`;
+        <div style="margin-bottom:20px">
+            <div class="d-flex  justify-content-between" style="padding-top:0px" >
+                <span class="fs-6  fw-normal" style="color:#8B2331">${invoiceIcon} Customer Invoices</span>
+                <div class="col-4 flex float-right text-end" style="cursor: pointer">
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:black">${threedotsvertical}  </a>
+                        <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
+                            <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
+                        </ul>
+                    </div>                         
+                </div>                          
+            </div>
+
+         <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 
     if (customerInvoices) {
         customerInvoices.map((customerInvoice, index) => {
             customerInvoicesString += `
-                    <div class="row" style = "margin-bottom:5px" >
+                <div class="row" style = "margin-bottom:5px" >
 
-                        <div class="col-2" >
-                            <span class="" orderID="${customerInvoice.id}"style="cursor: pointer">${customerInvoice.ref}</span>
-                        </div> 
+                    <div class="col-2" >
+                        <span orderID="${customerInvoice.id}"style="cursor: pointer">${customerInvoice.ref}</span>
+                    </div> 
                        
-                        <div class="col-4">
-                            ${customerInvoice.type === "3"
-                    ? "deposit"
-                    : customerInvoice.type === "2"
-                        ? "creditnote"
-                        : customerInvoice.type === "0"
-                            ? "standard"
-                            : "Type facture inconnu"}
+                    <div class="col-4">
+                    ${customerInvoice.type === "3" ? "deposit" : customerInvoice.type === "2" ? "creditnote" : customerInvoice.type === "0" ? "standard" : "Type facture inconnu"}
                         </TableCell>
-                        </div >      
+                    </div >      
                                          
-                       <div class="col-2">
-                            ${new Intl.DateTimeFormat("fr-FR",
-                                {
-                                    year: "numeric",
-                                    month: "numeric",
-                                    day: "numeric",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                }).format(customerInvoice.date_creation * 1000)}
-                        </div>
+                    <div class="col-2 ">
+                        ${new Intl.DateTimeFormat("fr-FR", {
+                year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric",
+            }).format(customerInvoice.date_creation * 1000)}
+                    </div>
                         
-                        <div class="col-2"> 
-                            ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(customerInvoice.total_ttc)}
-                        </div> 
+                    <div class="col-2 "> 
+                        ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(customerInvoice.total_ttc)}
+                    </div> 
 
-                        <div class="col-2">
-                         ${customerInvoice.statut === "2" ?
-                    "paid"
-                    : customerInvoice.statut === "1" ?
-                        "validated"
-                        : customerInvoice.statut === "0" ?
-                            "draft"
-                            : customerInvoice.statut === "3"
-                                ? "cancelled"
-                                : "Statut inconnu"
-                }
-                        </div>
-
-                     </div >
-            `;
+                    <div class="col-2">
+                            ${customerInvoice.statut === "2" ? "paid" : customerInvoice.statut === "1" ? "validated" : customerInvoice.statut === "0" ? "draft" : customerInvoice.statut === "3" ? "cancelled" : "Statut inconnu"}
+                    </div>
+                </div >
+                ${index < customerInvoices.length - 1 ? '<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:10px" />' : ''}
+        `;
 
         });
     } else {
