@@ -190,18 +190,18 @@ function displayCustomerorders(customer, customerOrders) {
     if (customerOrders) {
         customerOrders.map((customerOrder, index) => {
             customerOrdersString += `
-            <div class="row" style = "margin-top:0px" >
+            <div class="row flex " style = "margin-top:0px" >
             
 
-                        <div class="col-2" > 
+                        <div class="col d-none d-md-block" >
                             <span class="orderLink"  orderID="${customerOrder.id}"style="cursor: pointer">${customerOrder.ref}</span>
                         </div> 
                        
-                        <div class="col-6">
+                        <div class="col-5">
                             ${getevaluateSession(customerOrder, true)}
                         </div>      
                                          
-                       <div class="col-2">
+                       <div class="col d-none d-md-block">
                             ${new Intl.DateTimeFormat("fr-FR",
                 {
                     year: "numeric",
@@ -212,11 +212,11 @@ function displayCustomerorders(customer, customerOrders) {
                 }).format(customerOrder.date_creation * 1000)}
                         </div>
                         
-                        <div class="col-1"> 
+                        <div class="col"> 
                             ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(customerOrder.total_ttc)}
                         </div> 
 
-                        <div class="col-1">   
+                        <div class="col">   
                             ${customerOrder.statut == 3 ? 'Clôturé' : customerOrder.statut == 1 ? 'Validé' : customerOrder.statut == 0 ? 'Brouillon' : customerOrder.statut == -1 ? 'Annulée' : 'Inconnu'}                            
                         </div>
                      </div >
@@ -268,27 +268,27 @@ function displayCustomerInvoices(customer, customerInvoices) {
             customerInvoicesString += `
                 <div class="row" style = "margin-bottom:5px" >
 
-                    <div class="col-2" >
+                    <div class=" col d-none d-md-block" >
                         <span class="invoiceLink" invoiceID="${customerInvoice.id}" style="cursor: pointer">${customerInvoice.ref}</span>
                     </div> 
                        
-                    <div class="col-4">
-                    ${customerInvoice.type === "3" ? "deposit" : customerInvoice.type === "2" ? "creditnote" : customerInvoice.type === "0" ? "standard" : "Type facture inconnu"}
+                    <div class="col">
+                    ${customerInvoice.type === "3" ? "Acompte" : customerInvoice.type === "2" ? "creditnote" : customerInvoice.type === "0" ? "Standard" : "Type facture inconnu"}
                         </TableCell>
                     </div >      
                                          
-                    <div class="col-2 ">
+                    <div class="col d-none d-md-block ">
                         ${new Intl.DateTimeFormat("fr-FR", {
                 year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric",
             }).format(customerInvoice.date_creation * 1000)}
                     </div>
                         
-                    <div class="col-2 "> 
+                    <div class="col "> 
                         ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(customerInvoice.total_ttc)}
                     </div> 
 
-                    <div class="col-2">
-                            ${customerInvoice.statut === "2" ? "paid" : customerInvoice.statut === "1" ? "validated" : customerInvoice.statut === "0" ? "draft" : customerInvoice.statut === "3" ? "cancelled" : "Statut inconnu"}
+                    <div class="col">
+                            ${customerInvoice.statut === "2" ? "Payée" : customerInvoice.statut === "1" ? "Validée" : customerInvoice.statut === "0" ? "Brouillon" : customerInvoice.statut === "3" ? "Annulée" : "Statut inconnu"}
                     </div>
                 </div >
                 ${index < customerInvoices.length - 1 ? '<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:10px" />' : ''}

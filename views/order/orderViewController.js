@@ -1,6 +1,6 @@
 // *** Component ressources
-import { getOrder } from '../../shared/services/zopaOrderServices.js'
-
+import { getOrder, getOrderBilledAmount, getOrderPaidAmount, getevaluateOrderGlobalStatus, getOrderRoomNotSet, getOrderhostingtaxesconsistancy, getOrderDatesQtyconsistancy, getOrderRepConsistancy } from '../../shared/services/zopaOrderServices.js'
+import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
 // *** Shared ressoucres
 import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
@@ -9,7 +9,7 @@ import {
     pencilsquareIcon, closeOrderIcon, invoiceIcon
 } from '../../shared/assets/constants.js'
 import { getLinkWithctrl, getAppPath, addMultipleEnventListener } from '../../shared/services/commonFunctions.js'
-
+import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
 
 
 /**
@@ -23,6 +23,9 @@ export async function startOrderController() {
 
         launchInitialisation();
         headerViewDisplay("#menuSection");
+
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
         // *** Get url params and launch controller
         const searchParams = new URLSearchParams(window.location.search);
@@ -57,7 +60,7 @@ export async function displayOrderContent(htlmPartId, orderID) {
                 </div>
                 </div>
 
-                <div class="row" id="orderLines"> 
+                <div class="row" id="orderLines" > 
                 </div>
 
             </div>
@@ -112,7 +115,7 @@ function displayOrderIdentity(order) {
     output += `<div style="margin-bottom:10px">     `;
     output += `
          <div class="d-flex  justify-content-between" style="padding-top:0px" >
-            <span class="fs-6" style="color:#8B2331">${orderIcon} Details</span>
+            <span class="fs-6" style="color:#8B2331" >${orderIcon} Details</span>
             <div class="col-8 flex float-right text-end" style="cursor: pointer">
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
@@ -134,11 +137,66 @@ function displayOrderIdentity(order) {
             </div>
         </div>`;
     output += `<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
-    <div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date commande : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
-    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant ttc : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
+    <div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >
+      <div class="col-md-12 main"  style =" margin-top:5px"> <span class="fw - light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date création : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
+    // output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
+    output += `<div class="col-md-12 main"> <span class="fw - light" style ="color:grey">Acteurs : </span> <span class="" style ="">Commande créée par
+                 ${getUserLoginFromId(order.user_author_id)}, le
+                ${new Intl.DateTimeFormat("fr-FR",
+        {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+        }).format(order.date_creation * 1000)}
+                    ,validée par ${getUserLoginFromId(order.user_valid)}, le
+                ${new Intl.DateTimeFormat("fr-FR",
+            {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+            }).format(order.date_validation * 1000)}
+    
+                </span> </div>`;
+    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant total : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
+
+    output += `<div class="col-md-12 main"> <span class="fw - light" style ="color:grey">Paiement : </span><span class="" style ="">Facturé : 
+                 ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(getOrderBilledAmount(order)))},
+ Payé                  ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(getOrderPaidAmount(order)))},
+    
+                </span> </div>`;
+    output += `<div class="col-md-12 main" style =" margin-top:5px"  > <span class="fw - light" style ="color:grey">Statut commande : </span> : ${order.statut === "3" && order.billed === "0"
+        ? "Clôturée"
+        : order.statut === "3" && order.billed === "1"
+            ? "Clôturée"
+            : order.statut === "1" && order.billed === "1"
+                ? "Validée - facturée"
+                : order.statut === "1" && order.billed === "0"
+                    ? "Validée"
+                    : order.statut === "0"
+                        ? "Brouillon"
+                        : order.statut === "-1"
+                            ? "Annulée"
+                            : "Statut inconnu"
+        }  </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Statut global : </span> : ${getevaluateOrderGlobalStatus(order)} </div >`;
+    // output += `<div class="col-md-12 main" style=" margin-top:5px" >
+    // ${order.statut === '1' && (Math.round(parseFloat(getOrderBilledAmount(order)) * 100) / 100 - Math.round(parseFloat(getOrderPaidAmount(order)) * 100) / 100) !== 0 && `<Tooltip title="Montants facturés et payés différents"><ErrorOutlineIcon /></Tooltip>`}
+    // ${order.statut === '1' && (Math.round(parseFloat(getOrderBilledAmount(order)) * 100) / 100 - Math.round(parseFloat(order.total_ttc) * 100) / 100) !== 0 && `<Tooltip title="Montants commande et montant facturés différents"><ErrorOutlineIcon /></Tooltip>`}
+    // ${order.statut === '-1' && (Math.round(parseFloat(getOrderBilledAmount(order)) * 100) / 100 - Math.round(parseFloat(getOrderPaidAmount(order)) * 100) / 100) !== 0 && `<Tooltip title="Commande annulée à rembourser"><ErrorOutlineIcon /></Tooltip>`}
+    // ${order && getOrderRoomNotSet(order) !== null && getOrderRoomNotSet(order) !== true && `<Tooltip title="Chambre non affectée"><ErrorOutlineIcon /></Tooltip>`}
+    // ${order && getOrderhostingtaxesconsistancy(order) !== null && getOrderhostingtaxesconsistancy(order) !== true && `<Tooltip title="Erreur cohérence hébergement et taxes"><ErrorOutlineIcon /></Tooltip>`}
+    // ${order && getOrderDatesQtyconsistancy(order) !== null && getOrderDatesQtyconsistancy(order) !== true && `<Tooltip title="Erreur de cohérence entre les dates et les quantités"><ErrorOutlineIcon /></Tooltip>`}
+    // ${order && getOrderRepConsistancy(order) === true && `<Tooltip title="Ligne de repas sans type de repas"><ErrorOutlineIcon /></Tooltip>`}
+    // ${getOrderRepConsistancy(order)}
+
+    // </div >`;
+
+
     output += `</div > `
     output += `</div > `;
     return output;
@@ -183,31 +241,31 @@ function displayOrderLines(order) {
             orderLInesString += `
             <div class="row" >
                 
-                <div class="col-2" > 
-                    <span   orderLineID="${orderLine.id}" style="cursor: pointer">${orderLine.ref}</span>
+                <div class=" col d-none d-md-block" >
+                    <span   orderLineID="${orderLine.id}" >${orderLine.ref}</span>
                 </div> 
                 
                     <div class="col-4" >
-                    <span   orderLineID="${orderLine.id}"style="cursor: pointer">${orderLine.label}</span>
+                    <span   orderLineID="${orderLine.id}" >${orderLine.label}</span>
                 </div>     
                 
-                <div class="col-1" >
-                    <span   orderLineID="${orderLine.id}"style="cursor: pointer">${orderLine.qty}</span>
+                <div class="col" >
+                    <span   orderLineID="${orderLine.id}" >${orderLine.qty}</span>
                 </div>              
                         
-                <div class="col-1"> 
+                <div class="col"> 
                     ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(orderLine.total_ttc))}
                 </div> 
-                <div class="col-1">
+                <div class="col d-none d-md-block">
                     ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(orderLine.array_options.options_lin_datedebut * 1000)} 
                         </div> 
 
-                <div class="col-1">
+                <div class="col d-none d-md-block">
                     ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(orderLine.array_options.options_lin_datefin * 1000)} 
                         </div> 
 
                         <!-- Action button -->
-                <div class="col-2 flex float-right text-end" style="cursor: pointer">                             
+                <div class="col-1 flex float-right text-end" style="cursor: pointer">                             
                     <div class="dropdown">
                         <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
 

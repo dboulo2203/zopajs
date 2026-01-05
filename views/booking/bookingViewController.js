@@ -7,6 +7,7 @@ import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
 import { addMultipleEnventListener, displayToast } from '../../shared/services/commonFunctions.js'
+import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
 // import { bookIcon, personIcon, keyIcon, printerIcon, publisherIcon, questionIcon } from '../../shared/assets/constants.js'
@@ -24,6 +25,8 @@ export async function startBookingController() {
 
         // const searchParams = new URLSearchParams(window.location.search);
         // console.log(searchParams);
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
         // if (searchParams.has('searchStr'))
         displayBookingContent("mainActiveSection");
@@ -53,28 +56,28 @@ export async function displayBookingContent(htlmPartId) {
 
         let output = '';
         output += `
-            <div class="d-flex  justify-content-between" style="padding-top:30px"   >
-                <span class="fs-5" style="color:#8B2331">${bedIcon} Display hosting booking DKL</span>
+            <div class="d-flex  justify-content-between" style="padding-top:45px"   >
+                <span class="fs-5" style="color:#8B2331">${bedIcon} Display hosting booking</span>
                 <span id="extractButton" style="cursor: pointer">   ${copyIcon}</span>
             </div>
             <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem"  / >
             <div id='componentMessage'></div>
             <div class="col-6">
                 <div class="row">    
-                    <label for="startDate" class="form-label col-3">Start date </label>
-                    <div class="col" style="margin:2px">
+                    <label for="startDate" class="form-label ">Start date </label>
+                    <div class="col" >
                         <input type="date" class="form-control" name="startDate" id="startDate" placeholder="" value="${startDateInput.toISOString().split('T')[0]}"/>
                     </div>
                 </div>
                 <div class="row">
-                    <label for="endDate" class="form-label col-3">End date</label>
-                    <div class="col" style="margin:2px">
+                    <label for="endDate" class="form-label ">End date</label>
+                    <div class="col-12">
                         <input type="date" class="form-control " name="endDate" id="endDate" placeholder="" value="${endDateinput.toISOString().split('T')[0]}"/>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col" style="margin:2px">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Calculer</button>
+                <div class="row" >
+                    <div class="col" >
+                        <button type="button"  class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Calculer</button>
                     </div>
                 </div>
             </div> 

@@ -104,10 +104,10 @@ async function getSearch() {
                        <div class="col-3" > 
                            <span class="customerLink" customerid="${result.id}" style="cursor: pointer">${result.name}</span>
                        </div> 
-                       <div class="col-4"> 
+                       <div class="col-3 d-none d-sm-none d-md-none "> 
                            ${result.email}
                        </div> 
-                       <div class="col-5">   
+                       <div class="col-6 ">   
                            ${result.address}, ${result.zip}, ${result.town}      
                        </div>
                    </div > <hr />`;
