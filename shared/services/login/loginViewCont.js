@@ -1,6 +1,7 @@
 
 // import { getLogin } from '../../shared/services/loginService.js'
-import { getLogin } from './loginService.js'
+import { getLogin, logout } from './loginService.js'
+import { getAppPath } from '../commonFunctions.js'
 
 const editModaleString = `
 <div class="container">
@@ -12,14 +13,16 @@ const editModaleString = `
             <div class="modal-content">
                 <div class="modal-header">
                     <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
-                    <h4 class="modal-title">Login</h4>
+                    <h5 class="modal-title" style="color:#8B2331">Login</h5>
+                           <button type="button" id="myBtnCancel" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
                 </div>
                 <div class="row modal-body" id="modalbodyLOgin">
                     <p>Some text in the modal.</p>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnCancel">Cancel</button>
+                    <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button> -->
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnLogin">Login</button>
                 </div>
             </div>
@@ -29,7 +32,7 @@ const editModaleString = `
 </div>`;
 
 // TODO : Manage callback
-export function loginViewDisplay(htlmPartId) {
+export async function loginViewDisplay(htlmPartId) {
 
     // *** Variable that keeps the modal object
     let editModal = null;
@@ -51,9 +54,9 @@ export function loginViewDisplay(htlmPartId) {
             </div>
         </div>
         <div class="row">
-            <label for="userPasswordInput" class="form-label col-2">Nom </label>
+            <label for="userPasswordInput" class="form-label col-2">Password </label>
             <div class="col" style="margin:2px">
-                <input type="text" class="form-control  col-sm-10 " name="userPasswordInput" id="userPasswordInput" placeholder=""
+                <input type="password" class="form-control  col-sm-10 " name="userPasswordInput" id="userPasswordInput" placeholder=""
                     value=""/>
             </div>
         </div>
@@ -65,9 +68,12 @@ export function loginViewDisplay(htlmPartId) {
 
         // *** Actions
         document.querySelector("#myBtnCancel").onclick = function () {
-            console.log("annule clicked");
-            editModal.hide();
+            //  console.log("annule clicked");
+            //  editModal.hide();
+            window.location.href = `${getAppPath()}/views/mainpage/mainpage.html`
         };
+
+
 
         // TODO : put the 2 functions in one process
         $('#modalbodyLOgin').on('keydown', async function (event) {

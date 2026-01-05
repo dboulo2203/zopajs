@@ -3,8 +3,9 @@ import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../share
 import { createNewOrder } from '../../shared/services/zopaOrderServices.js';
 
 // *** Shared ressoucres
+import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
 import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
-import { addMultipleEnventListener, getAppPath, getLinkWithctrl } from '../../shared/services/commonFunctions.js'
+import { addMultipleEnventListener, getAppPath, getLinkWithctrl, displayToast } from '../../shared/services/commonFunctions.js'
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
 import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
 import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../shared/assets/constants.js'
@@ -20,6 +21,9 @@ export async function startCustomerController() {
 
         launchInitialisation();
         headerViewDisplay("#menuSection");
+
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
         // *** Get url params and launch controller
         const searchParams = new URLSearchParams(window.location.search);
@@ -77,11 +81,18 @@ export async function displayCustomerContent(htlmPartId, customerID) {
             window.location.href = `${getAppPath()}/views/order/order.html?orderID=` + event.currentTarget.getAttribute('orderID') + `&indep=false`;
         });
 
+        // *** Add actions
+        addMultipleEnventListener(".invoiceLink", function (event) {
+            window.location.href = `${getAppPath()}/views/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceID') + `&indep=false`;
+        });
+
         document.querySelector("#addOrder").onclick = function (event) {
             try {
 
                 createNewOrder(customer.id);
                 displayCustomerContent(htlmPartId, customerID);
+                displayToast("messageSection", "Adhérent", "La commande a été créée")
+
             } catch (error) {
                 document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
             }
@@ -258,7 +269,7 @@ function displayCustomerInvoices(customer, customerInvoices) {
                 <div class="row" style = "margin-bottom:5px" >
 
                     <div class="col-2" >
-                        <span orderID="${customerInvoice.id}"style="cursor: pointer">${customerInvoice.ref}</span>
+                        <span class="invoiceLink" invoiceID="${customerInvoice.id}" style="cursor: pointer">${customerInvoice.ref}</span>
                     </div> 
                        
                     <div class="col-4">

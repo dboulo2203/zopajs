@@ -1,12 +1,12 @@
 // *** Component ressources
-import { getHostingBooking, copyToClipboard, sendToast } from './bookingService.js';
+import { getHostingBooking, copyToClipboard } from './bookingService.js';
 // *** Shared ressoucres
 import { getResourceProducts, getHostingProducts } from '../../shared/services/zopaProductServices.js'
 import { getintakeplacesTypes } from '../../shared/services/zopaListsServices.js'
 import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
-import { addMultipleEnventListener } from '../../shared/services/commonFunctions.js'
+import { addMultipleEnventListener, displayToast } from '../../shared/services/commonFunctions.js'
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
 // import { bookIcon, personIcon, keyIcon, printerIcon, publisherIcon, questionIcon } from '../../shared/assets/constants.js'
@@ -91,17 +91,7 @@ export async function displayBookingContent(htlmPartId) {
         document.querySelector("#extractButton").onclick = async function () {
             try {
                 copyToClipboard(tabFullResult, bookinglines);
-                document.querySelector("#messageSection").innerHTML = sendToast("Contenu copié dans le presse-papier")
-                // document.querySelector(".liveToast").shadowRoot();
-                const toastTrigger = document.getElementById('liveToastBtn')
-                const toastLiveExample = document.getElementById('liveToast')
-
-                // if (toastTrigger) {
-                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-                // toastTrigger.addEventListener('click', () => {
-                toastBootstrap.show()
-                // })
-                // }
+                displayToast("messageSection", "Copy booking", "Contenu copié dans le presse-papier")
             } catch (error) {
                 document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
             }

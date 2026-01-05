@@ -95,22 +95,6 @@ export function copyToClipboard(tabFullResult, bookingLines) {
     // })
 };
 
-export function sendToast(message) {
-    return `
-    
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <!-- <img src="..." class="rounded me-2" alt="..."> -->
-      <strong class="me-auto">Copier planing dans presse-papier</strong>
-      <small></small>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      ${message}
-    </div>
-  </div>
-</div>`
-}
+
 
 

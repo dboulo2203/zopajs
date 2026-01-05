@@ -23,4 +23,5 @@ export async function startMainPageController() {
     } catch (error) {
         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}</div > `;
     }
+
 }

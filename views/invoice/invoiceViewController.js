@@ -2,6 +2,7 @@
 import { getInvoice, getInvoicePayments } from '../../shared/services/zopaInvoicesServices.js'
 import { getCustomer } from '../../shared/services/zopaCustomerServices.js'
 import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
+import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
 
 // *** Shared ressoucres
 import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
@@ -25,6 +26,9 @@ export async function startInvoiceController() {
 
         launchInitialisation();
         headerViewDisplay("#menuSection");
+
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
         // *** Get url params and launch controller
         const searchParams = new URLSearchParams(window.location.search);
@@ -81,9 +85,13 @@ export async function displayInvoiceContent(htlmPartId, invoiceID) {
         //     // personEditModalDisplay(mainDisplay, person, function (status) {
         //     // });
         // };
-        // document.querySelector("#customerLink").onclick = function (event) {
-        //     getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
-        // };
+        document.querySelector("#customerLink").onclick = function (event) {
+            getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
+        };
+
+        document.querySelector("#orderLink").onclick = function (event) {
+            getLinkWithctrl(`${getAppPath()}/views/order/order.html?orderID=` + event.currentTarget.getAttribute('orderid'), event.ctrlKey);
+        };
 
         // const dropdownElementList = document.querySelectorAll('.dropdown-toggle')
         // const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl))
@@ -111,9 +119,9 @@ function displayInvoiceIdentity(invoice, customer) {
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary" >${threedotsvertical}  </a>
                     <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
                         <li id=""><span>${printerIcon} Imprimer la facture</span></li>
-                        <!-- <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
-                        <li id=""><span>${cancelIcon} Annuler la commande</span></li>
-                        <li id=""><span>${closeOrderIcon} Clôturer la commande</span></li>
+                        <li id=""><span>${pencilsquareIcon}Valider la facture</span></li>
+                       <li id=""><span>${cancelIcon}Abandonner la facture</span></li>
+                       <!--   <li id=""><span>${closeOrderIcon} Clôturer la commande</span></li>
                         <li><hr class="dropdown-divider"></li>
                         <li id=""><span>${invoiceIcon} Générer un acompte</span></li>
                         <li id=""><span>${invoiceIcon} Facturer partiellement</span></li>
@@ -129,7 +137,7 @@ function displayInvoiceIdentity(invoice, customer) {
     output += `<hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:5px" />`;
     output += `<div class="col-md-12 main"  > <span class="fw - light text-secondary" style ="color:grey">Ref. facture</span> : ${invoice.ref} </div >`;
     output += `<div class="col-md-12 main"  > <span class=" text-secondary" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${invoice.socid}" style ="cursor:pointer"> ${customer.name}</span></div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light text-secondary" style ="color:grey">Ref. commande</span> : <span id="orderLink" orderid="${Object.values(invoice.linkedObjectsIds.commande).join()}">${Object.values(invoice.linkedObjectsIds.commande).join()}</span> </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light text-secondary" style ="color:grey">Ref. commande</span> : <span id="orderLink" orderid="${Object.values(invoice.linkedObjectsIds.commande).join()}" style="cursor:pointer" >${Object.values(invoice.linkedObjectsIds.commande).join()}</span> </div >`;
     output += `<div class="col-md-12 main"  > <span class="fw - light text-secondary" style ="color:grey">Type</span> : ${invoice.type === "3"
         ? "Acompte"
         : invoice.type === "2"
@@ -138,11 +146,11 @@ function displayInvoiceIdentity(invoice, customer) {
                 ? "Standard"
                 : "Type facture inconnu"
         } </div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date création : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).format(invoice.date_creation * 1000)} </div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).format(invoice.date_modification * 1000)}</div > `;
-    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant ttc : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(invoice.total_ttc))}</div >`;
-    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Reste à payer : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(invoice.remaintopay))}</div >`;
-    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Statut : </span> : ${invoice.statut === "2"
+    output += `<div class="col-md-12 main"  style =" margin-top:5px"> <span class="fw - light" style ="color:grey">Date création : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).format(invoice.date_creation * 1000)} </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).format(invoice.date_modification * 1000)}</div > `;
+    output += `<div class="col-md-12 main" style ="" > <span class="fw - light" style ="color:grey">Montant ttc </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(invoice.total_ttc))}</div >`;
+    output += `<div class="col-md-12 main" style ="" > <span class="fw - light" style ="color:grey">Reste à payer </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(invoice.remaintopay))}</div >`;
+    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Statut </span> : ${invoice.statut === "2"
         ? "Payée"
         : invoice.statut === "1"
             ? "Validée"
@@ -175,7 +183,7 @@ function displayInvoicePayments(invoicePayments) {
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary">${threedotsvertical}  </a>
                     <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
-                        <li id=""><span>${printerIcon} Imprimer la facture</span></li>
+                        <li id=""><span>${printerIcon} Ajouter un paiement</span></li>
                         <!-- <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
                         <li id=""><span>${cancelIcon} Annuler la commande</span></li>
                         <li id=""><span>${closeOrderIcon} Clôturer la commande</span></li>
@@ -253,11 +261,11 @@ function displayInvoiceLines(invoice) {
         <div class="d-flex  justify-content-between" style="padding-top:0px" >
             <span class="fs-6 " style="color:#8B2331">${invoiceIcon} Invoice lines</span>
             <div class="col-8 flex float-right text-end" style="cursor: pointer">
-                <div class="dropdown">
+                 <!--<div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary">${threedotsvertical}  </a>
                     <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
                         <li id=""><span>${printerIcon} Imprimer la facture</span></li>
-                        <!-- <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
+                        <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
                         <li id=""><span>${cancelIcon} Annuler la commande</span></li>
                         <li id=""><span>${closeOrderIcon} Clôturer la commande</span></li>
                         <li><hr class="dropdown-divider"></li>

@@ -2,6 +2,7 @@
 
 ## Release notes
 ### V0.0.1 
+- NEW : service login
 - Utilisation de fontawesome,
 - NEW : general : sauve les données dans session storage.
 

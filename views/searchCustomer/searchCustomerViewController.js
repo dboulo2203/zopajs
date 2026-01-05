@@ -8,6 +8,7 @@ import { addMultipleEnventListener, getAppPath } from '../../shared/services/com
 import { footerViewDisplay } from '../../shared/services/footerViewCont.js'
 import { launchInitialisation } from '../../shared/services/initialisationService.js'
 import { searchIcon } from '../../shared/assets/constants.js'
+import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
 
 
 /**
@@ -21,9 +22,13 @@ export async function startSearchCustomerController() {
         await launchInitialisation();
         headerViewDisplay("#menuSection");
 
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
+
         displaySearchCustomerContent("mainActiveSection")
 
         footerViewDisplay("#footerDisplay")
+
 
     } catch (error) {
         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} </div > `;
