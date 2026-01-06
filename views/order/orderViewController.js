@@ -1,9 +1,9 @@
 // *** Component ressources
 import { getOrder, getOrderBilledAmount, getOrderPaidAmount, getevaluateOrderGlobalStatus, getOrderRoomNotSet, getOrderhostingtaxesconsistancy, getOrderDatesQtyconsistancy, getOrderRepConsistancy } from '../../shared/services/zopaOrderServices.js'
-import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
+import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
 // *** Shared ressoucres
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../appservices/initialisationService.js'
 import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon
@@ -82,17 +82,10 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
 
         // *** Actions
-        // document.querySelector("#deleteLine").onclick = function () {
-        //     console.log("deleteLine : ");
-        //     // personEditModalDisplay(mainDisplay, person, function (status) {
-        //     // });
-        // };
         document.querySelector("#customerLink").onclick = function (event) {
             getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
         };
 
-        // const dropdownElementList = document.querySelectorAll('.dropdown-toggle')
-        // const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl))
         addMultipleEnventListener(".invoiceLink", function (event) {
             window.location.href = `${getAppPath()}/views/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceid');
         });
@@ -314,10 +307,10 @@ function displayOrderInvoices(order) {
             invoicesString += `
             <div class="row" style = "" >
                 
-                <div class="col-2" > 
+                <div class="col-5  " >
                     <span class="invoiceLink"  invoiceid="${linkedInvoice.id}" style="cursor: pointer">${linkedInvoice.ref}</span>
                 </div> 
-                <div class="col-2" > 
+                <div class="col-2 col d-none d-md-block" > 
                     ${linkedInvoice.type === "3"
                     ? "Acompte"
                     : linkedInvoice.type === "2"
@@ -329,7 +322,7 @@ function displayOrderInvoices(order) {
 
                 </div> 
 
-                <div class="col-2">
+                <div class="col-2  col d-none d-md-block">
                     ${new Date(linkedInvoice.date_creation * 1000).toLocaleString("fr-FR")}
                 </div>
 

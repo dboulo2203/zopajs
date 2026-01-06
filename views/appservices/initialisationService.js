@@ -1,12 +1,12 @@
 
 
-import { currentApplicationPath } from '../assets/constants.js'
-import { getProducts } from './zopaProductServices.js'
+import { getAppPath } from '../../shared/services/commonFunctions.js'
+import { getProducts } from '../../shared/services/zopaProductServices.js'
 import {
     getintakeplacesTypesFromAPI, getMealTypesFromAPI,
     getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI, loadUsersFromAPI
-} from './zopaListsServices.js'
-import { loadTranslations } from './translationService.js'
+} from '../../shared/services/zopaListsServices.js'
+import { loadTranslations } from '../../shared/services/translationService.js'
 
 /**
  * 
@@ -31,6 +31,6 @@ export async function launchInitialisation() {
  */
 export async function launchMainComponent() {
 
-    window.location.href = `${currentApplicationPath}/views/mainpage/mainpage.html`;
+    window.location.href = `${getAppPath()}/views/mainpage/mainpage.html`;
 
 }

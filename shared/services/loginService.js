@@ -1,6 +1,6 @@
 
 
-import { wsUrlformel } from '../../assets/constants.js';
+import { wsUrlformel } from '../assets/constants.js';
 
 /**
  * Load a person from the database, 

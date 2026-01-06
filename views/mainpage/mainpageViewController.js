@@ -1,12 +1,12 @@
 // *** shared services
-import { currentApplicationPath } from '../../shared/assets/constants.js'
-import { launchInitialisation } from '../../shared/services/initialisationService.js'
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'
-
+import { launchInitialisation } from '../appservices/initialisationService.js'
+import { headerViewDisplay } from '../appservices/headerViewCont.js'
+import { getAppPath } from '../../shared/services/commonFunctions.js';
+import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
 // *** Menu string
 const mainStringPage = ` 
             <div class="container-fluid"> 
-            <img src="${currentApplicationPath}/shared/assets/main_picture.jpg" width="100%">
+            <img src="${getAppPath()}/shared/assets/main_picture.jpg" width="100%">
     </div>
 `;
 
@@ -18,6 +18,11 @@ export async function startMainPageController() {
 
         // *** Display menu
         headerViewDisplay("#menuSection", null);
+
+        document.querySelector("#mainActiveSection").innerHTML = mainStringPage;
+
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
 
     } catch (error) {

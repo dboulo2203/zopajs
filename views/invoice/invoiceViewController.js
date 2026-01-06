@@ -2,11 +2,11 @@
 import { getInvoice, getInvoicePayments } from '../../shared/services/zopaInvoicesServices.js'
 import { getCustomer } from '../../shared/services/zopaCustomerServices.js'
 import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
-import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
+import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
 
 // *** Shared ressoucres
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../appservices/initialisationService.js'
 import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon, printerIcon

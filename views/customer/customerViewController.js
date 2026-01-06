@@ -3,10 +3,10 @@ import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../share
 import { createNewOrder } from '../../shared/services/zopaOrderServices.js';
 
 // *** Shared ressoucres
-import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
+import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
+import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
 import { addMultipleEnventListener, getAppPath, getLinkWithctrl, displayToast } from '../../shared/services/commonFunctions.js'
-import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { launchInitialisation } from '../appservices/initialisationService.js'
 import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
 import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../shared/assets/constants.js'
 import { getevaluateSession } from '../../shared/services/zopaOrderServices.js'
@@ -198,7 +198,7 @@ function displayCustomerorders(customer, customerOrders) {
                         </div> 
                        
                         <div class="col-5">
-                            ${getevaluateSession(customerOrder, true)}
+                            <span class="orderLink"  orderID="${customerOrder.id}"style="cursor: pointer">${getevaluateSession(customerOrder, true)}</span>
                         </div>      
                                          
                        <div class="col d-none d-md-block">

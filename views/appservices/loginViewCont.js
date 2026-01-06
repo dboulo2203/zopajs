@@ -1,7 +1,7 @@
 
 // import { getLogin } from '../../shared/services/loginService.js'
-import { getLogin, logout } from './loginService.js'
-import { getAppPath } from '../commonFunctions.js'
+import { getLogin, logout } from '../../shared/services/loginService.js'
+import { getAppPath } from '../../shared/services/commonFunctions.js'
 
 const editModaleString = `
 <div class="container">
@@ -23,7 +23,7 @@ const editModaleString = `
                 </div>
                 <div class="modal-footer">
                     <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal" >Cancel</button> -->
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnLogin">Login</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnLogin">Login</button>
                 </div>
             </div>
 
@@ -92,7 +92,7 @@ export async function loginViewDisplay(htlmPartId) {
             }
         });
 
-        document.querySelector("#myBtnLogin").onclick = async function (event) {
+        document.querySelector("#btnLogin").onclick = async function (event) {
             console.log("Save clicked");
             let userEmail = document.querySelector("#userEmailInput").value;
             let userPassword = document.querySelector("#userPasswordInput").value;
@@ -103,7 +103,7 @@ export async function loginViewDisplay(htlmPartId) {
             if (!retour)
                 document.querySelector("#modalmessage").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" >Nom, password invalides</div> `;
             else
-                document.querySelector("#modalmessage").innerHTML = `<div class="alert alert-success" style = "margin-top:30px" role = "alert" >Bienvenue ${retour.user_pseudo}</div> `;
+                window.location.href = `${getAppPath()}/views/mainpage/mainpage.html`
         };
 
         // *** Initialisation

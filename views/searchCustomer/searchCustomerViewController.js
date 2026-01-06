@@ -3,12 +3,12 @@ import { getcustomerSearch } from './searchCustomerService.js'
 
 // *** Shared ressoucres
 
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'
+import { headerViewDisplay } from '../appservices/headerViewCont.js'
 import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js'
-import { footerViewDisplay } from '../../shared/services/footerViewCont.js'
-import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { footerViewDisplay } from '../appservices/footerViewCont.js'
+import { launchInitialisation } from '../appservices/initialisationService.js'
 import { searchIcon } from '../../shared/assets/constants.js'
-import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
+import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
 
 
 /**
