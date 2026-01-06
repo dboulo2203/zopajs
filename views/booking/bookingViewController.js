@@ -3,15 +3,13 @@ import { getHostingBooking, copyToClipboard } from './bookingService.js';
 // *** Shared ressoucres
 import { getResourceProducts, getHostingProducts } from '../../shared/services/zopaProductServices.js'
 import { getintakeplacesTypes } from '../../shared/services/zopaListsServices.js'
-import { headerViewDisplay } from '../../shared/services/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../shared/services/initialisationService.js'
+import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../appservices/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
 import { addMultipleEnventListener, displayToast } from '../../shared/services/commonFunctions.js'
-import { isCurrentUSerLogged } from '../../shared/services/login/loginService.js'
+import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
-// import { bookIcon, personIcon, keyIcon, printerIcon, publisherIcon, questionIcon } from '../../shared/assets/constants.js'
-
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -23,8 +21,6 @@ export async function startBookingController() {
         await launchInitialisation();
         headerViewDisplay("#menuSection");
 
-        // const searchParams = new URLSearchParams(window.location.search);
-        // console.log(searchParams);
         if (!isCurrentUSerLogged())
             throw new Error("Veuillez vous authentifier");
 
