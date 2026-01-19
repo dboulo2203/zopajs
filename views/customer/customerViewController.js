@@ -212,8 +212,6 @@ function displayCustomerorders(customer, customerOrders) {
         customerOrders.map((customerOrder, index) => {
             customerOrdersString += `
             <div class="row flex " style = "margin-top:0px" >
-            
-
                         <div class="col d-none d-md-block" >
                             <span class="orderLink"  orderID="${customerOrder.id}"style="cursor: pointer">${customerOrder.ref}</span>
                         </div> 

@@ -3,6 +3,7 @@ import { launchInitialisation } from '../appservices/initialisationService.js'
 import { headerViewDisplay } from '../appservices/headerViewCont.js'
 import { getAppPath } from '../../shared/services/commonFunctions.js';
 import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
+import { footerViewDisplay } from '../appservices/footerViewCont.js'
 // *** Menu string
 const mainStringPage = ` 
             <div class="container-fluid"> 
@@ -20,7 +21,7 @@ export async function startMainPageController() {
         headerViewDisplay("#menuSection", null);
 
         document.querySelector("#mainActiveSection").innerHTML = mainStringPage;
-
+        footerViewDisplay("#footerSection");
         if (!isCurrentUSerLogged())
             throw new Error("Veuillez vous authentifier");
 

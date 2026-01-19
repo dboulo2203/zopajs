@@ -58,7 +58,7 @@ export async function displayOrderContent(htlmPartId, orderID) {
             <div id='componentMessage'></div>
             <div class="row" >
                 <div class="col-12 col-md-5" id="orderIdentity" ></div>
-                <div class="col-12 col-md-6" id="linkedInvoices" style="margin-left:30px"></div>
+                <div class="col-12 col-md-7" id="linkedInvoices" ></div>
             </div>
 
             <div class="row" id="orderLines" > 
@@ -104,14 +104,15 @@ export async function displayOrderContent(htlmPartId, orderID) {
 function displayOrderIdentity(order) {
 
     let output = '';
-    output += `<div style="margin-bottom:10px">     `;
+    output += `<div class=" bg-light-subtle" style="padding:5px">  `;
     output += `
-         <div class="d-flex  justify-content-between" style="padding-top:0px" >
-            <span class="fs-5" style="color:#8B2331" >${orderIcon} Details</span>
-            <div class="col-8 flex float-right text-end" style="cursor: pointer">
+    <div id="orderIdentity" style="margin-bottom:20px">
+         <div class="d-flex " style="padding-top:0px" >
+            <div class="flex-grow-1"><span class="fs-5" style="color:#8B2331" >${orderIcon} Details</span></div>
+            <div class=" " >
                 <div class="dropdown">
-                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
-                    <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
+                    <a href="#" class="btn" data-bs-toggle="dropdown" aria-expanded="false" >${threedotsvertical}  </a>
+                    <ul class="dropdown-menu bg-light-subtle" style="padding:10px;width:250px">
                         <li id=""><span>${validateIcon} Valider une commande</span></li>
                         <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
                         <li id=""><span>${cancelIcon} Annuler la commande</span></li>
@@ -127,9 +128,10 @@ function displayOrderIdentity(order) {
                     </ul>
                 </div>
             </div>
-        </div>`;
-    output += `<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
-    <div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >
+        </div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+    output += `
+    <div class="col-md-12  "  > <span class="fw-light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >
       <div class="col-md-12 main"  style =" margin-top:5px"> <span class="fw-light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
     output += `<div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Date création : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
     // output += `<div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
@@ -191,6 +193,7 @@ function displayOrderIdentity(order) {
 
     output += `</div > `
     output += `</div > `;
+    output += `</div > `;
     return output;
 
 }
@@ -203,15 +206,15 @@ function displayOrderIdentity(order) {
 function displayOrderLines(order) {
 
     let orderLInesString = '';
+
     orderLInesString += `
-        <div style="margin-bottom:0px">
-            <div class="d-flex  justify-content-between" style="padding-top:0px" >
-                <span class="fs-5" style="color:#8B2331">${orderIcon} Order lines</span>
-                
-                <div class="col-4 flex float-right text-end" style="cursor: pointer">
+        <div id="orderLines" style="margin-bottom:20px">
+            <div class="d-flex" style="padding-top:0px">
+                <div class="flex-grow-1"><span class="fs-5" style="color:#8B2331">${orderIcon} Order lines</span></div>
+                <div class="" style="cursor: pointer">
                     <div class="dropdown">
-                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
-                        <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
+                        <a class="btn" href="#" data-bs-toggle="dropdown" aria-expanded="false" role="button">${threedotsvertical}  </a>
+                        <ul class="dropdown-menu bg-light-subtle" style="padding:10px;width:250px">
                             <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
                             <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
                             <li><hr class="dropdown-divider"></li>
@@ -224,8 +227,8 @@ function displayOrderLines(order) {
                     </div>
                 </div>
             </div>
-        </div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+            <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
+        `;
 
 
     if (order.lines) {
@@ -259,7 +262,7 @@ function displayOrderLines(order) {
                         <!-- Action button -->
                 <div class="col-1 flex float-right text-end" style="cursor: pointer">                             
                     <div class="dropdown">
-                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
+                        <a href="#" class="btn" data-bs-toggle="dropdown" aria-expanded="false" color:grey>${threedotsvertical}  </a>
 
                         <ul class="dropdown-menu bg-light-subtle" style="padding:10px;background-color:#F7F7F3">
                             <li id="deleteLine">Supprimer ligne</li>
@@ -295,8 +298,11 @@ function displayOrderInvoices(order) {
 
     // *** Display order invoices
     let invoicesString = '';
-    invoicesString += `<div   > <span class="fs-5" style="color:#8B2331">${invoiceIcon} Invoices</span></div >
-    <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" /> `;
+    invoicesString += `<div class=" bg-light-subtle" style="padding:5px">  `;
+    invoicesString += `
+    <div style="margin-bottom:20px">
+        <div class="flex-grow-1"><span class="fs-5" style="color:#8B2331">${invoiceIcon} Invoices</span></div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" /> `;
 
     if (order.linkedInvoices) {
         order.linkedInvoices.map((linkedInvoice, index) => {
@@ -342,6 +348,7 @@ function displayOrderInvoices(order) {
                 }
                 </div>
             </div>
+             </div>
             `;
         });
 

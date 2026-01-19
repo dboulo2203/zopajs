@@ -13,8 +13,7 @@ export function headerViewDisplay(htlmPartId, callbackFunction) {
             <div class="container-fluid">
                 <div class="navbar-brand" style="color:#8B2331" id="mainNav">${getTranslation("brandTitle")}</div>
                 <div class="d-flex">
-
-                <a class="btn " style="margin-left:3px;cursor:pointer"  data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">${threedotsvertical}</a >
+                <a class="btn" style="margin-left:3px;cursor:pointer"  data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">${threedotsvertical}</a >
 
                 </div>
             </div>
