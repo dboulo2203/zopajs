@@ -4,7 +4,7 @@ import { wsUrlformel, DOLAPIKEY } from '../assets/constants.js';
  * Load the products from the database
  * the products list is saved in the sessionStorage 
  */
-export async function getProducts() {
+export async function loadProducts() {
 
     var wsUrl = wsUrlformel + `products?DOLAPIKEY=${DOLAPIKEY}`;
     let params = ``;

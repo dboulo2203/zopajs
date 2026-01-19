@@ -1,10 +1,12 @@
 
 
 import { getAppPath } from '../../shared/services/commonFunctions.js'
-import { getProducts } from '../../shared/services/zopaProductServices.js'
+import { loadProducts } from '../../shared/services/zopaProductServices.js'
+import { setTheme } from '../../shared/services/bootstrapTheme.js'
 import {
-    getintakeplacesTypesFromAPI, getMealTypesFromAPI,
-    getIncomeLevelsTypesFromAPI, getPublipostageTypesFromAPI, loadUsersFromAPI
+    loadintakeplacesTable, loadMealsTable,
+    loadUsersTable,
+    loadCivilitiesTable, loadPublipostageTable, loadIncomeLevelsTable
 } from '../../shared/services/zopaListsServices.js'
 import { loadTranslations } from '../../shared/services/translationService.js'
 
@@ -13,24 +15,21 @@ import { loadTranslations } from '../../shared/services/translationService.js'
  */
 export async function launchInitialisation() {
 
-    // await loadTranslations();
-    // await getMealTypesFromAPI();
-    // await getLanguages();
+    setTheme();
     await loadTranslations();
-    await loadUsersFromAPI();
-    await getProducts();
-    await getintakeplacesTypesFromAPI();
-    await getMealTypesFromAPI();
-    await getIncomeLevelsTypesFromAPI();
-    await getPublipostageTypesFromAPI();
-
+    await loadUsersTable();
+    await loadProducts();
+    await loadintakeplacesTable();
+    await loadMealsTable();
+    await loadCivilitiesTable();
+    await loadPublipostageTable();
+    await loadIncomeLevelsTable();
+    await loadintakeplacesTable()
 }
 
 /**
- * 
+ *
  */
-export async function launchMainComponent() {
-
-    window.location.href = `${getAppPath()}/views/mainpage/mainpage.html`;
-
-}
+// export async function launchMainComponent() {
+//     window.location.href = `${getAppPath()}/views/mainpage/mainpage.html`;
+// }

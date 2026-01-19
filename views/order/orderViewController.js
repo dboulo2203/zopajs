@@ -51,18 +51,17 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
         // *** Display the controller skeleton
         let initString = `
-            <div style="padding-top:10px"><p class="fs-5" style="color:#8B2331"> ${orderIcon} Order : ${order.ref}</p></div><hr/>
+            <div style="padding-top:60px">
+                <span class="fs-5" style="color:#8B2331"> ${orderIcon} Order : ${order.ref}</span>
+            </div>
+            <hr/>
             <div id='componentMessage'></div>
-                <div class="row" >
-                <div class="col-12 col-md-5" id="orderIdentity" >   
-                </div>
-                <div class="col-12 col-md-7" id="linkedInvoices">
-                </div>
-                </div>
+            <div class="row" >
+                <div class="col-12 col-md-5" id="orderIdentity" ></div>
+                <div class="col-12 col-md-6" id="linkedInvoices" style="margin-left:30px"></div>
+            </div>
 
-                <div class="row" id="orderLines" > 
-                </div>
-
+            <div class="row" id="orderLines" > 
             </div>
             `;
         document.querySelector("#" + htlmPartId).innerHTML = initString;
@@ -108,11 +107,11 @@ function displayOrderIdentity(order) {
     output += `<div style="margin-bottom:10px">     `;
     output += `
          <div class="d-flex  justify-content-between" style="padding-top:0px" >
-            <span class="fs-6" style="color:#8B2331" >${orderIcon} Details</span>
+            <span class="fs-5" style="color:#8B2331" >${orderIcon} Details</span>
             <div class="col-8 flex float-right text-end" style="cursor: pointer">
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
-                    <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                    <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
                         <li id=""><span>${validateIcon} Valider une commande</span></li>
                         <li id=""><span>${pencilsquareIcon} Ré-ouvrir la commande</span></li>
                         <li id=""><span>${cancelIcon} Annuler la commande</span></li>
@@ -130,11 +129,11 @@ function displayOrderIdentity(order) {
             </div>
         </div>`;
     output += `<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
-    <div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >
-      <div class="col-md-12 main"  style =" margin-top:5px"> <span class="fw - light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date création : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
-    // output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
-    output += `<div class="col-md-12 main"> <span class="fw - light" style ="color:grey">Acteurs : </span> <span class="" style ="">Commande créée par
+    <div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Adhérent : </span> <span id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >
+      <div class="col-md-12 main"  style =" margin-top:5px"> <span class="fw-light" style ="color:grey">Ref. commande</span> : ${order.ref} </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Date création : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_creation * 1000)} </div >`;
+    // output += `<div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Date modification : </span> :  ${new Intl.DateTimeFormat("fr-FR", { year: "numeric", month: "numeric", day: "numeric" }).format(order.date_modification * 1000)}</div > `;
+    output += `<div class="col-md-12 main"> <span class="fw-light" style ="color:grey">Acteurs : </span> <span class="" style ="">Commande créée par
                  ${getUserLoginFromId(order.user_author_id)}, le
                 ${new Intl.DateTimeFormat("fr-FR",
         {
@@ -155,14 +154,14 @@ function displayOrderIdentity(order) {
             }).format(order.date_validation * 1000)}
     
                 </span> </div>`;
-    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw - light" style ="color:grey">Montant total : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
+    output += `<div class="col-md-12 main" style =" margin-top:5px" > <span class="fw-light" style ="color:grey">Montant total : </span> : ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(order.total_ttc))}</div >`;
 
-    output += `<div class="col-md-12 main"> <span class="fw - light" style ="color:grey">Paiement : </span><span class="" style ="">Facturé : 
+    output += `<div class="col-md-12 main"> <span class="fw-light" style ="color:grey">Paiement : </span><span class="" style ="">Facturé : 
                  ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(getOrderBilledAmount(order)))},
  Payé                  ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(parseFloat(getOrderPaidAmount(order)))},
     
                 </span> </div>`;
-    output += `<div class="col-md-12 main" style =" margin-top:5px"  > <span class="fw - light" style ="color:grey">Statut commande : </span> : ${order.statut === "3" && order.billed === "0"
+    output += `<div class="col-md-12 main" style =" margin-top:5px"  > <span class="fw-light" style ="color:grey">Statut commande : </span> : ${order.statut === "3" && order.billed === "0"
         ? "Clôturée"
         : order.statut === "3" && order.billed === "1"
             ? "Clôturée"
@@ -176,7 +175,7 @@ function displayOrderIdentity(order) {
                             ? "Annulée"
                             : "Statut inconnu"
         }  </div >`;
-    output += `<div class="col-md-12 main"  > <span class="fw - light" style ="color:grey">Statut global : </span> : ${getevaluateOrderGlobalStatus(order)} </div >`;
+    output += `<div class="col-md-12 main"  > <span class="fw-light" style ="color:grey">Statut global : </span> : ${getevaluateOrderGlobalStatus(order)} </div >`;
     // output += `<div class="col-md-12 main" style=" margin-top:5px" >
     // ${order.statut === '1' && (Math.round(parseFloat(getOrderBilledAmount(order)) * 100) / 100 - Math.round(parseFloat(getOrderPaidAmount(order)) * 100) / 100) !== 0 && `<Tooltip title="Montants facturés et payés différents"><ErrorOutlineIcon /></Tooltip>`}
     // ${order.statut === '1' && (Math.round(parseFloat(getOrderBilledAmount(order)) * 100) / 100 - Math.round(parseFloat(order.total_ttc) * 100) / 100) !== 0 && `<Tooltip title="Montants commande et montant facturés différents"><ErrorOutlineIcon /></Tooltip>`}
@@ -207,12 +206,12 @@ function displayOrderLines(order) {
     orderLInesString += `
         <div style="margin-bottom:0px">
             <div class="d-flex  justify-content-between" style="padding-top:0px" >
-                <span class="fs-6" style="color:#8B2331">${orderIcon} Order lines</span>
+                <span class="fs-5" style="color:#8B2331">${orderIcon} Order lines</span>
                 
                 <div class="col-4 flex float-right text-end" style="cursor: pointer">
                     <div class="dropdown">
                         <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
-                        <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                        <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
                             <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
                             <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
                             <li><hr class="dropdown-divider"></li>
@@ -262,7 +261,7 @@ function displayOrderLines(order) {
                     <div class="dropdown">
                         <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="color:grey">${threedotsvertical}  </a>
 
-                        <ul class="dropdown-menu" style="padding:10px;background-color:#F7F7F3">
+                        <ul class="dropdown-menu bg-light-subtle" style="padding:10px;background-color:#F7F7F3">
                             <li id="deleteLine">Supprimer ligne</li>
                             <li>Editer ligne</li>
                             <li>Scinder ligne</li>
@@ -271,12 +270,9 @@ function displayOrderLines(order) {
                         </ul>
                     </div>                         
                 </div>   
-                ${index < order.lines.length - 1 ? '<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:10px" />' : ''}
-                       
-            </div >
-            
+                ${index < order.lines.length - 1 ? '<hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:10px" />' : ''}             
+            </div >           
             `;
-
         });
 
     } else {
@@ -299,7 +295,7 @@ function displayOrderInvoices(order) {
 
     // *** Display order invoices
     let invoicesString = '';
-    invoicesString += `<div   > <span class="fs-6" style="color:#8B2331">${invoiceIcon} Invoices</span></div >
+    invoicesString += `<div   > <span class="fs-5" style="color:#8B2331">${invoiceIcon} Invoices</span></div >
     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" /> `;
 
     if (order.linkedInvoices) {
@@ -307,7 +303,7 @@ function displayOrderInvoices(order) {
             invoicesString += `
             <div class="row" style = "" >
                 
-                <div class="col-5  " >
+                <div class="col-3" >
                     <span class="invoiceLink"  invoiceid="${linkedInvoice.id}" style="cursor: pointer">${linkedInvoice.ref}</span>
                 </div> 
                 <div class="col-2 col d-none d-md-block" > 
@@ -345,11 +341,8 @@ function displayOrderInvoices(order) {
                                 : "Statut inconnu"
                 }
                 </div>
-
             </div>
-           
             `;
-
         });
 
     } else {

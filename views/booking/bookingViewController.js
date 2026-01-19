@@ -2,7 +2,7 @@
 import { getHostingBooking, copyToClipboard } from './bookingService.js';
 // *** Shared ressoucres
 import { getResourceProducts, getHostingProducts } from '../../shared/services/zopaProductServices.js'
-import { getintakeplacesTypes } from '../../shared/services/zopaListsServices.js'
+import { getList } from '../../shared/services/zopaListsServices.js'
 import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../appservices/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
@@ -24,7 +24,6 @@ export async function startBookingController() {
         if (!isCurrentUSerLogged())
             throw new Error("Veuillez vous authentifier");
 
-        // if (searchParams.has('searchStr'))
         displayBookingContent("mainActiveSection");
 
     } catch (error) {
@@ -130,14 +129,11 @@ export async function displayBookingContent(htlmPartId) {
                     let orderIdraw = event.currentTarget.getAttribute('id')
                     let orderID = orderIdraw.substring(0, orderIdraw.indexOf('|'));
                     orderExtractViewDisplay("modaleSection", orderID);
-
                 });
 
             } catch (error) {
                 document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
             }
-
-
         };
 
     } catch (except) {
@@ -253,7 +249,7 @@ export function buildHostingTable(hosting, bookingunavailables, startDate, endDa
     /* let productRessourcesSorted = productRessources.sort(
       (p1, p2) => (p1.array_options.options_sta_place > p2.array_options.options_sta_place) ? 1 : (p1.array_options.options_sta_place < p2.array_options.options_sta_place) ? -1 : 0);
    */
-    const intakeplaces = getintakeplacesTypes();
+    const intakeplaces = getList("intakeplaces");
 
     for (let ligne = 0; ligne < productRessources.length; ++ligne) {
         let tabDataLine = [];

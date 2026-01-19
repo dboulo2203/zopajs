@@ -35,9 +35,7 @@
 - **Customer page**
     - Display customer identity
     - **Display customer orders**
-        
     - Display Invoices list,
-        
     - Edit customer identity (Save)
     - Add new order
     - Pay multiple invoices (Modal)

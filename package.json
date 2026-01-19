@@ -2,6 +2,10 @@
     "name": "eshopjs",
     "version": "0.0.1",
     "scripts": {
-        "test": "mocha"
+        "test": "mocha",
+        "build": "node build/build.js"
+    },
+    "dependencies": {
+        "bootstrap": "^5.3.8"
     }
 }

@@ -101,16 +101,17 @@ async function getSearch() {
     searchResults.map((result, index) => {
         resultDisplay += `
         <div class="row" >
-                       <div class="col-3" > 
-                           <span class="customerLink" customerid="${result.id}" style="cursor: pointer">${result.name}</span>
-                       </div> 
-                       <div class="col-3 d-none d-sm-none d-md-none "> 
-                           ${result.email}
-                       </div> 
-                       <div class="col-6 ">   
-                           ${result.address}, ${result.zip}, ${result.town}      
-                       </div>
-                   </div > <hr />`;
+            <div class="col-3" > 
+                <span class="customerLink" customerid="${result.id}" style="cursor: pointer">${result.name}</span>
+            </div> 
+            <div class="col-3  "> 
+                ${result.email}
+            </div> 
+            <div class="col-6 ">   
+                ${result.address}, ${result.zip}, ${result.town}      
+            </div>
+        </div >
+         <hr />`;
     });
 
     // *** Display the HTML string

@@ -1,8 +1,8 @@
-
 import { getAppPath } from '../../shared/services/commonFunctions.js'
 import { bedIcon, personIcon, loginIcon, logoutIcon } from '../../shared/assets/constants.js'
 import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
 import { logout } from '../../shared/services/loginService.js'
+import { toogleTheme } from '../../shared/services/bootstrapTheme.js'
 import { loginViewDisplay } from './loginViewCont.js'
 //***
 // catalog
@@ -26,7 +26,10 @@ const leftmenuString = `
             <hr/>
             ${!isCurrentUSerLogged() ? `<div  style="margin-bottom:10px;cursor:pointer"  ><span class="fs-6" id="myBtnLogin" >${loginIcon} Login</span></div>` : ``}
              ${isCurrentUSerLogged() ? `<div  style="margin-bottom:10px;cursor:pointer"  ><span class="fs-6" id="myBtnLogout">${logoutIcon} Logout</span ></div > ` : ``}
-               <hr/>       
+            ${isCurrentUSerLogged() ? `<div  style="margin-bottom:10px;cursor:pointer"  ><span class="fs-6" id="btnSwitchTheme" >${loginIcon} Theme</span></div>` : ``}
+ 
+             
+             <hr/>       
              ${isCurrentUSerLogged() ? `<div id="searchCustomer" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${personIcon} Adhérents</span></div>` : ``}
              ${isCurrentUSerLogged() ? `<div id="Hosting" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${bedIcon} Hôtellerie</span></div>` : ``}
            
@@ -68,4 +71,17 @@ export function leftMenuViewDisplay(htlmPartId) {
         document.querySelector("#searchCustomer").onclick = function () {
             window.location.href = `${getAppPath()}/views/searchCustomer/searchCustomer.html`;
         };
+
+
+    if (isCurrentUSerLogged())
+        document.querySelector("#btnSwitchTheme").onclick = function () {
+            // document.getElementById('#btnSwitch').addEventListener('click', () => {
+            // if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+            //     document.documentElement.setAttribute('data-bs-theme', 'light')
+            // }
+            // else {
+            //     document.documentElement.setAttribute('data-bs-theme', 'dark')
+            // }
+            toogleTheme();
+        }
 }

@@ -39,7 +39,6 @@ export async function loginViewDisplay(htlmPartId) {
 
     try {
         // *** Display main part of the page
-        // document.getElementById(htlmPartId).innerHTML = ;
         jQuery("#" + htlmPartId).append(editModaleString);
 
 
