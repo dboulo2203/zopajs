@@ -1,7 +1,7 @@
 import { getAppPath } from '../../shared/services/commonFunctions.js'
 import { bedIcon, personIcon, loginIcon, logoutIcon } from '../../shared/assets/constants.js'
-import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
-import { logout } from '../../shared/services/loginService.js'
+import { isCurrentUSerLogged } from '../../shared/services/zopaLoginServices.js'
+import { logout } from '../../shared/services/zopaLoginServices.js'
 import { toogleTheme } from '../../shared/services/bootstrapTheme.js'
 import { loginViewDisplay } from './loginViewCont.js'
 //***
@@ -48,8 +48,6 @@ export function leftMenuViewDisplay(htlmPartId) {
     if (!isCurrentUSerLogged())
         document.querySelector("#myBtnLogin").onclick = async function () {
             await loginViewDisplay("mainActiveSection")
-
-
         };
 
     // // *** Actions
@@ -69,7 +67,7 @@ export function leftMenuViewDisplay(htlmPartId) {
 
     if (isCurrentUSerLogged())
         document.querySelector("#searchCustomer").onclick = function () {
-            window.location.href = `${getAppPath()}/views/searchCustomer/searchCustomer.html`;
+            window.location.href = `${getAppPath()}/views/manageCustomer/searchCustomer/searchCustomer.html`;
         };
 
 

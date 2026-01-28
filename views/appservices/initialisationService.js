@@ -1,7 +1,9 @@
 
 
 import { getAppPath } from '../../shared/services/commonFunctions.js'
+import { getConfigurationFromJson } from '../../shared/services/configurationService.js'
 import { loadProducts } from '../../shared/services/zopaProductServices.js'
+import { initWebComponents } from '../../shared/services/webComponents.js'
 import { setTheme } from '../../shared/services/bootstrapTheme.js'
 import {
     loadintakeplacesTable, loadMealsTable,
@@ -15,6 +17,8 @@ import { loadTranslations } from '../../shared/services/translationService.js'
  */
 export async function launchInitialisation() {
 
+    await getConfigurationFromJson();
+    initWebComponents();
     setTheme();
     await loadTranslations();
     await loadUsersTable();

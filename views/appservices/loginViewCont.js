@@ -1,6 +1,6 @@
 
-// import { getLogin } from '../../shared/services/loginService.js'
-import { getLogin, logout } from '../../shared/services/loginService.js'
+// import { getLogin } from '../../shared/services/zopaLoginServices.js'
+import { getLogin, logout } from '../../shared/services/zopaLoginServices.js'
 import { getAppPath } from '../../shared/services/commonFunctions.js'
 
 const editModaleString = `

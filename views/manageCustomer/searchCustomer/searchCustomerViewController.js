@@ -3,12 +3,12 @@ import { getcustomerSearch } from './searchCustomerService.js'
 
 // *** Shared ressoucres
 
-import { headerViewDisplay } from '../appservices/headerViewCont.js'
-import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js'
-import { footerViewDisplay } from '../appservices/footerViewCont.js'
-import { launchInitialisation } from '../appservices/initialisationService.js'
-import { searchIcon } from '../../shared/assets/constants.js'
-import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
+import { headerViewDisplay } from '../../appservices/headerViewCont.js'
+import { addMultipleEnventListener, getAppPath } from '../../../shared/services/commonFunctions.js'
+import { footerViewDisplay } from '../../appservices/footerViewCont.js'
+import { launchInitialisation } from '../../appservices/initialisationService.js'
+import { searchIcon } from '../../../shared/assets/constants.js'
+import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
 
 
 /**
@@ -17,22 +17,22 @@ import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
  */
 export async function startSearchCustomerController() {
 
-    try {
-        // *** Initialisations
-        await launchInitialisation();
-        headerViewDisplay("#menuSection");
+    // try {
+    // *** Initialisations
+    await launchInitialisation();
+    headerViewDisplay("#menuSection");
 
-        if (!isCurrentUSerLogged())
-            throw new Error("Veuillez vous authentifier");
+    if (!isCurrentUSerLogged())
+        throw new Error("Veuillez vous authentifier");
 
-        displaySearchCustomerContent("mainActiveSection")
+    displaySearchCustomerContent("mainActiveSection")
 
-        footerViewDisplay("#footerDisplay")
+    footerViewDisplay("#footerDisplay")
 
 
-    } catch (error) {
-        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} </div > `;
-    }
+    // } catch (error) {
+    //     document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} </div > `;
+    // }
 
 }
 
@@ -118,7 +118,7 @@ async function getSearch() {
     document.querySelector("#resultDisplay").innerHTML = resultDisplay;
 
     addMultipleEnventListener(".customerLink", function (event) {
-        window.location.href = `${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid');
+        window.location.href = `${getAppPath()}/views/manageCustomer/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid');
     });
 
 }

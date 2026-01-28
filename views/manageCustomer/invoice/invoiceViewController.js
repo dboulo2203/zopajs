@@ -1,17 +1,17 @@
 // *** Component ressources
-import { getInvoice, getInvoicePayments } from '../../shared/services/zopaInvoicesServices.js'
-import { getCustomer } from '../../shared/services/zopaCustomerServices.js'
-import { getUserLoginFromId } from '../../shared/services/zopaListsServices.js'
-import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
+import { getInvoice, getInvoicePayments } from '../../../shared/services/zopaInvoicesServices.js'
+import { getCustomer } from '../../../shared/services/zopaCustomerServices.js'
+import { getUserLoginFromId } from '../../../shared/services/zopaListsServices.js'
+import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
 
 // *** Shared ressoucres
-import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../appservices/initialisationService.js'
+import { headerViewDisplay } from '../../appservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../appservices/initialisationService.js'
 import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon, printerIcon
-} from '../../shared/assets/constants.js'
-import { getLinkWithctrl, getAppPath } from '../../shared/services/commonFunctions.js'
+} from '../../../shared/assets/constants.js'
+import { getLinkWithctrl, getAppPath } from '../../../shared/services/commonFunctions.js'
 
 
 /**
@@ -79,10 +79,10 @@ export async function displayInvoiceContent(htlmPartId, invoiceID) {
 
     // *** Actions
     document.querySelector("#customerLink").onclick = function (event) {
-        getLinkWithctrl(`${getAppPath()}/views/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
+        getLinkWithctrl(`${getAppPath()}/views/manageCustomer/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
     };
     document.querySelector("#orderLink").onclick = function (event) {
-        getLinkWithctrl(`${getAppPath()}/views/order/order.html?orderID=` + event.currentTarget.getAttribute('orderid'), event.ctrlKey);
+        getLinkWithctrl(`${getAppPath()}/views/manageCustomer/order/order.html?orderID=` + event.currentTarget.getAttribute('orderid'), event.ctrlKey);
     };
 
     // } catch (error) {

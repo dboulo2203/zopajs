@@ -1,14 +1,16 @@
 
-import { currentApplicationPath } from '../assets/constants.js'
-import { getAppPath } from './commonFunctions.js'
+import { getAppPath } from '../services/commonFunctions.js'
+
 /**
  * Load the translation files in the sessionStorage
+ * Load fr and en languages
  * 
  * TODO : the function can load translations from languages
  */
 export async function loadTranslations() {
 
     // *** Load french language
+    let test = `${getAppPath()}/shared/assets/locales/fr/translation.json`;
     const responsefr = await fetch(`${getAppPath()}/shared/assets/locales/fr/translation.json`);
     const datafr = await responsefr.json();
     if (responsefr.ok) {
@@ -32,6 +34,10 @@ export async function loadTranslations() {
         throw new Error("LoadTranslations en Error message : " + responsefr.status + " " + responsefr.statusText);
     }
 
+    // } catch (error) {
+    //  console.log('There was an error', error);
+
+    // }
 }
 
 /**
@@ -53,18 +59,19 @@ export function getCurrentLanguage() {
  */
 export function getTranslation(wordToTranslate) {
 
-    // let listresult = null;
     // *** Get the database according to the current language in the browser
     let frBase = sessionStorage.getItem(getCurrentLanguage() + "Translation");
     let base = JSON.parse(frBase);
 
-    //if (base) {
+    if (!base)
+        return "Translation base invalid";
     let foundIndex = Object.keys(base).indexOf(wordToTranslate);
-    //}
+
     let valeur = '';
     if (foundIndex >= 0)
         valeur = (Object.values(base)[foundIndex]);
-
+    else
+        valeur = '!! Translation not found !! ';
 
     return valeur;
 

@@ -1,15 +1,15 @@
 // *** Component ressources
-import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../shared/services/zopaCustomerServices.js'
-import { createNewOrder } from '../../shared/services/zopaOrderServices.js';
+import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../../shared/services/zopaCustomerServices.js'
+import { createNewOrder } from '../../../shared/services/zopaOrderServices.js';
 
-import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../appservices/initialisationService.js'
+import { headerViewDisplay } from '../../appservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../appservices/initialisationService.js'
 
-import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
-import { addMultipleEnventListener, getAppPath, displayToast } from '../../shared/services/commonFunctions.js'
-import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue } from '../../shared/services/zopaListsServices.js'
-import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../shared/assets/constants.js'
-import { getevaluateSession } from '../../shared/services/zopaOrderServices.js'
+import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
+import { addMultipleEnventListener, getAppPath, displayToast } from '../../../shared/services/commonFunctions.js'
+import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue } from '../../../shared/services/zopaListsServices.js'
+import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../../shared/assets/constants.js'
+import { getevaluateSession } from '../../../shared/services/zopaOrderServices.js'
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -77,15 +77,14 @@ export async function displayCustomerContent(htlmPartId, customerID) {
 
     document.querySelector("#customerInvoices").innerHTML = displayCustomerInvoices(customer, customerInvoices);
 
-
     // *** Add actions
     addMultipleEnventListener(".orderLink", function (event) {
-        window.location.href = `${getAppPath()}/views/order/order.html?orderID=` + event.currentTarget.getAttribute('orderID') + `&indep=false`;
+        window.location.href = `${getAppPath()}/views/manageCustomer/order/order.html?orderID=` + event.currentTarget.getAttribute('orderID') + `&indep=false`;
     });
 
     // *** Add actions
     addMultipleEnventListener(".invoiceLink", function (event) {
-        window.location.href = `${getAppPath()}/views/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceID') + `&indep=false`;
+        window.location.href = `${getAppPath()}/views/manageCustomer/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceID') + `&indep=false`;
     });
 
     document.querySelector("#addOrder").onclick = function (event) {
@@ -108,9 +107,11 @@ export async function displayCustomerContent(htlmPartId, customerID) {
 function displayCustomerIdentity(customer) {
     let output = '';
     output += `<div style="margin-bottom:2px">`;
-    output += `
-        <div style=""><span class="fs-5" style="color:#8B2331">Customer Identity</span></div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+    // output += `
+    //     <div style=""><span class="fs-5" style="color:#8B2331">Customer Identity</span></div>
+    //     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+
+    output += `<dob-bloctitle userIcon = "invoiceIcon" userName = "Customer Identity" ></dob-bloctitle >`;
     output += `<div class="col-md-12 main"  > <span  class="fw-light" style ="">Nom</span> : ${customer.name}`;
     output += `</div>`
     output += `<div class="col-md-12 main"  > <span class="fw-light" style ="">email</span> : ${customer.email}`;
@@ -189,21 +190,23 @@ function displayCustomerIdentity(customer) {
  * @returns 
  */
 function displayCustomerorders(customer, customerOrders) {
-    let customerOrdersString = `
-        <div style="margin-bottom:0px">
-            <div class="d-flex  justify-content-between" style="padding-top:0px" >
-                <span class="fs-5" style="color:#8B2331">${orderIcon} Customer orders</span>
-                <div class="col-4 flex float-right text-end" style="cursor: pointer">
-                    <div class="dropdown">
-                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="">${threedotsvertical}  </a>
-                        <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
-                            <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
-                        </ul>
-                    </div>                         
-                </div>                          
-            </div>
-        </div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+
+    // let customerOrdersString = `
+    //     <div style="margin-bottom:0px">
+    //         <div class="d-flex  justify-content-between" style="padding-top:0px" >
+    //             <span class="fs-5" style="color:#8B2331">${orderIcon} Customer orders</span>
+    //             <div class="col-4 flex float-right text-end" style="cursor: pointer">
+    //                 <div class="dropdown">
+    //                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="">${threedotsvertical}  </a>
+    //                     <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
+    //                         <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
+    //                     </ul>
+    //                 </div>                         
+    //             </div>                          
+    //         </div>
+    //     </div>
+    //     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+    let customerOrdersString = `<dob-bloctitle userIcon = "orderIcon" userName = " Customer orders" ></dob-bloctitle >`;
 
     // *** Display customer orders
 
@@ -213,7 +216,7 @@ function displayCustomerorders(customer, customerOrders) {
             customerOrdersString += `
             <div class="row flex " style = "margin-top:0px" >
                         <div class="col d-none d-md-block" >
-                            <span class="orderLink"  orderID="${customerOrder.id}"style="cursor: pointer">${customerOrder.ref}</span>
+                            <span class="orderLink text-danger-emphasis"  orderID="${customerOrder.id}"style="cursor: pointer">${customerOrder.ref}</span>
                         </div> 
                        
                         <div class="col-5">
@@ -266,29 +269,30 @@ function displayCustomerInvoices(customer, customerInvoices) {
     // *** Display customer invoices
 
     let customerInvoicesString = '';
-    customerInvoicesString += `
-        <div style="margin-bottom:20px">
-            <div class="d-flex  justify-content-between" style="padding-top:0px" >
-                <span class="fs-5  fw-normal" style="color:#8B2331">${invoiceIcon} Customer Invoices</span>
-                <div class="col-4 flex float-right text-end" style="cursor: pointer">
-                    <div class="dropdown">
-                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="">${threedotsvertical}  </a>
-                        <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
-                            <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
-                        </ul>
-                    </div>                         
-                </div>                          
-            </div>
+    // customerInvoicesString += `
+    //     <div style="margin-bottom:20px">
+    //         <div class="d-flex  justify-content-between" style="padding-top:0px" >
+    //             <span class="fs-5  fw-normal" style="color:#8B2331">${invoiceIcon} Customer Invoices</span>
+    //             <div class="col-4 flex float-right text-end" style="cursor: pointer">
+    //                 <div class="dropdown">
+    //                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="">${threedotsvertical}  </a>
+    //                     <ul class="dropdown-menu" style="padding:4px;background-color:#F7F7F3">
+    //                         <li id="addOrder"><span>${addOrderIcon} Ajouter une commande</span></li>
+    //                     </ul>
+    //                 </div>                         
+    //             </div>                          
+    //         </div>
 
-         <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+    //      <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 
+    customerInvoicesString += `<dob-bloctitle userIcon = "invoiceIcon" userName = "Customer Invoices" ></dob-bloctitle >`;
     if (customerInvoices) {
         customerInvoices.map((customerInvoice, index) => {
             customerInvoicesString += `
                 <div class="row" style = "margin-bottom:5px" >
 
                     <div class=" col d-none d-md-block" >
-                        <span class="invoiceLink" invoiceID="${customerInvoice.id}" style="cursor: pointer">${customerInvoice.ref}</span>
+                        <span class="invoiceLink text-danger-emphasis" invoiceID="${customerInvoice.id}" style="cursor: pointer">${customerInvoice.ref}</span>
                     </div> 
                        
                     <div class="col">

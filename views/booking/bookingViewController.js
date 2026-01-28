@@ -7,7 +7,7 @@ import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  share
 import { launchInitialisation } from '../appservices/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
 import { addMultipleEnventListener, displayToast } from '../../shared/services/commonFunctions.js'
-import { isCurrentUSerLogged } from '../../shared/services/loginService.js'
+import { isCurrentUSerLogged } from '../../shared/services/zopaLoginServices.js'
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
 /**

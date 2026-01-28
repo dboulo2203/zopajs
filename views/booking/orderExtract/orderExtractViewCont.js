@@ -72,7 +72,7 @@ export async function orderExtractViewDisplay(htlmPartId, orderId) {
 
         document.querySelector(".orderLink").onclick = function (event) {
             // getLinkWithctrl(`${getAppPath()}/views/simpleEntity/simpleEntity.html?simpleEntityID=${notice.matt_id}&simpleEntitytype=36`, event.ctrlKey);;
-            window.location.href = `${getAppPath()}/views/order/order.html?orderID=` + orderId + `&indep=false`;
+            window.location.href = `${getAppPath()}/views/manageCustomer/order/order.html?orderID=` + orderId + `&indep=false`;
 
         };
 

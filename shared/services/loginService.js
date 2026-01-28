@@ -1,6 +1,5 @@
 
-
-import { wsUrlformel } from '../assets/constants.js';
+import { getConfigurationValue } from './configurationService.js';
 
 /**
  * Load a person from the database, 
@@ -14,8 +13,7 @@ export async function getLogin(userName, userPassword) {
     console.log("getLogin Service start");
 
     sessionStorage.setItem("loggedUSer", "");
-
-    var wsUrl = wsUrlformel + `login`;
+    var wsUrl = getConfigurationValue('wsUrlformel') + `login`;
 
     let responsefr = await fetch(wsUrl, {
         method: "POST",
@@ -40,10 +38,8 @@ export async function getLogin(userName, userPassword) {
         return (true);
 
     } else {
-        console.log(`getLogin Error : ${JSON.stringify(responsefr)}`);
         sessionStorage.setItem("loggedUSer", "");
         return (false);
-        // throw new Error("getLogin Error message : " + responsefr.status + " " + responsefr.statusText);
     }
 
 }
@@ -56,7 +52,6 @@ export async function getLogin(userName, userPassword) {
  */
 export function isCurrentUSerLogged() {
 
-    return true;
     let loggedUserJSON = sessionStorage.getItem("loggedUSer");
     if (loggedUserJSON !== "") {
         let loggedUser = JSON.parse(loggedUserJSON);
@@ -67,13 +62,27 @@ export function isCurrentUSerLogged() {
     } else {
         return false;
     }
+}
 
+/**
+ * returns the usertoken
+ * @param {*} requiredLevel 
+ * @returns 
+ */
+export function getUSerToken() {
+
+    let loggedUserJSON = sessionStorage.getItem("loggedUSer");
+
+    if (loggedUserJSON) {
+        let loggedUser = JSON.parse(loggedUserJSON);
+        return loggedUser.token
+    } else {
+        return "";
+    }
 }
 
 export function logout() {
-
     sessionStorage.removeItem("loggedUSer", "");
-
 }
 
 /**
@@ -82,32 +91,12 @@ export function logout() {
  */
 export function getLoggedUserPseudo() {
 
-    let loggedUser = sessionStorage.getItem("loggedUSer");
+    let loggedUserJSON = sessionStorage.getItem("loggedUSer");
 
-    if (loggedUser)
-        return loggedUser.user_pseudo
-    else
+    if (loggedUser) {
+        let loggedUser = JSON.parse(loggedUserJSON);
+        return loggedUser.username
+    } else {
         return "";
+    }
 }
-
-
-/**
- * returns if the user is allowed for the required level 
- * @param {*} requiredLevel 
- * @returns 
- */
-export function getCurrentUSerRightLevel(requiredLevel) {
-
-    let loggedUser = sessionStorage.getItem("loggedUSer");
-
-    if (loggedUser)
-        if (loggedUser.urlt_level > requiredLevel)
-            return "hidden";
-        else
-            return "";
-    else
-        return "hidden";
-
-}
-
-// https://catalogue.bibliotheque-dhagpo-kagyu.org/yeshe/api/user/d.boulore@vipassana.fr?logUser=user_email&password=thomas4

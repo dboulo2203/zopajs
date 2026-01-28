@@ -16,7 +16,7 @@ export async function getInvoice(invoiceID) {
         return (data);
 
     } else {
-        console.log(`getInvoice Error : ${JSON.stringify(responsefr)}`);
+        // console.log(`getInvoice Error : ${JSON.stringify(responsefr)}`);
         throw new Error("getInvoice Error message : " + responsefr.status + " " + responsefr.statusText);
     }
 

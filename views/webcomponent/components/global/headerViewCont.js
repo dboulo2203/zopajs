@@ -5,7 +5,7 @@ import { getAppPath } from '../../../functions/commonFunctions.js'
 import { loginViewDisplay } from '../../../components/login/loginViewCont.js'
 
 import { leftMenuViewDisplay } from './leftMenuViewCont.js'
-// import { getLoggedUserPseudo, logout } from '../../components/login/loginService.js'
+// import { getLoggedUserPseudo, logout } from '../../components/login/zopaLoginServices.js'
 
 // TODO : Manage callback
 export function headerViewDisplay(htlmPartId) {

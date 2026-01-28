@@ -1,5 +1,6 @@
-import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
-
+// import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
+import { getConfigurationValue } from '../../../shared/services/configurationService.js';
+import { getUSerToken } from '../../../shared/services/zopaLoginServices.js'
 /**
  * Load the language list from the database
  * the languages list is saved in the sessionStorage 
@@ -37,8 +38,8 @@ export async function getcustomerSearch(searchString, searchType) {
             searchStringBuild = "t.nom like%27%25" + searchString + "%25%27 ";
     }
 
-    var wsUrl = wsUrlformel + ``;
-    let params = `thirdparties?sqlfilters=${searchStringBuild}&DOLAPIKEY=${DOLAPIKEY}&sortfield=t.nom&sortorder=ASC`;
+    var wsUrl = getConfigurationValue('wsUrlformel')
+    let params = `thirdparties?sqlfilters=${searchStringBuild}&DOLAPIKEY=${getUSerToken()}&sortfield=t.nom&sortorder=ASC`;
 
     let responseWS = await fetch(wsUrl + params);
 
