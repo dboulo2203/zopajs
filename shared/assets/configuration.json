@@ -4,8 +4,8 @@
         {
             "menuItemName": "Booking",
             "menuItemLink": "booking/booking.html"
-        }
-            {
+        },
+        {
             "menuItemName": "Res",
             "menuItemLink": "restaurant/index.html"
         }
