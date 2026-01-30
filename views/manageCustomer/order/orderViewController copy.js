@@ -2,17 +2,19 @@
 import {
     getOrder, getOrderBilledAmount, getOrderPaidAmount, getevaluateOrderGlobalStatus, getOrderRoomNotSet,
     getOrderhostingtaxesconsistancy, getOrderDatesQtyconsistancy, getOrderRepConsistancy
-} from '../../../shared/services/zopaOrderServices.js'
-import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
+} from '../../../shared/zopaServices/zopaOrderServices.js'
+import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
+import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServices.js'
+
 // *** Shared ressoucres
-import { headerViewDisplay } from '../../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../appservices/initialisationService.js'
+import { headerViewDisplay } from '../../../shared/zopaServices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../../shared/zopaServices/initialisationService.js'
 import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon
 } from '../../../shared/assets/constants.js'
 import { getLinkWithctrl, getAppPath, addMultipleEnventListener } from '../../../shared/services/commonFunctions.js'
-import { getUserLoginFromId } from '../../../shared/services/zopaListsServices.js'
+
 
 
 /**

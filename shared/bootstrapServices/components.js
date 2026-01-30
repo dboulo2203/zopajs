@@ -99,20 +99,35 @@ export class StandardFieldDisplayWithLink extends HTMLElement {
         let fieldName = this.getAttribute("fieldName");
         let fieldValue = this.getAttribute("fieldValue");
         let fieldlink = this.getAttribute("fieldlink");
-        let fieldid = this.getAttribute("fieldid");
-        // let fieldValue = this.getAttribute("fieldValue");
-        this.innerHTML = `<div class="col-md-12 main" > 
-        <span class="fw-light" style ="cursor:pointer">${fieldName}</span> :
-         <span class="text-danger-emphasis" style ="cursor:pointer" id="${fieldlink}" customerid="${fieldid}">${fieldValue}</span>    
-        </div > `;
-        //         this.innerHTML = `
-        //             <div class="col-md-12  "  > <span class="fw-light" style ="">${fieldName} : </span>
-        //     <span class="text-danger-emphasis" id="customerLink" customerid="${order.socid}" style ="cursor:pointer"> ${order.customer.name}</span></div >
-        // <div class="col-md-12 main" > <span class="fw-light" >${fieldName}</span> : ${fieldValue}</div > `;
+        let entityid = this.getAttribute("entityid");
+        this.innerHTML = `<span class="fw-light" style ="cursor:pointer">${fieldName}</span> :`;
 
+        this.innerHTML += `<span class="text-danger-emphasis" style="cursor: pointer" entityid="${entityid}"
+        id="${fieldlink}" onpointerenter="this.setAttribute('style', 'cursor: pointer;color: rgb(159, 158, 158); border-bottom: 0.1em solid rgb(159, 158, 158)')"
+        onpointerleave="this.setAttribute('style', 'color: text-danger-emphasis;')">
+            ${fieldValue === null ? '' : fieldValue}
+        </span>`;
     }
 }
 
+
+export class StandardFieldWithLinkClass extends HTMLElement {
+    connectedCallback() {
+
+        let fieldName = this.getAttribute("fieldName");
+        let fieldValue = this.getAttribute("fieldValue");
+        let fieldlink = this.getAttribute("fieldlink");
+        let entityid = this.getAttribute("entityid");
+        if (fieldName !== "")
+            this.innerHTML = `<span class="fw-light" style ="cursor:pointer">${fieldName}</span> : `;
+
+        this.innerHTML += `<span class="text-danger-emphasis ${fieldlink}" style="cursor: pointer" entityid="${entityid}"
+         onpointerenter="this.setAttribute('style', 'cursor: pointer;color: rgb(159, 158, 158); border-bottom: 0.1em solid rgb(159, 158, 158)')"
+        onpointerleave="this.setAttribute('style', 'color: text-danger-emphasis;')">
+            ${fieldValue === null ? '' : fieldValue}
+        </span>`;
+    }
+}
 
 export class StandardFieldNotNullDisplay extends HTMLElement {
     connectedCallback() {
@@ -164,11 +179,11 @@ class HelloWorld extends HTMLElement {
 export function initWebComponents() {
     customElements.define('dob-bloctitle', BlocTitleDisplay);
     customElements.define('dob-stdfieldwithlink', StandardFieldDisplayWithLink);
-
+    customElements.define('dob-stdfieldwithlinkclass', StandardFieldWithLinkClass);
 
     customElements.define('dob-stdfield', StandardFieldDisplay);
     customElements.define('dob-stdnotnullfield', StandardFieldNotNullDisplay);
-    customElements.define('hello-world', HelloWorld);
+    // customElements.define('dob-stdfieldClass', HelloWorld);
 }
 // export class blocTitleDisplay extends HTMLElement {
 //     connectedCallback() {

@@ -1,13 +1,11 @@
 // import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
 import { getConfigurationValue } from '../../../shared/services/configurationService.js';
-import { getUSerToken } from '../../../shared/services/zopaLoginServices.js'
+import { getUSerToken } from '../../../shared/zopaServices/zopaLoginServices.js'
 /**
  * Load the language list from the database
  * the languages list is saved in the sessionStorage 
  */
 export async function getcustomerSearch(searchString, searchType) {
-
-    console.log("getcustomerSearch Service start");
 
     searchString = searchString.replace("'", "\\'");
     let searchStringBuild = "";
@@ -45,9 +43,9 @@ export async function getcustomerSearch(searchString, searchType) {
 
     if (responseWS.ok) {
         // *** Get the data and save in the sessionStorage
-        let data = await responseWS.json();
+        let data = responseWS.json();
 
-        console.log("getcustomerSearch ok ");
+        // console.log("getcustomerSearch ok ");
         return (data);
 
     } else {

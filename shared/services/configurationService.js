@@ -3,7 +3,7 @@ import { getAppPath } from './commonFunctions.js'
 //*** Application initialisation**************************** */
 export async function getConfigurationFromJson() {
 
-    var wsUrl = `${getAppPath()}/shared/services/configuration.json`;
+    var wsUrl = `${getAppPath()}/shared/assets/configuration.json`;
     let responsefr = await fetch(wsUrl);
     if (responsefr.ok) {
         // *** Get the data and save in the sessionStorage

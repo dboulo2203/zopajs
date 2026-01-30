@@ -1,12 +1,12 @@
 // *** Component ressources
-import { getInvoice, getInvoicePayments } from '../../../shared/services/zopaInvoicesServices.js'
-import { getCustomer } from '../../../shared/services/zopaCustomerServices.js'
-import { getUserLoginFromId } from '../../../shared/services/zopaListsServices.js'
-import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
+import { getInvoice, getInvoicePayments } from '../../../shared/zopaServices/zopaInvoicesServices.js'
+import { getCustomer } from '../../../shared/zopaServices/zopaCustomerServices.js'
+import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServices.js'
+import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 
 // *** Shared ressoucres
-import { headerViewDisplay } from '../../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../appservices/initialisationService.js'
+import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon, printerIcon
@@ -46,8 +46,6 @@ export async function startInvoiceController() {
  */
 export async function displayInvoiceContent(htlmPartId, invoiceID) {
 
-    //   try {
-
     // *** Load data from API style="color:#8B2331"
     let invoice = await getInvoice(invoiceID);
     let customer = await getCustomer(invoice.socid);
@@ -85,9 +83,6 @@ export async function displayInvoiceContent(htlmPartId, invoiceID) {
         getLinkWithctrl(`${getAppPath()}/views/manageCustomer/order/order.html?orderID=` + event.currentTarget.getAttribute('orderid'), event.ctrlKey);
     };
 
-    // } catch (error) {
-    //     document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
-    // }
 }
 
 //*** Function needed */

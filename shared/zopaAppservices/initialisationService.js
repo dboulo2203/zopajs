@@ -2,14 +2,16 @@
 
 import { getAppPath } from '../../shared/services/commonFunctions.js'
 import { getConfigurationFromJson } from '../../shared/services/configurationService.js'
-import { loadProducts } from '../../shared/services/zopaProductServices.js'
-import { initWebComponents } from '../../shared/services/webComponents.js'
-import { setTheme } from '../../shared/services/bootstrapTheme.js'
+import { loadProducts } from '../../shared/zopaServices/zopaProductServices.js'
 import {
     loadintakeplacesTable, loadMealsTable,
     loadUsersTable,
     loadCivilitiesTable, loadPublipostageTable, loadIncomeLevelsTable
-} from '../../shared/services/zopaListsServices.js'
+} from '../../shared/zopaServices/zopaListsServices.js'
+
+import { initWebComponents } from '../../shared/bootstrapServices/components.js'
+import { setTheme } from '../../shared//bootstrapServices/bootstrapTheme.js'
+
 import { loadTranslations } from '../../shared/services/translationService.js'
 
 /**

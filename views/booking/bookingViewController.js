@@ -1,13 +1,15 @@
 // *** Component ressources
 import { getHostingBooking, copyToClipboard } from './bookingService.js';
 // *** Shared ressoucres
-import { getResourceProducts, getHostingProducts } from '../../shared/services/zopaProductServices.js'
-import { getList } from '../../shared/services/zopaListsServices.js'
-import { headerViewDisplay } from '../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../appservices/initialisationService.js'
+import { getResourceProducts, getHostingProducts } from '../../shared/zopaServices/zopaProductServices.js'
+import { getList } from '../../shared/zopaServices/zopaListsServices.js'
+import { isCurrentUSerLogged } from '../../shared/zopaServices/zopaLoginServices.js'
+
+import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
 import { addMultipleEnventListener, displayToast } from '../../shared/services/commonFunctions.js'
-import { isCurrentUSerLogged } from '../../shared/services/zopaLoginServices.js'
+
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
 /**

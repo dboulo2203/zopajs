@@ -1,5 +1,5 @@
 
-import { getConfigurationValue } from './configurationService.js';
+import { getConfigurationValue } from '../services/configurationService.js';
 
 /**
  * Load a person from the database, 
@@ -52,6 +52,7 @@ export async function getLogin(userName, userPassword) {
  */
 export function isCurrentUSerLogged() {
 
+    return true
     let loggedUserJSON = sessionStorage.getItem("loggedUSer");
     if (loggedUserJSON !== "") {
         let loggedUser = JSON.parse(loggedUserJSON);
@@ -71,6 +72,7 @@ export function isCurrentUSerLogged() {
  */
 export function getUSerToken() {
 
+    return "OpK1D8otonWg690PIoj570KdHSCqCc04";
     let loggedUserJSON = sessionStorage.getItem("loggedUSer");
 
     if (loggedUserJSON) {

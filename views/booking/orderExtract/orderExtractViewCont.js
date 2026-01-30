@@ -1,4 +1,4 @@
-import { getOrder, getevaluateSession, getevaluateOrderGlobalStatus } from '../../../shared/services/zopaOrderServices.js'
+import { getOrder, getevaluateSession, getevaluateOrderGlobalStatus } from '../../../shared/zopaServices/zopaOrderServices.js'
 import { getAppPath } from '../../../shared/services/commonFunctions.js'
 
 const editModaleString = `

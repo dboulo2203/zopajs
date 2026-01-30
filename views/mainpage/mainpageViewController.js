@@ -1,12 +1,12 @@
 // *** shared services
-import { launchInitialisation } from '../appservices/initialisationService.js'
-import { headerViewDisplay } from '../appservices/headerViewCont.js'
+import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js'
+import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js'
 import { getAppPath } from '../../shared/services/commonFunctions.js';
-import { isCurrentUSerLogged } from '../../shared/services/zopaLoginServices.js'
-import { footerViewDisplay } from '../appservices/footerViewCont.js'
+import { isCurrentUSerLogged } from '../../shared/zopaServices/zopaLoginServices.js'
+import { footerViewDisplay } from '../../shared/zopaAppservices/footerViewCont.js'
 // *** Menu string
 const mainStringPage = ` 
-            <div class="container-fluid"> 
+            <div class="container-fluid" style="margin-top:60px"> 
             <img src="${getAppPath()}/shared/assets/main_picture.jpg" width="100%">
     </div>
 `;
@@ -27,7 +27,7 @@ export async function startMainPageController() {
 
 
     } catch (error) {
-        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}</div > `;
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:60px" role = "alert" > ${error}</div > `;
     }
 
 }

@@ -3,12 +3,12 @@ import { getcustomerSearch } from './searchCustomerService.js'
 
 // *** Shared ressoucres
 
-import { headerViewDisplay } from '../../appservices/headerViewCont.js'
+import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'
 import { addMultipleEnventListener, getAppPath } from '../../../shared/services/commonFunctions.js'
-import { footerViewDisplay } from '../../appservices/footerViewCont.js'
-import { launchInitialisation } from '../../appservices/initialisationService.js'
+import { footerViewDisplay } from '../../../shared/zopaAppservices/footerViewCont.js'
+import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 import { searchIcon } from '../../../shared/assets/constants.js'
-import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
+import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 
 
 /**
@@ -17,22 +17,22 @@ import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.
  */
 export async function startSearchCustomerController() {
 
-    // try {
-    // *** Initialisations
-    await launchInitialisation();
-    headerViewDisplay("#menuSection");
+    try {
+        // *** Initialisations
+        await launchInitialisation();
+        headerViewDisplay("#menuSection");
 
-    if (!isCurrentUSerLogged())
-        throw new Error("Veuillez vous authentifier");
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
-    displaySearchCustomerContent("mainActiveSection")
+        await displaySearchCustomerContent("mainActiveSection")
 
-    footerViewDisplay("#footerDisplay")
+        footerViewDisplay("#footerDisplay")
 
 
-    // } catch (error) {
-    //     document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} </div > `;
-    // }
+    } catch (error) {
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:60px" role = "alert" > ${error} </div > `;
+    }
 
 }
 
@@ -43,11 +43,13 @@ export async function startSearchCustomerController() {
  */
 export async function displaySearchCustomerContent(htlmPartId) {
 
-    // *** Build the html string 
-    let output = '';
 
-    // *** Display the controller skeleton
-    output += `
+    try {
+        // *** Build the html string 
+        let output = '';
+
+        // *** Display the controller skeleton
+        output += `
      <div style="padding-top:10px"><span class="fs-5" style="color:#8B2331">${searchIcon} Search customer</span></div><hr/>
     <div id='componentMessage'></div>
     <div class="col-6">
@@ -67,20 +69,30 @@ export async function displaySearchCustomerContent(htlmPartId) {
        <div class="col-md-12 main" style="padding:10px" id="footerDisplay">
     </div >`;
 
-    // *** Display skeleton
-    document.querySelector("#" + htlmPartId).innerHTML = output;
+        // *** Display skeleton
+        document.querySelector("#" + htlmPartId).innerHTML = output;
 
-    try {
+        // try {
 
         //***  Actions
-        document.querySelector("#searchString").addEventListener("keypress", function (event) {
-            if (event.keyCode === 13) {
-                getSearch();
+        document.querySelector("#searchString").addEventListener("keypress", async function (event) {
+            try {
+                if (event.keyCode === 13) {
+                    await getSearch();
+                }
+            } catch (error) {
+                document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:60px" role = "alert" > ${error} </div > `;
             }
+
         });
 
         document.querySelector("#myBtnCompute").onclick = async function () {
-            getSearch();
+            try {
+                await getSearch();
+            } catch (error) {
+                document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:60px" role = "alert" > ${error} </div > `;
+            }
+
         };
 
     } catch (except) {
@@ -92,6 +104,7 @@ export async function displaySearchCustomerContent(htlmPartId) {
  */
 async function getSearch() {
 
+    // try {
     // *** Search customers
     let searchString = document.querySelector("#searchString").value;
     let searchResults = await getcustomerSearch(searchString, 'name');
@@ -120,5 +133,8 @@ async function getSearch() {
     addMultipleEnventListener(".customerLink", function (event) {
         window.location.href = `${getAppPath()}/views/manageCustomer/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid');
     });
+    // } catch (except) {
+    //     document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br > ${error.stack}  </div > `;
+    // }
 
 }

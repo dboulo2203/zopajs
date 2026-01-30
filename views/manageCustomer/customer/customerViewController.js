@@ -1,15 +1,19 @@
 // *** Component ressources
-import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../../shared/services/zopaCustomerServices.js'
-import { createNewOrder } from '../../../shared/services/zopaOrderServices.js';
+import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../../shared/zopaServices/zopaCustomerServices.js'
+import { createNewOrder } from '../../../shared/zopaServices/zopaOrderServices.js';
+import { getevaluateSession } from '../../../shared/zopaServices/zopaOrderServices.js'
+import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 
-import { headerViewDisplay } from '../../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../appservices/initialisationService.js'
+import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 
-import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
-import { addMultipleEnventListener, getAppPath, displayToast } from '../../../shared/services/commonFunctions.js'
-import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue } from '../../../shared/services/zopaListsServices.js'
+import { addMultipleEnventListener, getAppPath } from '../../../shared/services/commonFunctions.js'
+import { displayToast } from '../../../shared/bootstrapServices/bootstrapCommon.js'
+
+import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue }
+    from '../../../shared/zopaServices/zopaListsServices.js'
 import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../../shared/assets/constants.js'
-import { getevaluateSession } from '../../../shared/services/zopaOrderServices.js'
+
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -17,22 +21,22 @@ import { getevaluateSession } from '../../../shared/services/zopaOrderServices.j
 export async function startCustomerController() {
 
     // *** Initialisations
-    //   try {
+    try {
 
-    launchInitialisation();
-    headerViewDisplay("#menuSection");
+        launchInitialisation();
+        headerViewDisplay("#menuSection");
 
-    if (!isCurrentUSerLogged())
-        throw new Error("Veuillez vous authentifier");
+        if (!isCurrentUSerLogged())
+            throw new Error("Veuillez vous authentifier");
 
-    // *** Get url params and launch controller
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.has('customerID'))
-        displayCustomerContent("mainActiveSection", searchParams.get('customerID'));
+        // *** Get url params and launch controller
+        const searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has('customerID'))
+            displayCustomerContent("mainActiveSection", searchParams.get('customerID'));
 
-    // } catch (error) {
-    //     document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
-    // }
+    } catch (error) {
+        document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error} - ${error.fileName}</br>${error.stack}  </div > `;
+    }
 }
 
 /**

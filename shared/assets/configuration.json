@@ -1,0 +1,13 @@
+{
+    "wsUrlformel": "https://kusala.fr/dolibarr/api/index.php/",
+    "leftMenu": [
+        {
+            "menuItemName": "Booking",
+            "menuItemLink": "booking/booking.html"
+        }
+            {
+            "menuItemName": "Res",
+            "menuItemLink": "restaurant/index.html"
+        }
+    ]
+}

@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant - Zöpa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .hidden {
+            display: none !important;
+        }
+
+        .search-btn {
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            color: #722F37;
+        }
+
+        .meal-table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .meal-table th,
+        .meal-table td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.85rem;
+        }
+
+        .meal-table th:first-child,
+        .meal-table td:first-child {
+            text-align: left;
+            width: 110px;
+        }
+
+        .place-select {
+            position: relative;
+        }
+
+        .place-select-box {
+            border: 1px solid #b8860b;
+            border-radius: 4px;
+            padding: 5px;
+            min-height: 38px;
+            cursor: pointer;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .place-tag {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 3px;
+            padding: 2px 8px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .place-tag .remove {
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .place-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .place-dropdown label {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .place-dropdown label:hover {
+            background: #f8f9fa;
+        }
+
+        .place-dropdown input {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Contenu principal -->
+    <div class="container-fluid p-4">
+        <h1 class="text-secondary fs-4 mb-4"><i class="bi bi-cup-hot me-2"></i>Restaurant</h1>
+
+        <!-- Filtres de dates -->
+        <div class="border p-3 mb-4" style="max-width: 400px;">
+            <div class="mb-3">
+                <label class="form-label small text-muted mb-1">Date début</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-0 border-bottom rounded-0">
+                        <i class="bi bi-search search-btn" id="searchBtn" title="Rechercher"></i>
+                    </span>
+                    <input type="date" class="form-control border-0 border-bottom rounded-0" id="dateDebut"
+                        value="2026-01-01">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small text-muted mb-1">Date fin</label>
+                <input type="date" class="form-control border-0 border-bottom rounded-0" id="dateFin"
+                    value="2026-01-07">
+            </div>
+            <div class="place-select">
+                <label class="form-label small text-muted mb-1">Choisir les lieux de consommation</label>
+                <div class="place-select-box" id="placeSelectBox">
+                    <span class="text-muted small">Chargement...</span>
+                </div>
+                <div class="place-dropdown hidden" id="placeDropdown"></div>
+            </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div id="errorMessage" class="alert alert-danger hidden"></div>
+
+        <!-- Indicateur de chargement -->
+        <div class="hidden d-flex align-items-center gap-2 my-3" id="loadingIndicator">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+            <span>Chargement des données...</span>
+        </div>
+
+        <!-- Conteneur des tableaux -->
+        <div id="tableContainer">
+            <!-- Table Lieu 1 -->
+            <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable1">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Lieu 1</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <!-- Table Lieu 3 -->
+            <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable3">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Lieu 3</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <!-- Table Lieu non défini -->
+            <table class="table table-bordered table-sm meal-table mb-4" id="totauxTableNull">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Lieu non défini</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <!-- Table Totaux -->
+            <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Totaux</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Lignes de commande -->
+        <h6 class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</h6>
+        <table class="table table-bordered table-sm" id="commandesTable">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Commande</th>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Lieu</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Formater la date en j/M
+        function formatDateShort(date) {
+            return `${date.getDate()}/${date.getMonth() + 1}`;
+        }
+
+        // Formater la date en YYYY-MM-DD pour l'API
+        function formatDateAPI(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        // Obtenir le type de repas depuis la ref (lettre avant le dernier "_")
+        function getMealType(ref) {
+            const parts = ref.split('_');
+            if (parts.length < 2) return null;
+            const beforeLast = parts[parts.length - 2];
+            const letter = beforeLast.charAt(beforeLast.length - 1).toUpperCase();
+            if (letter === 'P') return 'Matin';
+            if (letter === 'M') return 'Midi';
+            if (letter === 'S') return 'Soir';
+            return null;
+        }
+
+        // Parser la date YYYY-MM-DD pour éviter les problèmes de fuseau horaire
+        function parseDate(dateStr) {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            return new Date(year, month - 1, day);
+        }
+
+        // Générer un tableau de dates entre début et fin
+        function getDateRange(startDate, endDate) {
+            const dates = [];
+            const current = parseDate(startDate);
+            const end = parseDate(endDate);
+            while (current <= end) {
+                dates.push(new Date(current));
+                current.setDate(current.getDate() + 1);
+            }
+            return dates;
+        }
+
+        // Vérifier si une date est dans une plage (début <= date <= fin)
+        function isDateInRange(targetDate, startTimestamp, endTimestamp) {
+            const target = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+            const start = new Date(startTimestamp * 1000);
+            const end = new Date(endTimestamp * 1000);
+            const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+            return target >= startDay && target <= endDay;
+        }
+
+        // Afficher/masquer l'indicateur de chargement
+        function showLoading(show) {
+            const loader = document.getElementById('loadingIndicator');
+            const searchBtn = document.getElementById('searchBtn');
+            if (show) {
+                loader.classList.remove('hidden');
+                searchBtn.style.pointerEvents = 'none';
+                searchBtn.style.opacity = '0.5';
+            } else {
+                loader.classList.add('hidden');
+                searchBtn.style.pointerEvents = 'auto';
+                searchBtn.style.opacity = '1';
+            }
+        }
+
+        // Controller pour annuler les requêtes précédentes
+        let currentController = null;
+
+        // Données des lieux (cache global)
+        let placesData = {};
+        let selectedPlaces = new Set();
+
+        // Tous les IDs de lieux pour la logique "Tous les lieux"
+        let allPlaceIds = [];
+
+        // Initialiser le sélecteur de lieux
+        async function initPlaceSelector() {
+            const places = await fetchIntakePlaces();
+            placesData = places;
+
+            const dropdown = document.getElementById('placeDropdown');
+            dropdown.innerHTML = '';
+
+            // Construire la liste de tous les IDs de lieux
+            allPlaceIds = ['null', ...Object.keys(places)];
+
+            // Ajouter l'option "Tous les lieux" en premier
+            const labelAll = document.createElement('label');
+            labelAll.innerHTML = `<input type="checkbox" value="all" checked> <strong>Tous les lieux</strong>`;
+            labelAll.style.borderBottom = '1px solid #dee2e6';
+            dropdown.appendChild(labelAll);
+
+            // Ajouter l'option "Lieu non défini"
+            const labelNull = document.createElement('label');
+            labelNull.innerHTML = `<input type="checkbox" value="null" checked> Lieu non défini`;
+            dropdown.appendChild(labelNull);
+            selectedPlaces.add('null');
+
+            // Ajouter les lieux depuis l'API
+            Object.entries(places).forEach(([id, name]) => {
+                const label = document.createElement('label');
+                label.innerHTML = `<input type="checkbox" value="${id}" checked> ${name}`;
+                dropdown.appendChild(label);
+                selectedPlaces.add(id);
+            });
+
+            // Ajouter les écouteurs d'événements aux cases à cocher
+            dropdown.querySelectorAll('input').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    if (e.target.value === 'all') {
+                        // La case "Tous les lieux" active/désactive toutes les autres
+                        const checkAll = e.target.checked;
+                        dropdown.querySelectorAll('input:not([value="all"])').forEach(otherCb => {
+                            otherCb.checked = checkAll;
+                            if (checkAll) {
+                                selectedPlaces.add(otherCb.value);
+                            } else {
+                                selectedPlaces.delete(otherCb.value);
+                            }
+                        });
+                    } else {
+                        // Case individuelle
+                        if (e.target.checked) {
+                            selectedPlaces.add(e.target.value);
+                        } else {
+                            selectedPlaces.delete(e.target.value);
+                        }
+                        // Mettre à jour l'état de la case "Tous les lieux"
+                        const allCheckbox = dropdown.querySelector('input[value="all"]');
+                        allCheckbox.checked = allPlaceIds.every(id => selectedPlaces.has(id));
+                    }
+                    updatePlaceTags();
+                });
+            });
+
+            updatePlaceTags();
+        }
+
+        // Mettre à jour l'affichage des étiquettes de lieux sélectionnés
+        function updatePlaceTags() {
+            const box = document.getElementById('placeSelectBox');
+            box.innerHTML = '';
+
+            // Vérifier si tous les lieux sont sélectionnés
+            const allSelected = allPlaceIds.length > 0 && allPlaceIds.every(id => selectedPlaces.has(id));
+
+            if (allSelected) {
+                // Afficher uniquement l'étiquette "Tous les lieux"
+                const tag = document.createElement('span');
+                tag.className = 'place-tag';
+                tag.innerHTML = `Tous les lieux <span class="remove" data-id="all">&times;</span>`;
+                box.appendChild(tag);
+            } else {
+                // Afficher les étiquettes individuelles
+                selectedPlaces.forEach(id => {
+                    const name = id === 'null' ? 'Lieu non défini' : (placesData[id] || `Lieu ${id}`);
+                    const tag = document.createElement('span');
+                    tag.className = 'place-tag';
+                    tag.innerHTML = `${name} <span class="remove" data-id="${id}">&times;</span>`;
+                    box.appendChild(tag);
+                });
+            }
+
+            // Ajouter la flèche du menu déroulant
+            const arrow = document.createElement('span');
+            arrow.className = 'ms-auto';
+            arrow.innerHTML = '&#9660;';
+            box.appendChild(arrow);
+
+            // Ajouter les gestionnaires de clic pour les boutons de suppression
+            box.querySelectorAll('.remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = e.target.dataset.id;
+                    if (id === 'all') {
+                        // Désélectionner tout
+                        selectedPlaces.clear();
+                        document.querySelectorAll('#placeDropdown input').forEach(cb => cb.checked = false);
+                    } else {
+                        selectedPlaces.delete(id);
+                        const checkbox = document.querySelector(`#placeDropdown input[value="${id}"]`);
+                        if (checkbox) checkbox.checked = false;
+                        // Mettre à jour la case "Tous les lieux"
+                        const allCheckbox = document.querySelector('#placeDropdown input[value="all"]');
+                        if (allCheckbox) allCheckbox.checked = false;
+                    }
+                    updatePlaceTags();
+                });
+            });
+        }
+
+        // Basculer la visibilité du menu déroulant
+        document.getElementById('placeSelectBox').addEventListener('click', () => {
+            document.getElementById('placeDropdown').classList.toggle('hidden');
+        });
+
+        // Fermer le menu déroulant lors d'un clic à l'extérieur
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.place-select')) {
+                document.getElementById('placeDropdown').classList.add('hidden');
+            }
+        });
+
+        // Récupérer les noms des lieux depuis l'API
+        async function fetchIntakePlaces() {
+            try {
+                const apiUrl = 'https://www.kusala.fr/dolibarr/api/index.php/dklaccueil/dictionary/intakeplaces?sortorder=ASC&limit=100&active=1&DOLAPIKEY=OpK1D8otonWg690PIoj570KdHSCqCc04';
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const places = {};
+                data.forEach(item => {
+                    places[item.rowid] = item.label;
+                });
+                return places;
+            } catch (error) {
+                console.error('Erreur lors du chargement des lieux:', error);
+                return {};
+            }
+        }
+
+        // Récupérer les IDs des produits repas depuis l'API (ref commence par "REP" et tosell = 1)
+        async function fetchMealProductIds() {
+            try {
+                const apiUrl = "https://www.kusala.fr/dolibarr/api/index.php/products?DOLAPIKEY=OpK1D8otonWg690PIoj570KdHSCqCc04&sqlfilters=(t.ref:like:'REP%') AND (t.tosell:=:1)";
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                const data = await response.json();
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error('Aucun produit repas trouvé dans l\'API');
+                }
+                return data.map(product => product.id);
+            } catch (error) {
+                console.error('Erreur lors du chargement des produits repas:', error);
+                throw error;
+            }
+        }
+
+        // Charger les données et remplir les tableaux
+        async function loadData() {
+            // Annuler la requête précédente si elle existe
+            if (currentController) {
+                currentController.abort();
+            }
+            currentController = new AbortController();
+
+            const startDate = document.getElementById('dateDebut').value;
+            const endDate = document.getElementById('dateFin').value;
+
+            // Validation des dates
+            if (!startDate || !endDate) {
+                alert('Veuillez sélectionner les dates de début et de fin');
+                return;
+            }
+
+            if (endDate < startDate) {
+                alert('La date de fin doit être postérieure ou égale à la date de début');
+                return;
+            }
+
+            // Afficher l'indicateur de chargement
+            showLoading(true);
+
+            // Récupérer les IDs des produits repas (lieux déjà en cache dans placesData)
+            const mealProductIds = await fetchMealProductIds();
+            const places = placesData;
+
+            // Vérifier qu'on a des IDs de produits
+            if (mealProductIds.length === 0) {
+                throw new Error('Aucun produit repas trouvé');
+            }
+
+            // Construire le filtre SQL - trouver les inscriptions qui chevauchent la plage de dates
+            const productIdsStr = mealProductIds.join(',');
+            const sqlFilter = `llx_commandedet.fk_product in (${productIdsStr}) and (lin_datedebut is not null) and (lin_datedebut <= '${endDate}' and lin_datefin >= '${startDate}')`;
+            const apiUrl = `https://www.kusala.fr/dolibarr/api/index.php/dklaccueil?DOLAPIKEY=OpK1D8otonWg690PIoj570KdHSCqCc04&sortfield=rowid&sortorder=ASC&sqlfilters=${encodeURIComponent(sqlFilter)}`;
+
+            try {
+                const response = await fetch(apiUrl, { signal: currentController.signal });
+                if (!response.ok) throw new Error('Erreur API');
+                const data = await response.json();
+
+                // Obtenir la plage de dates
+                const dates = getDateRange(startDate, endDate);
+
+                // Initialiser les compteurs - total et par lieu
+                const initCounts = () => ({
+                    'Matin': {},
+                    'Midi': {},
+                    'Soir': {}
+                });
+
+                const counts = initCounts();
+                const counts1 = initCounts();
+                const counts3 = initCounts();
+                const countsNull = initCounts();
+
+                dates.forEach(date => {
+                    const key = formatDateAPI(date);
+                    ['Matin', 'Midi', 'Soir'].forEach(meal => {
+                        counts[meal][key] = 0;
+                        counts1[meal][key] = 0;
+                        counts3[meal][key] = 0;
+                        countsNull[meal][key] = 0;
+                    });
+                });
+
+                // Traiter chaque ligne
+                data.forEach(item => {
+                    const ref = item.ref || '';
+                    const mealType = getMealType(ref);
+
+                    if (!mealType) return;
+
+                    const startTs = item.array_options?.options_lin_datedebut;
+                    const endTs = item.array_options?.options_lin_datefin;
+                    const intakePlace = item.array_options?.options_lin_intakeplace;
+                    if (!startTs || !endTs) return;
+
+                    // Déterminer la clé du lieu pour le filtrage
+                    const placeKey = intakePlace ? String(intakePlace) : 'null';
+
+                    // Ignorer si le lieu n'est pas sélectionné
+                    if (!selectedPlaces.has(placeKey)) return;
+
+                    const qty = parseInt(item.qty) || 1;
+
+                    // Calculer le nombre de jours dans l'inscription
+                    const daysInSubscription = Math.round((endTs - startTs) / (24 * 60 * 60)) + 1;
+                    // Calculer le nombre de repas par jour (qty divisé par nombre de jours)
+                    const mealsPerDay = qty / daysInSubscription;
+
+                    // Pour chaque date de la plage UI, vérifier si elle est dans la plage de l'inscription
+                    dates.forEach(date => {
+                        if (isDateInRange(date, startTs, endTs)) {
+                            const key = formatDateAPI(date);
+                            // Total
+                            counts[mealType][key] += mealsPerDay;
+                            // Par lieu (placeKey déjà normalisé en string)
+                            if (placeKey === '1') {
+                                counts1[mealType][key] += mealsPerDay;
+                            } else if (placeKey === '3') {
+                                counts3[mealType][key] += mealsPerDay;
+                            } else if (placeKey === 'null') {
+                                countsNull[mealType][key] += mealsPerDay;
+                            }
+                        }
+                    });
+                });
+
+                // Fonction pour construire un tableau avec titre dans l'en-tête
+                function buildTable(tableId, countsData, title) {
+                    const table = document.getElementById(tableId);
+                    const thead = table.querySelector('thead tr');
+                    const tbody = table.querySelector('tbody');
+
+                    // Construire l'en-tête : titre + dates
+                    thead.innerHTML = '';
+                    const thTitle = document.createElement('th');
+                    thTitle.textContent = title;
+                    thead.appendChild(thTitle);
+                    dates.forEach(date => {
+                        const th = document.createElement('th');
+                        th.textContent = formatDateShort(date);
+                        thead.appendChild(th);
+                    });
+
+                    // Construire les lignes
+                    const meals = ['Matin', 'Midi', 'Soir'];
+                    tbody.innerHTML = '';
+                    meals.forEach(meal => {
+                        const tr = document.createElement('tr');
+                        const tdTitle = document.createElement('td');
+                        tdTitle.textContent = meal;
+                        tdTitle.classList.add('text-primary');
+                        tr.appendChild(tdTitle);
+
+                        dates.forEach(date => {
+                            const key = formatDateAPI(date);
+                            const td = document.createElement('td');
+                            const value = Math.round(countsData[meal][key]);
+                            td.textContent = value > 0 ? value : '';
+                            if (value > 0) {
+                                td.classList.add('table-warning');
+                            }
+                            tr.appendChild(td);
+                        });
+
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Fonction pour construire le tableau des commandes
+                function buildCommandesTable(data, places) {
+                    const tbody = document.querySelector('#commandesTable tbody');
+                    tbody.innerHTML = '';
+
+                    // Formater le timestamp en JJ/MM/AAAA
+                    function formatTimestampToDate(timestamp) {
+                        if (!timestamp) return '';
+                        const date = new Date(timestamp * 1000);
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        return `${day}/${month}/${year}`;
+                    }
+
+                    // Trier par date de début
+                    const sortedData = [...data].sort((a, b) => {
+                        const dateA = a.array_options?.options_lin_datedebut || 0;
+                        const dateB = b.array_options?.options_lin_datedebut || 0;
+                        return dateA - dateB;
+                    });
+
+                    sortedData.forEach(item => {
+                        const tr = document.createElement('tr');
+
+                        // Commande (fk_commande)
+                        const tdCommande = document.createElement('td');
+                        tdCommande.textContent = item.fk_commande || '';
+                        tr.appendChild(tdCommande);
+
+                        // Produit (ref)
+                        const tdProduit = document.createElement('td');
+                        tdProduit.textContent = item.ref || '';
+                        tr.appendChild(tdProduit);
+
+                        // Quantité
+                        const tdQty = document.createElement('td');
+                        tdQty.textContent = item.qty || '';
+                        tr.appendChild(tdQty);
+
+                        // Date début
+                        const tdDateDebut = document.createElement('td');
+                        const startTs = item.array_options?.options_lin_datedebut;
+                        tdDateDebut.textContent = formatTimestampToDate(startTs);
+                        tr.appendChild(tdDateDebut);
+
+                        // Date fin
+                        const tdDateFin = document.createElement('td');
+                        const endTs = item.array_options?.options_lin_datefin;
+                        tdDateFin.textContent = formatTimestampToDate(endTs);
+                        tr.appendChild(tdDateFin);
+
+                        // Lieu (intakeplace)
+                        const tdLieu = document.createElement('td');
+                        const intakePlace = item.array_options?.options_lin_intakeplace;
+                        tdLieu.textContent = places[intakePlace] || intakePlace || '';
+                        tr.appendChild(tdLieu);
+
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // Construire les tableaux avec les noms des lieux (si sélectionnés)
+                const table1 = document.getElementById('totauxTable1');
+                const table3 = document.getElementById('totauxTable3');
+                const tableNull = document.getElementById('totauxTableNull');
+
+                if (selectedPlaces.has('1')) {
+                    table1.classList.remove('hidden');
+                    buildTable('totauxTable1', counts1, places['1'] || 'Lieu 1');
+                } else {
+                    table1.classList.add('hidden');
+                }
+
+                if (selectedPlaces.has('3')) {
+                    table3.classList.remove('hidden');
+                    buildTable('totauxTable3', counts3, places['3'] || 'Lieu 3');
+                } else {
+                    table3.classList.add('hidden');
+                }
+
+                if (selectedPlaces.has('null')) {
+                    tableNull.classList.remove('hidden');
+                    buildTable('totauxTableNull', countsNull, 'Lieu non défini');
+                } else {
+                    tableNull.classList.add('hidden');
+                }
+
+                // Afficher le tableau Totaux seulement si plus d'1 lieu est sélectionné
+                const totauxTable = document.getElementById('totauxTable');
+                if (selectedPlaces.size > 1) {
+                    totauxTable.classList.remove('hidden');
+                    buildTable('totauxTable', counts, 'Totaux');
+                } else {
+                    totauxTable.classList.add('hidden');
+                }
+
+                // Construire le tableau des commandes (filtré par lieux sélectionnés)
+                const filteredData = data.filter(item => {
+                    const intakePlace = item.array_options?.options_lin_intakeplace;
+                    const placeKey = intakePlace ? String(intakePlace) : 'null';
+                    return selectedPlaces.has(placeKey);
+                });
+                buildCommandesTable(filteredData, places);
+
+                // Masquer le message d'erreur si succès
+                document.getElementById('errorMessage').classList.add('hidden');
+
+                // Masquer l'indicateur de chargement
+                showLoading(false);
+
+            } catch (error) {
+                // Ignorer les erreurs d'annulation (AbortError)
+                if (error.name === 'AbortError') {
+                    console.log('Requête annulée');
+                    return;
+                }
+                console.error('Erreur:', error);
+
+                // Afficher message d'erreur à l'utilisateur
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = `Erreur lors du chargement des données: ${error.message}`;
+                errorDiv.classList.remove('hidden');
+
+                showLoading(false);
+            }
+        }
+
+
+
+
+        // Écouteur d'événement - clic sur le bouton de recherche
+        document.getElementById('searchBtn').addEventListener('click', loadData);
+
+        // Permettre d'appuyer sur Entrée dans les champs de date pour lancer la recherche
+        document.getElementById('dateDebut').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadData();
+        });
+        document.getElementById('dateFin').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadData();
+        });
+
+        // Initialiser le sélecteur de lieux au chargement de la page
+        initPlaceSelector();
+    </script>
+</body>
+
+</html>

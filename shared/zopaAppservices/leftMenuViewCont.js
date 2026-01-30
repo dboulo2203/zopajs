@@ -1,8 +1,8 @@
-import { getAppPath } from '../../shared/services/commonFunctions.js'
+import { getAppPath } from '../services/commonFunctions.js'
 import { bedIcon, personIcon, loginIcon, logoutIcon } from '../../shared/assets/constants.js'
-import { isCurrentUSerLogged } from '../../shared/services/zopaLoginServices.js'
-import { logout } from '../../shared/services/zopaLoginServices.js'
-import { toogleTheme } from '../../shared/services/bootstrapTheme.js'
+import { isCurrentUSerLogged } from '../../shared/zopaServices/zopaLoginServices.js'
+import { logout } from '../../shared/zopaServices/zopaLoginServices.js'
+import { toogleTheme } from '../../shared/bootstrapServices/bootstrapTheme.js'
 import { loginViewDisplay } from './loginViewCont.js'
 //***
 // catalog
@@ -32,7 +32,8 @@ const leftmenuString = `
              <hr/>       
              ${isCurrentUSerLogged() ? `<div id="searchCustomer" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${personIcon} Adhérents</span></div>` : ``}
              ${isCurrentUSerLogged() ? `<div id="Hosting" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${bedIcon} Hôtellerie</span></div>` : ``}
-           
+             ${isCurrentUSerLogged() ? `<div id="Restaurant" style="margin-bottom:10px;cursor:pointer" ><span class="fs-6">${bedIcon} Restaurant</span></div>` : ``}
+          
            </div>
     </div>
  `;
@@ -63,6 +64,10 @@ export function leftMenuViewDisplay(htlmPartId) {
     if (isCurrentUSerLogged())
         document.querySelector("#Hosting").onclick = function () {
             window.location.href = `${getAppPath()}/views/booking/booking.html`;
+        };
+    if (isCurrentUSerLogged())
+        document.querySelector("#Restaurant").onclick = function () {
+            window.location.href = `${getAppPath()}/views/restaurant/index.html`;
         };
 
     if (isCurrentUSerLogged())

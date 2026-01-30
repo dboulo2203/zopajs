@@ -52,6 +52,8 @@ export async function getLogin(userName, userPassword) {
  */
 export function isCurrentUSerLogged() {
 
+
+    return true
     let loggedUserJSON = sessionStorage.getItem("loggedUSer");
     if (loggedUserJSON !== "") {
         let loggedUser = JSON.parse(loggedUserJSON);

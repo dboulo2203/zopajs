@@ -2,17 +2,19 @@
 import {
     getOrder, getOrderBilledAmount, getOrderPaidAmount, getevaluateOrderGlobalStatus, getOrderRoomNotSet,
     getOrderhostingtaxesconsistancy, getOrderDatesQtyconsistancy, getOrderRepConsistancy
-} from '../../../shared/services/zopaOrderServices.js'
-import { isCurrentUSerLogged } from '../../../shared/services/zopaLoginServices.js'
+} from '../../../shared/zopaServices/zopaOrderServices.js'
+import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
+import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServices.js'
+
 // *** Shared ressoucres
-import { headerViewDisplay } from '../../appservices/headerViewCont.js'//***  shared ressources
-import { launchInitialisation } from '../../appservices/initialisationService.js'
+import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
+import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 import {
     threedotsvertical, orderIcon, addOrderIcon, bedIcon, mealIcon, validateIcon, cancelIcon, plussquareIcon,
     pencilsquareIcon, closeOrderIcon, invoiceIcon
 } from '../../../shared/assets/constants.js'
 import { getLinkWithctrl, getAppPath, addMultipleEnventListener } from '../../../shared/services/commonFunctions.js'
-import { getUserLoginFromId } from '../../../shared/services/zopaListsServices.js'
+
 
 
 /**
@@ -79,10 +81,10 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
         // *** Actions
         document.querySelector("#customerLink").onclick = function (event) {
-            getLinkWithctrl(`${getAppPath()}/views/manageCustomer/customer/customer.html?customerID=` + event.currentTarget.getAttribute('customerid'), event.ctrlKey);
+            getLinkWithctrl(`${getAppPath()}/views/manageCustomer/customer/customer.html?customerID=` + event.currentTarget.getAttribute('entityid'), event.ctrlKey);
         };
         addMultipleEnventListener(".invoiceLink", function (event) {
-            window.location.href = `${getAppPath()}/views/manageCustomer/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceid');
+            window.location.href = `${getAppPath()}/views/manageCustomer/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('entityid');
         });
 
     } catch (error) {
@@ -120,7 +122,7 @@ function displayOrderIdentity(order) {
             </ul>
         </dob-bloctitle>
 
-        <dob-stdfieldwithlink fieldName="Adhérent : " fieldValue="${order.customer.name}" fieldid="${order.socid}" fieldlink="customerLink">
+        <dob-stdfieldwithlink fieldName="Adhérent : " fieldValue="${order.customer.name}" entityid="${order.socid}" fieldlink="customerLink">
         </dob-stdfieldwithlink>
 
         <dob-stdfield fieldName="Ref. commande" fieldValue="${order.ref}">
@@ -317,7 +319,8 @@ function displayOrderInvoices(order) {
             <div class="row" style = "" >
                 
                 <div class="col-3" >
-                    <span class="invoiceLink text-danger-emphasis"  invoiceid="${linkedInvoice.id}" style="cursor: pointer">${linkedInvoice.ref}</span>
+                    <dob-stdfieldwithlinkclass fieldName="" fieldValue="${linkedInvoice.ref}" entityid="${linkedInvoice.id}" fieldlink="invoiceLink"/>
+                    <!-- <span class="invoiceLink text-danger-emphasis"  invoiceid="${linkedInvoice.id}" style="cursor: pointer">${linkedInvoice.ref}</span> -->
                 </div> 
                 <div class="col-2 col d-none d-md-block" > 
                     ${linkedInvoice.type === "3"
