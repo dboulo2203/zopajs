@@ -1,7 +1,11 @@
 # zopajs
 
 ## Release notes
-### V0.0.1 
+### V 0.0.3 
+- Menu gauche configurable
+- Réorganisation de l'architexture
+
+### V 0.0.2 
 - NEW : Dark mode
 - NEW : service login
 - Utilisation de fontawesome,
