@@ -1,13 +1,54 @@
 {
     "wsUrlformel": "https://kusala.fr/dolibarr/api/index.php/",
+    "version": "Powered by Dhagpo Kagyu  - ZopaJS App - v 3.0.2 -31 /01/2026",
     "leftMenu": [
         {
-            "menuItemName": "Booking",
-            "menuItemLink": "booking/booking.html"
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-box-arrow-in-right'></i>",
+            "menuItemid": "login",
+            "menuItemName": "Log",
+            "menuItemAction": "functionCall",
+            "menuItemLink": "loginViewDisplay('mainActiveSection')"
         },
         {
-            "menuItemName": "Res",
-            "menuItemLink": "restaurant/index.html"
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-brightness-high'></i>",
+            "menuItemid": "theme",
+            "menuItemName": "Theme",
+            "menuItemAction": "functionCall",
+            "menuItemLink": "toogleTheme()"
+        },
+        {
+            "menuItemType": "hr",
+            "menuItemIcon": "",
+            "menuItemid": "",
+            "menuItemName": "",
+            "menuItemAction": "",
+            "menuItemLink": ""
+        },
+        {
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-person'></i>",
+            "menuItemid": "adherent",
+            "menuItemName": "Adhérents",
+            "menuItemAction": "urlCall",
+            "menuItemLink": "views/manageCustomer/searchCustomer/searchCustomer.html"
+        },
+        {
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-house'></i>",
+            "menuItemid": "Hosting",
+            "menuItemName": "Hosting",
+            "menuItemAction": "urlCall",
+            "menuItemLink": "views/booking/booking.html"
+        },
+        {
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-cup-hot'></i>",
+            "menuItemid": "restaurant",
+            "menuItemName": "Restaurant",
+            "menuItemAction": "urlCall",
+            "menuItemLink": "views/restaurant/restaurant.html"
         }
     ]
 }

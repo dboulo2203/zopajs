@@ -8,7 +8,8 @@ import { isCurrentUSerLogged } from '../../shared/zopaServices/zopaLoginServices
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js'
 import { bedIcon, copyIcon } from '../../shared/assets/constants.js'
-import { addMultipleEnventListener, displayToast } from '../../shared/services/commonFunctions.js'
+import { addMultipleEnventListener } from '../../shared/services/commonFunctions.js'
+import { displayToast } from '../../shared/bootstrapServices/bootstrapCommon.js'
 
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
