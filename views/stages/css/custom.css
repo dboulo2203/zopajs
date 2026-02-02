@@ -1,0 +1,73 @@
+body {
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.fs-5 {
+    font-size: 1.1rem !important;
+}
+
+.form-label {
+    font-size: 0.95rem;
+}
+
+input {
+    font-size: 0.95rem;
+}
+
+th, td {
+    font-weight: 400;
+}
+
+#commandesTable th,
+#commandesTable td {
+    font-size: 0.95rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.search-btn {
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    color: #722F37;
+}
+
+.meal-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.meal-table th,
+.meal-table td {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 0.7rem;
+}
+
+.meal-table th:first-child,
+.meal-table td:first-child {
+    text-align: left;
+    width: 220px;
+}
+
+#configTable {
+    table-layout: auto;
+}
+
+#configTable th:first-child,
+#configTable td:first-child {
+    width: 50px !important;
+    min-width: 50px;
+    max-width: 50px;
+}
+
+#configTable th:nth-child(2),
+#configTable td:nth-child(2),
+#configTable th:nth-child(8),
+#configTable td:nth-child(8) {
+    text-align: left;
+}

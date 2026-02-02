@@ -79,7 +79,10 @@
 
     <script type="module">
         import { initWebComponents } from "./webComponents.js"
-        initWebComponents();
+        import { launchInitialisation } from '../../shared/zopaAppservices/initialisation.js'
+
+        launchInitialisation()
+
 
 
         document.querySelector("#mybutton").onclick = async function () {
