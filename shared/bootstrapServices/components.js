@@ -27,21 +27,43 @@ export class PageTitleDisplay extends HTMLElement {
     
     connectedCallback() {
 
+        let iconString;
+
         let titleName = this.getAttribute("titleName");
         let titleIcon = this.getAttribute("titleIcon");
 
+        if (!titleIcon || (titleIcon && titleIcon.length == 0))
+            iconString = ``
+        else
+            iconString = `<i class="bi ${titleIcon}"></i>`
+
+
         this.innerHTML =  `
-        <div class="row ">
-            <div class="d-flex  justify-content-between" style="margin-top:00px">
-                <span class="fs-4" style="color:#8B2331"><i class="bi ${titleIcon}"></i> ${titleName}
+            <div class="d-flex  justify-content-between" style="margin-top:0px">
+                <span class="fs-4" style="color:#8B2331"> ${iconString}${titleName}
                 </span>
             </div>
-        </div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px;margin-bottom:10px; " />`;
+            <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px;margin-bottom:10px; " />`;
     }
 }
 
 
+export function getPageTitleDisplay(blocName, blocIcon) {
+
+    let iconString;
+    if (!blocIcon || (blocIcon && blocIcon.length == 0))
+        iconString = ``
+    else
+        iconString = `<i class="bi ${blocIcon}"></i>`
+
+    return `        
+            <div class="d-flex  justify-content-between" style="margin-top:0px" >
+                <span class="fs-4" style="color:#8B2331" >${iconString} ${blocName}</span>
+            </div>
+            <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
+                `;
+
+}
 // <div>
 //   <span ${getCurrentUSerRightLevel(20)} id="editButton" style="cursor: pointer"> ${pencilsquare}</span>
 //   <span ${getCurrentUSerRightLevel(20)} id="addnewButton" style="cursor: pointer; margin-left:5px"> ${plussquare}</span>
@@ -69,6 +91,24 @@ export class BlocTitleDisplay extends HTMLElement {
     }
 }
 
+export function getBlocTitleDisplay(blocName, blocIcon) {
+
+    let iconString;
+    if (!blocIcon || (blocIcon && blocIcon.length == 0))
+        iconString = ``
+    else
+        iconString = `<i class="bi ${blocIcon}"></i>`
+
+    return `        
+            <div class="d-flex  justify-content-between" style="margin-top:0px" >
+                <span class="fs-5 " style="color:#8B2331" >${iconString} ${blocName}</span>
+                <div class="col-8 flex float-right text-end" style="cursor: pointer">            
+                
+                    </div>
+            </div>
+            <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
+                `;
+}
 
 export class BlocTitleDisplayv2 extends HTMLElement {
     connectedCallback() {
@@ -90,7 +130,6 @@ export class BlocTitleDisplayv2 extends HTMLElement {
             </div>
             <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
                 `;
-        
     }
 }
        
@@ -161,7 +200,7 @@ export class BlocTitleDisplaywithMenu extends HTMLElement {
             iconString = ''
         else
             iconString = eval(userIcon);
-        this.innerHTML = `< div style = "margin-top:10px" > <span class="fs-5" style="color:#8B2331">` + iconString + ' ' + userName + `</span></div >
+        this.innerHTML = `<div style = "margin-top:10px" > <span class="fs-5" style="color:#8B2331">` + iconString + ' ' + userName + `</span></div >
             <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
     }
 }

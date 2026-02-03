@@ -9,6 +9,7 @@ import { footerViewDisplay } from '../../../shared/zopaAppservices/footerViewCon
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 import { searchIcon } from '../../../shared/assets/constants.js'
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
 
 
 /**
@@ -50,24 +51,27 @@ export async function displaySearchCustomerContent(htlmPartId) {
 
         // *** Display the controller skeleton
         output += `
-     <div style="padding-top:10px"><span class="fs-5" style="color:#8B2331">${searchIcon} Search customer</span></div><hr/>
-    <div id='componentMessage'></div>
-    <div class="col-6">
-          <div class="row">
-        
-            <div class="col-8" style="margin:2px">
-                <input type="text" class="form-control " name="searchString" id="searchString" placeholder="" value=""/>
+        <div style="margin-top:60px">
+  
+            ${getPageTitleDisplay("Search customer", "bi-person")}
+             <div id='componentMessage'></div>
+            <div class="col-6">
+                <div class="row">  
+                    <div class="col-8" style="margin:2px">
+                        <input type="text" class="form-control " name="searchString" id="searchString" placeholder="" value=""/>
+                    </div>
+                    <div class="col-2" style="margin:2px">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Chercher</button>
+                    </div>
+                </div>
             </div>
-            <div class="col-2" style="margin:2px">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Chercher</button>
-            </div>
-        </div>
-    </div> 
 
-    <div class="col-md-12 main" style="padding:10px" id="resultDisplay">
-    </div >
-       <div class="col-md-12 main" style="padding:10px" id="footerDisplay">
-    </div >`;
+        </div> 
+   
+        <div class="col-md-12 main" style="padding:10px" id="resultDisplay">
+        </div >
+        <div class="col-md-12 main" style="padding:10px" id="footerDisplay">
+        </div >`;
 
         // *** Display skeleton
         document.querySelector("#" + htlmPartId).innerHTML = output;
