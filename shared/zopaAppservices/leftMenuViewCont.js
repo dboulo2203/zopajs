@@ -67,7 +67,7 @@ export function leftMenuViewDisplay(htlmPartId) {
         };
     if (isCurrentUSerLogged())
         document.querySelector("#Restaurant").onclick = function () {
-            window.location.href = `${getAppPath()}/views/restaurant/index.html`;
+            window.location.href = `${getAppPath()}/views/restaurant/restaurant.html`;
         };
 
     if (isCurrentUSerLogged())
