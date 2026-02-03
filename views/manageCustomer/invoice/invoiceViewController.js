@@ -53,10 +53,8 @@ export async function displayInvoiceContent(htlmPartId, invoiceID) {
 
     // *** Display the controller skeleton
     let initString = `
-            <div style="padding-top:60px">
-                <span class="fs-5 " style="color:#8B2331"> ${invoiceIcon} Invoice : ${invoice.ref}</span>
-            </div>
-            <hr/>
+           <div style="margin-top:60px">
+           <dob-pagetitle titlename="Invoice : ${invoice.ref}" titleIcon="bi-receipt"></dob-pagetitle>
 
             <div class="row" >
                 <div class="col-12 col-md-6" id="invoiceIdentity" >   
@@ -95,21 +93,20 @@ function displayInvoiceIdentity(invoice, customer) {
     // output += `<div style="margin-bottom:10px">     `;
     output += `
         <div id="invoiceIdentity">
-         <div class="d-flex  justify-content-between" style="margin-top:0px" >
-            <span class="fs-5 " style="color:#8B2331" >${invoiceIcon} Details</span>
-            <div class="col-8 flex float-right text-end" style="cursor: pointer">            
+            <dob-bloctitlev2 id="bloc" blocIcon="bi-receipt" blocName="Details">          
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary" >${threedotsvertical}  </a>
                     <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
-                        <li id=""><span>${printerIcon} Imprimer la facture</span></li>
-                        <li id=""><span>${pencilsquareIcon} Valider la facture</span></li>
-                       <li id=""><span>${cancelIcon} Abandonner la facture</span></li>
-                      
+                        <li id=""><span>printerIcon Imprimer la facture</span></li>
+                        <li id=""><span>pencilsquareIcon Valider la facture</span></li>
+                       <li id=""><span>cancelIcon Abandonner la facture</span></li>
+                       <li id=""><span>cancelIcon hlkjlla facture</span></li>
                     </ul>
                 </div>
-            </div>
+            </dob-bloctitlev2>
+     
         </div>`;
-    output += `<hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+    // output += `<hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
     output += `<div class="col-md-12 main"  > <span class="fw-light text-secondary" >Ref. facture</span> : ${invoice.ref} </div >`;
     output += `<div class="col-md-12 main"  > <span class=" fw-light" >Adhérent : </span> <span id="customerLink" customerid="${invoice.socid}" style ="cursor:pointer"> ${customer.name}</span></div >`;
     output += `<div class="col-md-12 main"  > <span class="fw-light text-secondary" >Ref. commande</span> : <span id="orderLink" orderid="${Object.values(invoice.linkedObjectsIds.commande).join()}" style="cursor:pointer" >${Object.values(invoice.linkedObjectsIds.commande).join()}</span> </div >`;
@@ -153,18 +150,16 @@ function displayInvoicePayments(invoicePayments) {
     let invoicePaymentsString = '';
     invoicePaymentsString += `
      <div id="invoicePaiements">
-        <div class="d-flex  justify-content-between" style="margin-top:00px" >
-            <span class="fs-5" style="color:#8B2331">${invoiceIcon} Payments</span>
-            <div class="col-8 flex float-right text-end" style="cursor: pointer">
-                <div class="dropdown">
-                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary">${threedotsvertical}  </a>
-                    <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
-                        <li id=""><span>${printerIcon} Ajouter un paiement</span></li>
-                    </ul>
-                </div>
+        <dob-bloctitlev2 id="bloc" blocIcon="bi-receipt" blocName="Payments">
+            <div class="dropdown">
+                <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary">${threedotsvertical}  </a>
+                <ul class="dropdown-menu bg-light-subtle" style="padding:10px">
+                    <li id=""><span>${printerIcon} Ajouter un paiement</span></li>
+                </ul>
             </div>
-        </div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+        </dob-bloctitlev2>
+        
+                </div>`;
 
 
     if (invoicePayments) {
@@ -212,10 +207,8 @@ function displayInvoiceLines(invoice) {
     let invoiceLInesString = '';
     invoiceLInesString += `
         <div  id="invoiceLines">
-        <div class="d-flex  justify-content-between" style="margin-top:20px" >
-            <span class="fs-5 " style="color:#8B2331">${invoiceIcon} Invoice lines</span>
-            <div class="col-8 flex float-right text-end" style="cursor: pointer">
-                 <!--<div class="dropdown">
+            <dob-bloctitlev2 id="bloc" blocIcon="bi-receipt" blocName="Invoice lines">
+                <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary">${threedotsvertical}  </a>
                     <ul class="dropdown-menu bg-light-subtle" style="padding:10px;background-color:#F7F7F3">
                         <li id=""><span>${printerIcon} Imprimer la facture</span></li>
@@ -229,11 +222,10 @@ function displayInvoiceLines(invoice) {
                         <li><hr class="dropdown-divider"></li>
                         <li id=""><span>${mealIcon} Afficher badge</span></li>
                         <li id=""><span>${addOrderIcon} Afficher devis</span></li>
-                        -->
+                        
                     </ul>
                 </div>
-            </div>
-        </div>
+            </dob-bloctitlev2>
         </div>`;
 
 
@@ -241,7 +233,7 @@ function displayInvoiceLines(invoice) {
         invoice.lines.map((invoiceLine, index) => {
             invoiceLInesString += `
             <div class="row" style = "margin-bottom:5px" >
-                <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
+               
                 <div class="col-2" > 
                     <span   orderLineID="${invoiceLine.id}" style="cursor: pointer">${invoiceLine.ref !== null ? invoiceLine.ref : ''}</span>
                 </div> 

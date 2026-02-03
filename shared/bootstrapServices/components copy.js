@@ -13,91 +13,29 @@ export function displayField(fieldName, fieldValue) {
  */
 export function getListFromSessionstorage(listName) {
     let frBase = sessionStorage.getItem(listName);
-    
     if (frBase)
         return JSON.parse(frBase);
     else
         return null;
 }
 
-
-
-
-export class PageTitleDisplay extends HTMLElement {
-    
-    connectedCallback() {
-
-        let titleName = this.getAttribute("titleName");
-        let titleIcon = this.getAttribute("titleIcon");
-
-        this.innerHTML =  `
-        <div class="row ">
-            <div class="d-flex  justify-content-between" style="margin-top:00px">
-                <span class="fs-4" style="color:#8B2331"><i class="bi ${titleIcon}"></i> ${titleName}
-                </span>
-            </div>
-        </div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px;margin-bottom:10px; " />`;
-    }
-}
-
-
-// <div>
-//   <span ${getCurrentUSerRightLevel(20)} id="editButton" style="cursor: pointer"> ${pencilsquare}</span>
-//   <span ${getCurrentUSerRightLevel(20)} id="addnewButton" style="cursor: pointer; margin-left:5px"> ${plussquare}</span>
-// </div>
 /**
  * 
  */
 export class BlocTitleDisplay extends HTMLElement {
     connectedCallback() {
-        // this.oldInner = this.innerHTML;
         let iconString;
-        let blocName = this.getAttribute("blocName");
-        let blocIcon = this.getAttribute("blocIcon");
-        if (!blocIcon || (blocIcon && blocIcon.length == 0))
-            iconString = ``
+        let userName = this.getAttribute("userName");
+        let userIcon = this.getAttribute("userIcon");
+        if (!userIcon || (userIcon && userIcon.length == 0))
+            iconString = ''
         else
-            iconString = `<i class="bi ${blocIcon}"></i>`
-        
-        this.innerHTML = `
-         
-            <span class="fs-5" style="color:#8B2331"> ${iconString}  ${blocName}</span>
-            ${this.oldInner}
-          
-            <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+            iconString = eval(userIcon);
+        this.innerHTML = `<div style="margin-top:10px"><span class="fs-5" style="color:#8B2331">` + iconString + ' ' + userName + `</span></div>
+        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
     }
 }
 
-
-export class BlocTitleDisplayv2 extends HTMLElement {
-    connectedCallback() {
-        this.oldInner = this.innerHTML;
-        let iconString;
-        let blocName = this.getAttribute("blocName");
-        let blocIcon = this.getAttribute("blocIcon");
-        if (!blocIcon || (blocIcon && blocIcon.length == 0))
-            iconString = ``
-        else
-            iconString = `<i class="bi ${blocIcon}"></i>`
-
-        this.innerHTML = `        
-            <div class="d-flex  justify-content-between" style="margin-top:0px" >
-                <span class="fs-5 " style="color:#8B2331" >${iconString} ${blocName}</span>
-                <div class="col-8 flex float-right text-end" style="cursor: pointer">            
-                ${this.oldInner}
-                    </div>
-            </div>
-            <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
-                `;
-        
-    }
-}
-       
-            // <span class="fs-5" style="color:#8B2331"> ${iconString}  ${blocName}</span>
-            // ${this.oldInner}
-          
-            // <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 /**
  * Bloc title component 
  * with attribute change
@@ -107,8 +45,6 @@ export class BlocTitleDisplayv1 extends HTMLElement {
         super();
         this.username = '';
         this.usericon = '';
-        // this.shadow = null;
-        // this.shadow = this.attachShadow({ mode: 'closed' });
     }
     // component attributes
     static get observedAttributes() {
@@ -120,9 +56,8 @@ export class BlocTitleDisplayv1 extends HTMLElement {
         if (oldValue === newValue) return;
 
         this[property] = newValue;
-        //  this.updateDisplay()
-
     }
+
     // connect component
     connectedCallback() {
         this.oldInner = this.innerHTML;
@@ -471,11 +406,7 @@ export class DropdownPredictiveChoice extends HTMLElement {
     handleClickChangeChoice(id, name) {
         this.selecteditemid = id
         this.selectedItemLabel = name
-
-        let selspa = document.getElementById(`${this.listname}_selecteditem_span`)
-        selspa.innerHTML = this.selectedItemLabel 
-        // selspa.innerHTML = this.selectedItemLabel
-        // this.updateDisplay();
+        this.updateDisplay();
     }
     /**
      * the user remove the choice
@@ -483,9 +414,7 @@ export class DropdownPredictiveChoice extends HTMLElement {
     handleClickRemove() {
         this.selecteditemid = ''
         this.selectedItemLabel = ''
-        let selspa = document.getElementById(`${this.listname}_selecteditem_span`)
-        selspa.innerHTML = this.selectedItemLabel 
-
+        this.updateDisplay();
     }
 
     /**
@@ -540,39 +469,39 @@ export class DropdownPredictiveChoice extends HTMLElement {
         let outpuStr = ``;
         outpuStr = `
            <div class="form-group row" style="margin-bottom:5px">
-            <div class="col-3">
-                <label for="exampleInputPassword1" class="col-sm-3 col-form-label" >
-                    ${listlabel}
-                </label> 
-                </div >
-                <div class="col-8">
-                <div id="${listName}_selecteditem_span" class="form-text" ></div>
-                <input class="dropdown-toggle" type="text" style="width:100%"
-                        data-bs-toggle="dropdown" id="${listName}_inputspan" selectedId="" value="${searchString}"> </input>
-                <ul class="dropdown-menu" id="${listName}_dp" >              
-                    </ul >                      
-                </div >
-                <div class="col-1">    
-                    <span id="delete_${listName}" style="cursor:pointer" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove">
-                    <i class="bi bi-x"></i>   
-                    </span>        
-                </div >
+               <label for="exampleInputPassword1" class="col-sm-3 col-form-label" >
+                   ${listlabel}
+               </label>
+               <div class="col-sm-8 ">  
+               <ul class="dropdown-menu" id="${listName}_dp" data-bs-config='{"autoClose":false}'>
+               </ul >
+               <input class="dropdown-toggle" type="text" style="width:100%" type="button"
+                    data-bs-toggle="dropdown" id="${listName}_inputspan" selectedId="" value="${searchString}"> </input>
+              
+               </div >
             </div >`;
 
         this.innerHTML = outpuStr;
 
+        //                 <div class="col-sm-1 ">    
+        // <span id="delete_${listName}" style="cursor: pointer" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove">
+        //     <i class="bi bi-x"></i>
+        // </div >
+                       ${ this.getDropdownContent(listName, entityID, entityName, selectedId, getListFromSessionstorage(listName), searchString) }
+        // 
 
         // ** Event Handler click on the list
         // Use arrow function to preserve `this`
         //  ❌ If you use a normal function, `this` will be undefined or point to the button
-        // addMultipleEnventListener(`.${listName}_item`, (event) => {
-        //     this.handleClickChangeChoice(event.target.attributes['selectedId'].nodeValue, event.target.attributes['selectedName'].nodeValue);
-        // }) ${this.getDropdownContent(listName, entityID, entityName, selectedId, getListFromSessionstorage(listName), searchString)}
+        addMultipleEnventListener(`.${listName}_item`, (event) => {
+            this.handleClickChangeChoice(event.target.attributes['selectedId'].nodeValue, event.target.attributes['selectedName'].nodeValue);
+        })
 
         document.querySelector(`#delete_${listName}`).addEventListener('click', (event) => {
             this.handleClickRemove();
         });
 
+        // *** the user fill the serach input
         if (document.querySelector(`#${listName}_inputspan`))
             document.querySelector(`#${listName}_inputspan`).addEventListener('input', (event) => {
                 console.log(event.target.value);
@@ -588,15 +517,11 @@ export class DropdownPredictiveChoice extends HTMLElement {
                     let selectedId = this.selecteditemid
                     // let searchString = this.searchString;
                     // 
-                    let linesnum = this.getDropdownContentInternal(myDropdown, listName, entityID, entityName, selectedId, getListFromSessionstorage(listName), searchString);
+                    let output = this.getDropdownContentInternal(myDropdown, listName, entityID, entityName, selectedId, getListFromSessionstorage(listName), searchString);
 
                     const dropdownJS = new bootstrap.Dropdown(myDropdown);
-                    if (linesnum>0)
-                        dropdownJS.show();
-                    else
-                        dropdownJS.hide();
-                    // const myDropdown = document.getElementById(`${listName}_dp`)
-                    /// myDropdown.outerHTML = output;
+                    dropdownJS.show();
+
 
                 } else {
                     const elementsToRemove = document.querySelectorAll(`.${listName}_item`);
@@ -604,14 +529,20 @@ export class DropdownPredictiveChoice extends HTMLElement {
                         element.remove();
                     });
 
-                    let myDropdown = document.getElementById(`${listName}_dp`)
-                    const dropdownJS = new bootstrap.Dropdown(myDropdown);
-                    dropdownJS.hide();
                 }
+                //   event.stopPropagation();
             });
     }
 
-
+       /**
+     * Fill the dropdown with possible choices
+     * @param {} listName 
+     * @param {*} entityID 
+     * @param {*} entityName 
+     * @param {*} selectedId 
+     * @param {*} getfunction 
+     * @returns 
+     */
     getDropdownContentInternal(ulparentElement, listName, entityID, entityName, selectedId, getfunction, searchString) {
         //  let outpuStr = `<ul class="dropdown-menu" id="${listName}_dp" data-bs-config='{"autoClose":false}'>`;
         let outpuStr = ``
@@ -637,6 +568,7 @@ export class DropdownPredictiveChoice extends HTMLElement {
                 selectedItem = listentity;
                 this.selecteditemid = listentity[entityID];
                 this.selectedItemLabel = listentity[entityName];
+
             }
             const listItem = document.createElement("li");
             // listItem.classList.add("dropdown-item ${listName}_item");
@@ -649,27 +581,12 @@ export class DropdownPredictiveChoice extends HTMLElement {
             link.selectedName = listentity[entityName]
             listItem.appendChild(link);
             ulparentElement.appendChild(listItem);
-
-            // outpuStr += `<li><a class="dropdown-item ${listName}_item " selectedId="${listentity[entityID]}" selectedName="${listentity[entityName]}">${listentity[entityName]}</a></li>`;
         });
-
-        addMultipleEnventListener(`.${listName}_item`, (event) => {
-            // let id = event.target.selectedId;
-            this.handleClickChangeChoice(event.target.selectedId, event.target.selectedName);
-        })
-        return list.length;
-    }
-    
+     }
 }
 
 export function initWebComponents() {
-
-    PageTitleDisplay
-    customElements.define('dob-pagetitle', PageTitleDisplay);
     customElements.define('dob-bloctitle', BlocTitleDisplay);
-    customElements.define('dob-bloctitlev2', BlocTitleDisplayv2);
-
-
     customElements.define('dob-stdfieldwithlink', StandardFieldDisplayWithLink);
     customElements.define('dob-stdfieldwithlinkclass', StandardFieldWithLinkClass);
 
@@ -679,12 +596,15 @@ export function initWebComponents() {
     customElements.define('dob-dropdownchoice', DropdownChoice);
     customElements.define('dob-dropdownpredictivechoice', DropdownPredictiveChoice);
 
+
+
+
     // customElements.define('dob-stdfieldClass', HelloWorld);
 }
 
 
 
-    // /**
+ // /**
     //  * Fill the dropdown with possible choices
     //  * @param {} listName 
     //  * @param {*} entityID 
@@ -698,23 +618,23 @@ export function initWebComponents() {
     //     let selectedItem = null
 
     //     // *** Fill the list with the data
-    //     let list = null
-    //     if (searchString != '') {
-    //         let list1 = eval(getfunction);
-    //         list = list1.filter((eleme) => eleme.label.toLowerCase().includes(searchString.toLowerCase()));
+    //     // let list = null
+    //     // if (searchString != '') {
+    //     //     let list1 = eval(getfunction);
+    //     //     list = list1.filter((eleme) => eleme.label.toLowerCase().includes(searchString.toLowerCase()));
 
-    //     } else
-    //         list = eval(getfunction);
+    //     // } else
+    //     //     list = eval(getfunction);
 
-    //     list.map((listentity, index) => {
-    //         if (listentity[entityID] == selectedId) {
-    //             selectedItem = listentity;
-    //             this.selecteditemid = listentity[entityID];
-    //             this.selectedItemLabel = listentity[entityName];
+    //     // list.map((listentity, index) => {
+    //     //     if (listentity[entityID] == selectedId) {
+    //     //         selectedItem = listentity;
+    //     //         this.selecteditemid = listentity[entityID];
+    //     //         this.selectedItemLabel = listentity[entityName];
 
-    //         }
-    //         //  outpuStr += `<li><a class="dropdown-item ${listName}_item " selectedId="${listentity[entityID]}" selectedName="${listentity[entityName]}">${listentity[entityName]}</a></li>`;
-    //     });
+    //     //     }
+    //     //     //  outpuStr += `<li><a class="dropdown-item ${listName}_item " selectedId="${listentity[entityID]}" selectedName="${listentity[entityName]}">${listentity[entityName]}</a></li>`;
+    //     // });
     //     outpuStr += '</ul >'
     //     // if (selectedId) {
     //     //     if (selectedItem !== null)
@@ -729,25 +649,7 @@ export function initWebComponents() {
     //     // }
     //     return outpuStr;
     // }
-
-
-          // outpuStr += '</ul >'
-        // // if (selectedId) {
-        // //     if (selectedItem !== null)
-        // //         outpuStr += `<input class="dropdown-toggle" type="text" style="width:100%" type="button" 
-        // //             data-bs-toggle="dropdown" id="${listName}_inputspan" selectedId="${selectedItem[entityID]}">${selectedItem[entityName]} </input>`
-        // //     else
-        // outpuStr += `<input class="dropdown-toggle" type="text" style="width:100%" type="button" 
-        //             data-bs-toggle="dropdown" id="${listName}_inputspan" selectedId="" value="${searchString}"> </input>`
-        // // } else {
-        // //     outpuStr += `<input class="dropdown-toggle" type="text" style="width:100%;border-bottom:solid 0.05rem #e9e8e8" type="button" 
-        // //         data-bs-toggle="dropdown" id="${listName}_inputspan" selectedId=""> </input>`
-        // // }
-        // return outpuStr;
-
-
-        
-        // document.querySelector(`ul.dropdown-menu`).on("click", function (event) {
+      // document.querySelector(`ul.dropdown-menu`).on("click", function (event) {
         //     e.stopPropagation();
         // });
         // let droptdownElement = document.querySelector(`ul.dropdown-menu`);

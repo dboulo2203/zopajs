@@ -132,7 +132,42 @@ export async function getCustomerInvoices(customerID) {
 }
 
 
+export function evaluateCustomerSubscriptionStatus(customerOrders) {
 
+
+    let computedSubscription = {
+        subscriptionStatus: false,
+        subscriptionLabel: "",
+        subscriptionLevel: "",
+        startSubscriptionDate: "",
+        endSubscriptionDate: "",
+        orderID: -1
+    };
+    // let customerOrders = store.getState().customerReducer.orders;
+    customerOrders.forEach((order, index) => {
+        // if (order.statut === '1' || order.statut === '3' || order.id === currentOrderId) {
+        if (order.statut === '1' || order.statut === '3') {
+            order.lines.forEach((orderLine, index) => {
+                if (orderLine.ref) {
+                    if (orderLine.ref.startsWith('ADH_')) {
+                        if (new Date(orderLine.array_options.options_lin_datefin).getTime() > Date.now() / 1000) {
+                            computedSubscription =
+                            {
+                                subscriptionStatus: true,
+                                subscriptionLevel: orderLine.ref,
+                                subscriptionLabel: orderLine.libelle,
+                                startSubscriptionDate: orderLine.array_options.options_lin_datedebut,
+                                endSubscriptionDate: orderLine.array_options.options_lin_datefin,
+                                orderId: order.id
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+    return computedSubscription;
+}
 ///****************************************************************
 // DRAFTS */
 // export async function getPaymentsByAccountCode(customerID) {

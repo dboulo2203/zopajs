@@ -1,5 +1,5 @@
 // *** Component ressources
-import { getCustomer, getCustomerOrders, getCustomerInvoices } from '../../../shared/zopaServices/zopaCustomerServices.js'
+import { getCustomer, getCustomerOrders, getCustomerInvoices, evaluateCustomerSubscriptionStatus } from '../../../shared/zopaServices/zopaCustomerServices.js'
 import { createNewOrder } from '../../../shared/zopaServices/zopaOrderServices.js';
 import { getevaluateSession } from '../../../shared/zopaServices/zopaOrderServices.js'
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
@@ -12,7 +12,7 @@ import { displayToast } from '../../../shared/bootstrapServices/bootstrapCommon.
 
 import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue }
     from '../../../shared/zopaServices/zopaListsServices.js'
-import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../../shared/assets/constants.js'
+// import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../../shared/assets/constants.js'
 
 /**
  * when called from the url
@@ -59,9 +59,9 @@ export async function displayCustomerContent(htlmPartId, customerID) {
         customerInvoices.sort((a, b) => b.date_creation - a.date_creation);
     // *** Display the controller skeleton
     let initString = `
-        <div style="padding-top:10px"><span class="fs-5" style="color:#8B2331">${personIcon} Customer</span></div>
-        <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:5px;margin-bottom:20px" />
-        <div id='componentMessage'></div>
+    <div style="margin-top:60px">
+    <dob-pagetitle titlename="Customer" titleIcon="bi-person"></dob-pagetitle>
+          <div id='componentMessage'></div>
         
             <div class="row" id="customerIdentity" > Customer identity    
             </div>
@@ -72,10 +72,14 @@ export async function displayCustomerContent(htlmPartId, customerID) {
             </div>
 
             </div>
+        </div>
     `;
+    // <div style="padding-top:10px"><span class="fs-5" style="color:#8B2331">${personIcon} Customer</span></div>
+    // <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:5px;margin-bottom:20px" />
+
     document.querySelector("#" + htlmPartId).innerHTML = initString;
 
-    document.querySelector("#customerIdentity").innerHTML = displayCustomerIdentity(customer);
+    document.querySelector("#customerIdentity").innerHTML = displayCustomerIdentity(customer, customerOrders);
 
     document.querySelector("#customerOrders").innerHTML = displayCustomerorders(customer, customerOrders);
 
@@ -91,16 +95,16 @@ export async function displayCustomerContent(htlmPartId, customerID) {
         window.location.href = `${getAppPath()}/views/manageCustomer/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceID') + `&indep=false`;
     });
 
-    document.querySelector("#addOrder").onclick = function (event) {
-        try {
-            createNewOrder(customer.id);
-            displayCustomerContent(htlmPartId, customerID);
-            displayToast("messageSection", "Adhérent", "La commande a été créée")
+    // document.querySelector("#addOrder").onclick = function (event) {
+    //     try {
+    //         createNewOrder(customer.id);
+    //         displayCustomerContent(htlmPartId, customerID);
+    //         displayToast("messageSection", "Adhérent", "La commande a été créée")
 
-        } catch (error) {
-            document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
-        }
-    }
+    //     } catch (error) {
+    //         document.querySelector("#messageSection").innerHTML = `<div class="alert alert-danger" style = "margin-top:30px" role = "alert" > ${error}  </div > `;
+    //     }
+    // }
 }
 
 /**
@@ -108,57 +112,25 @@ export async function displayCustomerContent(htlmPartId, customerID) {
  * @param {*} customer 
  * @returns 
  */
-function displayCustomerIdentity(customer) {
+function displayCustomerIdentity(customer, customerOrders) {
     let output = '';
     output += `<div style="margin-bottom:2px">`;
     // output += `
     //     <div style=""><span class="fs-5" style="color:#8B2331">Customer Identity</span></div>
     //     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 
-    output += `<dob-bloctitle userIcon = "invoiceIcon" userName = "Customer Identity" ></dob-bloctitle >`;
-    output += `<div class="col-md-12 main"  > <span  class="fw-light" style ="">Nom</span> : ${customer.name}`;
-    output += `</div>`
-    output += `<div class="col-md-12 main"  > <span class="fw-light" style ="">email</span> : ${customer.email}`;
-    output += `</div>`
+    output += `
+        <dob-bloctitlev2 blocIcon ="bi-person" blocName = "Customer Identity" ></dob-bloctitlev2 >
+        <div class="col-md-12 main"  > <span  class="fw-light" style ="">Nom</span> : ${customer.name}</div>
+        <div class="col-md-12 main"  > <span class="fw-light" style ="">email</span> : ${customer.email}</div>
 
-    output += `<div class="col-md-12 main"  > <span class="fw-light" style ="">Adresse</span> : ${customer.address}</div>`;
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Zip</span> :  ${customer.zip}</div>`;
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Ville</span> :  ${customer.town}</div>`;
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Téléphone</span> :  ${customer.phone}</div>`;
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Niveau de revenu</span> :  ${customer.price_level}</div>`;
-    // output += `
-    //     <!--  <div class="col-md-6">
-    //         <div class="form-group row" style="margin-bottom:5px">
-    //         <label for="inputPublisherDrop" class="col-sm-4 col-form-label " >
-    //             <span id="deletePublisherSelection" style="cursor: pointer" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove publisher selection"> </span>
-    //             Niveau de revenu
-    //         </label>
-    //        <div class="dropdown col-sm-8 " id="inputPublisherDrop">
-    //             <span class="dropdown-toggle" type="button" id="PublisherSpan" selectedid="0"  style="width:100%;border-bottom:solid 0.05rem #e9e8e8" data-bs-toggle="dropdown" aria-expanded="false">
-    //             </span>
-    //             <ul class="dropdown-menu pt-0" aria-labelledby="dropdownMenuButton1" id="dropdown-menuPublisher">
-    //                 <input type="text" class="form-control border-0 border-bottom shadow-none mb-2" placeholder="Search..." id="searchPublisher">
-    //             </ul>
-    //         </div>
-
-    //     </div > --> `;
-
-    // output += `< div class="col-md-12 main" > <span class="fw-light" style="">Niveau de revenu</span> :
-    //   ${customer.price_level}
-    //     <select class="form-select form-select-sm"  aria-label="Default select example" id="bdd_language">
-    //     ${getSelectFromDatabaseListDropdown("incomeLevels", "row_id", "label", customer.price_level)}
-    //     </select>
-
-    //   </div>`;
-    //    <!-- <div class="col-sm-9 ">
-    //     <span class="dropdown-toggle" type="button" style="width:100%;border-bottom:solid 0.05rem #e9e8e8" type="button" data-bs-toggle="dropdown" id="inputGenre_span" selectedId=""> </span>
-    //     <ul class="dropdown-menu" id="">
-    //         ${getSelectFromDatabaseListDropdown("incomeLevels", "rowid", customer.price_level)}
-
-    //     </ul > ${getvalue("incomeLevels", "rowid", customer.price_level)}
-    // </div > -->
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Adhésion </span> : </div>`;
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Publipostage  </span> : </div>`;
+        <div class="col-md-12 main"  > <span class="fw-light" style ="">Adresse</span> : ${customer.address}</div>
+        <div class="col-md-12 main"> <span class="fw-light" style ="">Zip</span> :  ${customer.zip}</div>
+        <div class="col-md-12 main"> <span class="fw-light" style ="">Ville</span> :  ${customer.town}</div>
+        <div class="col-md-12 main"> <span class="fw-light" style ="">Téléphone</span> :  ${customer.phone}</div>
+            <div class="col-md-12 main"> <span class="fw-light" style ="">Niveau de revenu</span> :  ${getvalue("incomeLevels", "rowid", customer.price_level)}</div>
+        <div class="col-md-12 main"> <span class="fw-light" style ="">Adhésion </span> : </div> ${evaluateCustomerSubscriptionStatus(customerOrders)}
+        <div class="col-md-12 main"> <span class="fw-light" style ="">Publipostage  </span> : </div>`;
     output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Adhérent créé par
              ${getUserLoginFromId(customer.user_creation)}, le
             ${new Intl.DateTimeFormat("fr-FR",
@@ -210,7 +182,7 @@ function displayCustomerorders(customer, customerOrders) {
     //         </div>
     //     </div>
     //     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
-    let customerOrdersString = `<dob-bloctitle userIcon = "orderIcon" userName = " Customer orders" ></dob-bloctitle >`;
+    let customerOrdersString = `<dob-bloctitle blocIcon = "bi-list-task" blocName = " Customer orders" ></dob-bloctitle >`;
 
     // *** Display customer orders
 
@@ -289,7 +261,7 @@ function displayCustomerInvoices(customer, customerInvoices) {
 
     //      <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
 
-    customerInvoicesString += `<dob-bloctitle userIcon = "invoiceIcon" userName = "Customer Invoices" ></dob-bloctitle >`;
+    customerInvoicesString += `<dob-bloctitle blocIcon="bi-receipt" blocName="Customer Invoices" ></dob-bloctitle >`;
     if (customerInvoices) {
         customerInvoices.map((customerInvoice, index) => {
             customerInvoicesString += `

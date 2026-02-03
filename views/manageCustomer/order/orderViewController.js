@@ -56,11 +56,10 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
         // *** Display the controller skeleton
         let initString = `
-            <div style="padding-top:60px" id="orderHeader">
-                <span class="fs-5" style="color:#8B2331"> ${orderIcon} Order : ${order.ref}</span>
-            </div>
-            <hr/>
-            <div id='componentMessage'></div>
+        <div style="margin-top:60px">
+           <dob-pagetitle titlename="Order : ${order.ref}" titleIcon="bi-list-task"></dob-pagetitle>
+
+              <div id='componentMessage'></div>
             <div class="row" >
                 <div class="col-12 col-md-5" id="orderIdentity" ></div>
                 <div class="col-12 col-md-7" id="linkedInvoices" ></div>
@@ -68,7 +67,7 @@ export async function displayOrderContent(htlmPartId, orderID) {
 
             <div class="row" id="orderLines" > 
             </div>
-            `;
+           </div> `;
         document.querySelector("#" + htlmPartId).innerHTML = initString;
 
         displayOrderIdentity(order)
@@ -102,25 +101,28 @@ function displayOrderIdentity(order) {
     let output = ``;
     output += `
     <div id="orderIdentity" style="margin-bottom:20px">
-        <dob-bloctitle id="bloc" usericon="bi-list-task" username="Details">
-             <ul class="dropdown-menu " style="padding:10px;width:250px">
-                <li id=""><span> Valider une commande</span></li>
-                <li id=""><span> Ré-ouvrir la commande</span></li>
-                <li id=""><span> Annuler la commande</span></li>
-                <li id=""><span> Clôturer la commande</span></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li id=""><span> Générer un acompte</span></li>
-                <li id=""><span> Facturer partiellement</span></li>
-                <li id=""><span> Générer une facture</span></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li id=""><span> Afficher badge</span></li>
-                <li id=""><span> Afficher devis</span></li>
-            </ul>
-        </dob-bloctitle>
+        <dob-bloctitlev2 id="bloc" blocIcon="bi-list-task" blocName="Details">
+            <div class="dropdown">
+                <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary" >${threedotsvertical}  </a>
+                <ul class="dropdown-menu " style="padding:10px;width:250px">
+                    <li id=""><span> Valider une commande</span></li>
+                    <li id=""><span> Ré-ouvrir la commande</span></li>
+                    <li id=""><span> Annuler la commande</span></li>
+                    <li id=""><span> Clôturer la commande</span></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li id=""><span> Générer un acompte</span></li>
+                    <li id=""><span> Facturer partiellement</span></li>
+                    <li id=""><span> Générer une facture</span></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li id=""><span> Afficher badge</span></li>
+                    <li id=""><span> Afficher devis</span></li>
+                </ul>
+            </div>
+        </dob-bloctitlev2>
 
         <dob-stdfieldwithlink fieldName="Adhérent : " fieldValue="${order.customer.name}" entityid="${order.socid}" fieldlink="customerLink">
         </dob-stdfieldwithlink>
@@ -218,18 +220,21 @@ function displayOrderLines(order) {
 
     let output = `
         <div id="orderLines" style="margin-bottom:0px">
-            <dob-bloctitle id="bloc" usericon="bi-list-task" username="Order lines">
-                <ul class="dropdown-menu bg-light-subtle" style="padding:10px;width:250px">
-                    <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
-                    <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li id=""><span>${bedIcon} Ajouter un hébergement</span></li>
-                    <li id=""><span>${mealIcon} Ajouter un repas</span></li>
-                    <li id=""><span>${addOrderIcon} Ajouter une adhésion</span></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li id=""><span>${plussquareIcon} Ajouter un produit</span></li>
-                </ul>
-            </<dob-bloctitle>
+            <dob-bloctitlev2 id="bloc" blocicon="bi-list-task" blocname="Order lines">
+                <div class="dropdown">
+                    <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary" >${threedotsvertical}  </a>
+                    <ul class="dropdown-menu bg-light-subtle" style="padding:10px;width:250px">
+                        <li id=""><span>${addOrderIcon} Outil prestation stage</span></li>
+                        <li id=""><span>${addOrderIcon} Outil prestation retraite</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li id=""><span>${bedIcon} Ajouter un hébergement</span></li>
+                        <li id=""><span>${mealIcon} Ajouter un repas</span></li>
+                        <li id=""><span>${addOrderIcon} Ajouter une adhésion</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li id=""><span>${plussquareIcon} Ajouter un produit</span></li>
+                    </ul>
+                </div>
+            </<dob-bloctitlev2>
         </div> 
         `;
 
@@ -303,8 +308,8 @@ function displayOrderInvoices(order) {
     // invoicesString += `<div class=" " style="padding:5px">  `;
     output += `
         <div id="orderInvoices" style="margin-bottom:0px">
-            <dob-bloctitle id="" usericon="bi-receipt" username="Invoices">
-             </<dob-bloctitle>
+            <dob-bloctitlev2 id="" blocicon="bi-receipt" blocname="Invoices">
+             </<dob-bloctitlev2>
         </div> 
         `;
 

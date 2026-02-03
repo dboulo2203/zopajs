@@ -47,8 +47,7 @@ export function getSelectFromDatabaseListDropdown(listName, entityID, entityName
 
 
 /**
- * Translate a string in the current browser language
- * @param {} wordToTranslate 
+ *  
  * @returns 
  */
 export function getvalue(listName, entityID, valueID) {
@@ -60,18 +59,19 @@ export function getvalue(listName, entityID, valueID) {
     if (!base)
         return "Erreur table " + listName;
 
-    let valeur = base.find((listElem, index) => {
-        listElem.rowid == valueID;
-    });
+    let foundIndex = Object.keys(base).indexOf(valueID);
+    // let valeur = base.find((listElem, index) => {
+    //     listElem.rowid == valueID;
+    // });
     // let foundIndex = Object.keys(base).indexOf(valueID);
 
     // let valeur = '';
-    // if (foundIndex >= 0)
-    //     valeur = (Object.values(base)[foundIndex]);
-    // else
-    //     valeur = '!! Translation not found !! ';
+    if (foundIndex >= 0)
+        return (Object.values(base)[foundIndex].label);
+    else
+        return 'Not found ';
 
-    return valeur;
+    // return valeur;
 
 }
 
