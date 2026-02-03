@@ -60,37 +60,10 @@ const restaurantContentString = `
 
     <!-- Conteneur des tableaux -->
     <div id="tableContainer">
-        <!-- Table Lieu 1 -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable1">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu 1</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Conteneur dynamique pour les tableaux par lieu -->
+        <div id="placeTablesContainer"></div>
 
-        <!-- Table Lieu 3 -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable3">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu 3</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Lieu non défini -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTableNull">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu non défini</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Totaux -->
+        <!-- Table Totaux (seule table statique) -->
         <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
             <thead class="table-secondary">
                 <tr>
@@ -103,19 +76,21 @@ const restaurantContentString = `
 
     <!-- Lignes de commande -->
     <div class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
-    <table class="table table-bordered table-sm" id="commandesTable">
-        <thead class="table-secondary">
-            <tr>
-                <th>Commande</th>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-                <th>Lieu</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div style="overflow-x: auto;">
+        <table class="table table-bordered table-sm" id="commandesTable">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Commande</th>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Lieu</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 `;
 
 // Point d'entrée principal
@@ -283,6 +258,21 @@ function updatePlaceTags() {
     });
 }
 
+// Créer dynamiquement un tableau HTML pour un lieu
+function createPlaceTable(placeKey, placeName) {
+    const tableId = `totauxTable_${placeKey}`;
+    const table = document.createElement('table');
+    table.className = 'table table-bordered table-sm meal-table mb-4';
+    table.id = tableId;
+    table.innerHTML = `
+        <thead class="table-secondary">
+            <tr><th>${placeName}</th></tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    return table;
+}
+
 // Formater la date en j/M
 function formatDateShort(date) {
     return `${date.getDate()}/${date.getMonth() + 1}`;
@@ -389,25 +379,24 @@ async function loadData() {
         // Obtenir la plage de dates
         const dates = getDateRange(startDate, endDate);
 
-        // Initialiser les compteurs - total et par lieu
+        // Initialiser les compteurs
         const initCounts = () => ({
             'Matin': {},
             'Midi': {},
             'Soir': {}
         });
 
+        // Compteur pour les totaux généraux
         const counts = initCounts();
-        const counts1 = initCounts();
-        const counts3 = initCounts();
-        const countsNull = initCounts();
 
+        // Objet dynamique pour stocker les compteurs par lieu
+        const countsByPlace = {};
+
+        // Initialiser les compteurs totaux avec les dates
         dates.forEach(date => {
             const key = formatDateAPI(date);
             ['Matin', 'Midi', 'Soir'].forEach(meal => {
                 counts[meal][key] = 0;
-                counts1[meal][key] = 0;
-                counts3[meal][key] = 0;
-                countsNull[meal][key] = 0;
             });
         });
 
@@ -429,6 +418,26 @@ async function loadData() {
             // Ignorer si le lieu n'est pas sélectionné
             if (!selectedPlaces.has(placeKey)) return;
 
+            // Créer dynamiquement le compteur pour ce lieu s'il n'existe pas encore
+            if (!countsByPlace[placeKey]) {
+                const placeName = placeKey === 'null'
+                    ? 'Lieu non défini'
+                    : (places[placeKey] || `Lieu ${placeKey}`);
+
+                countsByPlace[placeKey] = {
+                    name: placeName,
+                    counts: initCounts()
+                };
+
+                // Initialiser toutes les dates à 0
+                dates.forEach(date => {
+                    const dateKey = formatDateAPI(date);
+                    ['Matin', 'Midi', 'Soir'].forEach(meal => {
+                        countsByPlace[placeKey].counts[meal][dateKey] = 0;
+                    });
+                });
+            }
+
             const qty = parseInt(item.qty) || 1;
 
             // Calculer le nombre de jours dans l'inscription
@@ -440,49 +449,52 @@ async function loadData() {
             dates.forEach(date => {
                 if (isDateInRange(date, startTs, endTs)) {
                     const key = formatDateAPI(date);
-                    // Total
+                    // Total général
                     counts[mealType][key] += mealsPerDay;
-                    // Par lieu (placeKey déjà normalisé en string)
-                    if (placeKey === '1') {
-                        counts1[mealType][key] += mealsPerDay;
-                    } else if (placeKey === '3') {
-                        counts3[mealType][key] += mealsPerDay;
-                    } else if (placeKey === 'null') {
-                        countsNull[mealType][key] += mealsPerDay;
-                    }
+                    // Par lieu (dynamique)
+                    countsByPlace[placeKey].counts[mealType][key] += mealsPerDay;
                 }
             });
         });
 
-        // Construire les tableaux avec les noms des lieux (si sélectionnés)
-        const table1 = document.getElementById('totauxTable1');
-        const table3 = document.getElementById('totauxTable3');
-        const tableNull = document.getElementById('totauxTableNull');
+        // Vider le conteneur des tableaux par lieu
+        const placeTablesContainer = document.getElementById('placeTablesContainer');
+        placeTablesContainer.innerHTML = '';
 
-        if (selectedPlaces.has('1')) {
-            table1.classList.remove('hidden');
-            buildTable('totauxTable1', counts1, places['1'] || 'Lieu 1', dates);
-        } else {
-            table1.classList.add('hidden');
-        }
+        // Définir l'ordre d'affichage : lieux numériques triés, puis 'null' en dernier
+        const sortedPlaceKeys = Object.keys(countsByPlace).sort((a, b) => {
+            if (a === 'null') return 1;  // 'null' va à la fin
+            if (b === 'null') return -1;
+            return parseInt(a) - parseInt(b);  // Tri numérique pour les autres
+        });
 
-        if (selectedPlaces.has('3')) {
-            table3.classList.remove('hidden');
-            buildTable('totauxTable3', counts3, places['3'] || 'Lieu 3', dates);
-        } else {
-            table3.classList.add('hidden');
-        }
+        // Construire dynamiquement les tableaux pour chaque lieu ayant des données
+        sortedPlaceKeys.forEach(placeKey => {
+            const placeData = countsByPlace[placeKey];
 
-        if (selectedPlaces.has('null')) {
-            tableNull.classList.remove('hidden');
-            buildTable('totauxTableNull', countsNull, 'Lieu non défini', dates);
-        } else {
-            tableNull.classList.add('hidden');
-        }
+            // Vérifier si ce lieu a des données (au moins une valeur > 0)
+            const hasData = Object.values(placeData.counts).some(mealCounts =>
+                Object.values(mealCounts).some(value => value > 0)
+            );
 
-        // Afficher le tableau Totaux seulement si plus d'1 lieu est sélectionné
+            if (hasData) {
+                const tableId = `totauxTable_${placeKey}`;
+                const table = createPlaceTable(placeKey, placeData.name);
+                placeTablesContainer.appendChild(table);
+                buildTable(tableId, placeData.counts, placeData.name, dates);
+            }
+        });
+
+        // Afficher le tableau Totaux seulement si plus d'1 lieu a des données
         const totauxTable = document.getElementById('totauxTable');
-        if (selectedPlaces.size > 1) {
+        const placesWithData = sortedPlaceKeys.filter(placeKey => {
+            const placeData = countsByPlace[placeKey];
+            return Object.values(placeData.counts).some(mealCounts =>
+                Object.values(mealCounts).some(value => value > 0)
+            );
+        });
+
+        if (placesWithData.length > 1) {
             totauxTable.classList.remove('hidden');
             buildTable('totauxTable', counts, 'Totaux', dates);
         } else {
