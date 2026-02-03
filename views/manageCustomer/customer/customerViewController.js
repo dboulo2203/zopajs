@@ -9,6 +9,7 @@ import { launchInitialisation } from '../../../shared/zopaAppservices/initialisa
 
 import { addMultipleEnventListener, getAppPath } from '../../../shared/services/commonFunctions.js'
 import { displayToast } from '../../../shared/bootstrapServices/bootstrapCommon.js'
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
 
 import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue }
     from '../../../shared/zopaServices/zopaListsServices.js'
@@ -60,7 +61,8 @@ export async function displayCustomerContent(htlmPartId, customerID) {
     // *** Display the controller skeleton
     let initString = `
     <div style="margin-top:60px">
-    <dob-pagetitle titlename="Customer" titleIcon="bi-person"></dob-pagetitle>
+   
+     ${getPageTitleDisplay("Customer", "bi-person")}
           <div id='componentMessage'></div>
         
             <div class="row" id="customerIdentity" > Customer identity    

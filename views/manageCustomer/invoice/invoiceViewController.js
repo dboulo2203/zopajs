@@ -5,6 +5,8 @@ import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServic
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 
 // *** Shared ressoucres
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
+
 import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 import {
@@ -52,10 +54,13 @@ export async function displayInvoiceContent(htlmPartId, invoiceID) {
     let invoicePayments = await getInvoicePayments(invoiceID)
 
     // *** Display the controller skeleton
+    //           <dob-pagetitle titlename="Invoice : ${invoice.ref}" titleIcon="bi-receipt"></dob-pagetitle>
+
     let initString = `
            <div style="margin-top:60px">
-           <dob-pagetitle titlename="Invoice : ${invoice.ref}" titleIcon="bi-receipt"></dob-pagetitle>
-
+                ${getPageTitleDisplay(`Invoice : ${invoice.ref}`, "bi-receipt")}
+          
+ 
             <div class="row" >
                 <div class="col-12 col-md-6" id="invoiceIdentity" >   
                 </div>

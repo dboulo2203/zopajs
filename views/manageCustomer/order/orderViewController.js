@@ -5,7 +5,7 @@ import {
 } from '../../../shared/zopaServices/zopaOrderServices.js'
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServices.js'
-
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
 // *** Shared ressoucres
 import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
@@ -54,11 +54,11 @@ export async function displayOrderContent(htlmPartId, orderID) {
         // *** Load data from API
         let order = await getOrder(orderID);
 
-        // *** Display the controller skeleton
+        // *** Display the controller skeleton    <dob-pagetitle titlename="" titleIcon=""></dob-pagetitle>
         let initString = `
         <div style="margin-top:60px">
-           <dob-pagetitle titlename="Order : ${order.ref}" titleIcon="bi-list-task"></dob-pagetitle>
-
+        
+            ${getPageTitleDisplay(`Order : ${order.ref}`, "bi-list-task")}
               <div id='componentMessage'></div>
             <div class="row" >
                 <div class="col-12 col-md-5" id="orderIdentity" ></div>

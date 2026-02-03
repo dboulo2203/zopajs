@@ -37,6 +37,14 @@
         {
             "menuItemType": "menuitem",
             "menuItemIcon": "<i class='bi bi-house'></i>",
+            "menuItemid": "Produits",
+            "menuItemName": "Produits",
+            "menuItemAction": "urlCall",
+            "menuItemLink": "views/products/"
+        },
+        {
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-house'></i>",
             "menuItemid": "Hosting",
             "menuItemName": "Hosting",
             "menuItemAction": "urlCall",
@@ -78,7 +86,7 @@
             "menuItemType": "menuitem",
             "menuItemIcon": "<i class='bi bi-house'></i>",
             "menuItemid": "Renan",
-            "menuItemName": "Rena",
+            "menuItemName": "Aurelien",
             "menuItemAction": "urlCall",
             "menuItemLink": "views/docu/docu.html"
         }
