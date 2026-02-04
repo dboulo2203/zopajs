@@ -1,6 +1,6 @@
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';
-import { fetchIntakePlaces, fetchMealProductIds, getRestaurantData } from './restaurantService.js';
+import { fetchIntakePlaces, fetchMealProductIds, fetchMealTypes, getRestaurantData } from './restaurantService.js';
 
 // Controller pour annuler les requêtes précédentes
 let currentController = null;
@@ -11,6 +11,9 @@ let selectedPlaces = new Set();
 
 // Tous les IDs de lieux pour la logique "Tous les lieux"
 let allPlaceIds = [];
+
+// Données des types de repas (Végétarien, Non-végétarien, etc.)
+let mealTypesData = {};
 
 // Template HTML pour le contenu principal
 const restaurantContentString = `
@@ -86,6 +89,7 @@ const restaurantContentString = `
                     <th>Date début</th>
                     <th>Date fin</th>
                     <th>Lieu</th>
+                    <th>Type repas</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -144,8 +148,13 @@ function initEventListeners() {
 
 // Initialiser le sélecteur de lieux
 async function initPlaceSelector() {
-    const places = await fetchIntakePlaces();
+    // Charger les lieux et les types de repas en parallèle
+    const [places, mealTypes] = await Promise.all([
+        fetchIntakePlaces(),
+        fetchMealTypes()
+    ]);
     placesData = places;
+    mealTypesData = mealTypes;
 
     const dropdown = document.getElementById('placeDropdown');
     dropdown.innerHTML = '';
@@ -379,37 +388,33 @@ async function loadData() {
         // Obtenir la plage de dates
         const dates = getDateRange(startDate, endDate);
 
-        // Initialiser les compteurs
+        // Initialiser les compteurs pour un type de repas
         const initCounts = () => ({
             'Matin': {},
             'Midi': {},
             'Soir': {}
         });
 
-        // Compteur pour les totaux généraux
-        const counts = initCounts();
+        // Initialiser les compteurs pour tous les types de repas (végé, non-végé, non défini)
+        const initCountsByMealType = () => ({});
+
+        // Compteur pour les totaux généraux (par type de repas)
+        const countsByMealType = initCountsByMealType();
 
         // Objet dynamique pour stocker les compteurs par lieu
         const countsByPlace = {};
 
-        // Initialiser les compteurs totaux avec les dates
-        dates.forEach(date => {
-            const key = formatDateAPI(date);
-            ['Matin', 'Midi', 'Soir'].forEach(meal => {
-                counts[meal][key] = 0;
-            });
-        });
-
         // Traiter chaque ligne
         data.forEach(item => {
             const ref = item.ref || '';
-            const mealType = getMealType(ref);
+            const mealTime = getMealType(ref); // Matin, Midi, Soir
 
-            if (!mealType) return;
+            if (!mealTime) return;
 
             const startTs = item.array_options?.options_lin_datedebut;
             const endTs = item.array_options?.options_lin_datefin;
             const intakePlace = item.array_options?.options_lin_intakeplace;
+            const mealTypeId = item.array_options?.options_lin_room;
             if (!startTs || !endTs) return;
 
             // Déterminer la clé du lieu pour le filtrage
@@ -417,6 +422,12 @@ async function loadData() {
 
             // Ignorer si le lieu n'est pas sélectionné
             if (!selectedPlaces.has(placeKey)) return;
+
+            // Déterminer le type de repas (Végétarien, Non-végétarien, Non défini)
+            // Si mealTypeId est invalide (null, undefined, array, etc.), on utilise 'null' comme clé
+            const isValidMealTypeId = mealTypeId && typeof mealTypeId !== 'object' && mealTypesData[mealTypeId];
+            const mealTypeKey = isValidMealTypeId ? String(mealTypeId) : 'null';
+            const mealTypeName = isValidMealTypeId ? mealTypesData[mealTypeId] : 'Non défini';
 
             // Créer dynamiquement le compteur pour ce lieu s'il n'existe pas encore
             if (!countsByPlace[placeKey]) {
@@ -426,14 +437,35 @@ async function loadData() {
 
                 countsByPlace[placeKey] = {
                     name: placeName,
+                    countsByMealType: {}
+                };
+            }
+
+            // Créer dynamiquement le compteur pour ce type de repas dans ce lieu
+            if (!countsByPlace[placeKey].countsByMealType[mealTypeKey]) {
+                countsByPlace[placeKey].countsByMealType[mealTypeKey] = {
+                    name: mealTypeName,
                     counts: initCounts()
                 };
-
                 // Initialiser toutes les dates à 0
                 dates.forEach(date => {
                     const dateKey = formatDateAPI(date);
                     ['Matin', 'Midi', 'Soir'].forEach(meal => {
-                        countsByPlace[placeKey].counts[meal][dateKey] = 0;
+                        countsByPlace[placeKey].countsByMealType[mealTypeKey].counts[meal][dateKey] = 0;
+                    });
+                });
+            }
+
+            // Créer dynamiquement le compteur global pour ce type de repas
+            if (!countsByMealType[mealTypeKey]) {
+                countsByMealType[mealTypeKey] = {
+                    name: mealTypeName,
+                    counts: initCounts()
+                };
+                dates.forEach(date => {
+                    const dateKey = formatDateAPI(date);
+                    ['Matin', 'Midi', 'Soir'].forEach(meal => {
+                        countsByMealType[mealTypeKey].counts[meal][dateKey] = 0;
                     });
                 });
             }
@@ -449,10 +481,10 @@ async function loadData() {
             dates.forEach(date => {
                 if (isDateInRange(date, startTs, endTs)) {
                     const key = formatDateAPI(date);
-                    // Total général
-                    counts[mealType][key] += mealsPerDay;
-                    // Par lieu (dynamique)
-                    countsByPlace[placeKey].counts[mealType][key] += mealsPerDay;
+                    // Total général par type de repas
+                    countsByMealType[mealTypeKey].counts[mealTime][key] += mealsPerDay;
+                    // Par lieu et type de repas (dynamique)
+                    countsByPlace[placeKey].countsByMealType[mealTypeKey].counts[mealTime][key] += mealsPerDay;
                 }
             });
         });
@@ -468,20 +500,25 @@ async function loadData() {
             return parseInt(a) - parseInt(b);  // Tri numérique pour les autres
         });
 
+        // Fonction pour vérifier si un type de repas a des données
+        const mealTypeHasData = (mealTypeData) => {
+            return Object.values(mealTypeData.counts).some(mealCounts =>
+                Object.values(mealCounts).some(value => value > 0)
+            );
+        };
+
         // Construire dynamiquement les tableaux pour chaque lieu ayant des données
         sortedPlaceKeys.forEach(placeKey => {
             const placeData = countsByPlace[placeKey];
 
-            // Vérifier si ce lieu a des données (au moins une valeur > 0)
-            const hasData = Object.values(placeData.counts).some(mealCounts =>
-                Object.values(mealCounts).some(value => value > 0)
-            );
+            // Vérifier si ce lieu a des données (au moins un type de repas avec des valeurs > 0)
+            const hasData = Object.values(placeData.countsByMealType).some(mealTypeHasData);
 
             if (hasData) {
                 const tableId = `totauxTable_${placeKey}`;
                 const table = createPlaceTable(placeKey, placeData.name);
                 placeTablesContainer.appendChild(table);
-                buildTable(tableId, placeData.counts, placeData.name, dates);
+                buildTableWithMealTypes(tableId, placeData.countsByMealType, placeData.name, dates);
             }
         });
 
@@ -489,14 +526,12 @@ async function loadData() {
         const totauxTable = document.getElementById('totauxTable');
         const placesWithData = sortedPlaceKeys.filter(placeKey => {
             const placeData = countsByPlace[placeKey];
-            return Object.values(placeData.counts).some(mealCounts =>
-                Object.values(mealCounts).some(value => value > 0)
-            );
+            return Object.values(placeData.countsByMealType).some(mealTypeHasData);
         });
 
         if (placesWithData.length > 1) {
             totauxTable.classList.remove('hidden');
-            buildTable('totauxTable', counts, 'Totaux', dates);
+            buildTableWithMealTypes('totauxTable', countsByMealType, 'Totaux', dates);
         } else {
             totauxTable.classList.add('hidden');
         }
@@ -532,7 +567,7 @@ async function loadData() {
     }
 }
 
-// Fonction pour construire un tableau avec titre dans l'en-tête
+// Fonction pour construire un tableau avec titre dans l'en-tête (ancienne version)
 function buildTable(tableId, countsData, title, dates) {
     const table = document.getElementById(tableId);
     const thead = table.querySelector('thead tr');
@@ -570,6 +605,103 @@ function buildTable(tableId, countsData, title, dates) {
         });
 
         tbody.appendChild(tr);
+    });
+}
+
+// Fonction pour construire un tableau avec groupes par type de repas (Végétarien, Non-végétarien, Non défini)
+function buildTableWithMealTypes(tableId, countsByMealType, title, dates) {
+    const table = document.getElementById(tableId);
+    const thead = table.querySelector('thead tr');
+    const tbody = table.querySelector('tbody');
+
+    // Construire l'en-tête : titre + type de repas + dates
+    thead.innerHTML = '';
+    const thTitle = document.createElement('th');
+    thTitle.textContent = title;
+    thTitle.style.width = '70px';
+    thTitle.style.minWidth = '70px';
+    thead.appendChild(thTitle);
+    const thType = document.createElement('th');
+    thType.textContent = 'Type';
+    thType.style.width = '70px';
+    thType.style.minWidth = '70px';
+    thead.appendChild(thType);
+    dates.forEach(date => {
+        const th = document.createElement('th');
+        th.textContent = formatDateShort(date);
+        thead.appendChild(th);
+    });
+
+    // Trier les types de repas : d'abord les numériques, puis 'null' en dernier
+    const sortedMealTypeKeys = Object.keys(countsByMealType).sort((a, b) => {
+        if (a === 'null') return 1;
+        if (b === 'null') return -1;
+        return parseInt(a) - parseInt(b);
+    });
+
+    // Construire les lignes groupées par type de repas
+    const meals = ['Matin', 'Midi', 'Soir'];
+    tbody.innerHTML = '';
+
+    let isFirstGroup = true;
+    sortedMealTypeKeys.forEach(mealTypeKey => {
+        const mealTypeData = countsByMealType[mealTypeKey];
+
+        // Vérifier si ce type de repas a des données
+        const hasData = Object.values(mealTypeData.counts).some(mealCounts =>
+            Object.values(mealCounts).some(value => value > 0)
+        );
+
+        if (!hasData) return;
+
+        // Ajouter une ligne de séparation entre les groupes (sauf pour le premier)
+        if (!isFirstGroup) {
+            const separatorRow = document.createElement('tr');
+            separatorRow.className = 'meal-type-separator';
+            const separatorCell = document.createElement('td');
+            separatorCell.colSpan = 2 + dates.length;
+            separatorCell.style.borderTop = '1px solid #6c757d';
+            separatorCell.style.padding = '0';
+            separatorCell.style.height = '0';
+            separatorRow.appendChild(separatorCell);
+            tbody.appendChild(separatorRow);
+        }
+        isFirstGroup = false;
+
+        // Créer les 3 lignes pour ce type de repas (Matin, Midi, Soir)
+        meals.forEach((meal, mealIndex) => {
+            const tr = document.createElement('tr');
+
+            // Première colonne : Matin/Midi/Soir
+            const tdMeal = document.createElement('td');
+            tdMeal.textContent = meal;
+            tdMeal.style.width = '70px';
+            tdMeal.style.minWidth = '70px';
+            tr.appendChild(tdMeal);
+
+            // Deuxième colonne : Type de repas (affiché sur chaque ligne)
+            const tdType = document.createElement('td');
+            tdType.textContent = mealTypeData.name;
+            tdType.style.fontStyle = 'italic';
+            tdType.style.color = '#6c757d';
+            tdType.style.width = '70px';
+            tdType.style.minWidth = '70px';
+            tr.appendChild(tdType);
+
+            // Colonnes des dates
+            dates.forEach(date => {
+                const key = formatDateAPI(date);
+                const td = document.createElement('td');
+                const value = Math.round(mealTypeData.counts[meal][key] || 0);
+                td.textContent = value > 0 ? value : '';
+                if (value > 0) {
+                    td.classList.add('table-warning');
+                }
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
     });
 }
 
@@ -630,6 +762,13 @@ function buildCommandesTable(data, places) {
         const intakePlace = item.array_options?.options_lin_intakeplace;
         tdLieu.textContent = places[intakePlace] || intakePlace || '';
         tr.appendChild(tdLieu);
+
+        // Type de repas (mealtype)
+        const tdMealType = document.createElement('td');
+        const mealTypeId = item.array_options?.options_lin_room;
+        const isValidMealType = mealTypeId && typeof mealTypeId !== 'object' && mealTypesData[mealTypeId];
+        tdMealType.textContent = isValidMealType ? mealTypesData[mealTypeId] : 'Non défini';
+        tr.appendChild(tdMealType);
 
         tbody.appendChild(tr);
     });

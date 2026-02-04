@@ -40,6 +40,24 @@ export async function fetchMealProductIds() {
     }
 }
 
+// Récupérer les types de repas (Végétarien, Non-végétarien, etc.) depuis l'API
+export async function fetchMealTypes() {
+    try {
+        const wsUrlformel = getConfigurationValue("wsUrlformel");
+        const apiUrl = `${wsUrlformel}dklaccueil/dictionary/mealtypes?sortorder=ASC&limit=100&active=1&DOLAPIKEY=${DOLAPIKEY}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const mealTypes = {};
+        data.forEach(item => {
+            mealTypes[item.rowid] = item.label;
+        });
+        return mealTypes;
+    } catch (error) {
+        console.error('Erreur lors du chargement des types de repas:', error);
+        return {};
+    }
+}
+
 // Charger les données de repas pour une période donnée
 export async function getRestaurantData(startDate, endDate, mealProductIds, signal) {
     const wsUrlformel = getConfigurationValue("wsUrlformel");
