@@ -1,8 +1,11 @@
-import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
+import { getConfigurationValue } from '../../shared/services/configurationService.js';
+
+const DOLAPIKEY = 'OpK1D8otonWg690PIoj570KdHSCqCc04';
 
 // Récupérer les noms des lieux depuis l'API
 export async function fetchIntakePlaces() {
     try {
+        const wsUrlformel = getConfigurationValue("wsUrlformel");
         const apiUrl = `${wsUrlformel}dklaccueil/dictionary/intakeplaces?sortorder=ASC&limit=100&active=1&DOLAPIKEY=${DOLAPIKEY}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
@@ -20,6 +23,7 @@ export async function fetchIntakePlaces() {
 // Récupérer les IDs des produits repas depuis l'API (ref commence par "REP" et tosell = 1)
 export async function fetchMealProductIds() {
     try {
+        const wsUrlformel = getConfigurationValue("wsUrlformel");
         const apiUrl = `${wsUrlformel}products?DOLAPIKEY=${DOLAPIKEY}&sqlfilters=(t.ref:like:'REP%') AND (t.tosell:=:1)`;
         const response = await fetch(apiUrl);
         if (!response.ok) {
@@ -38,9 +42,10 @@ export async function fetchMealProductIds() {
 
 // Charger les données de repas pour une période donnée
 export async function getRestaurantData(startDate, endDate, mealProductIds, signal) {
+    const wsUrlformel = getConfigurationValue("wsUrlformel");
     // Construire le filtre SQL - trouver les inscriptions qui chevauchent la plage de dates
     const productIdsStr = mealProductIds.join(',');
-    const sqlFilter = `llx_commandedet.fk_product in (${productIdsStr}) and (lin_datedebut is not null) and (lin_datedebut <= '${endDate}' and lin_datefin >= '${startDate}')`;
+    const sqlFilter = `llx_commandedet.fk_product in (${productIdsStr}) and (lin_datedebut is not null) and (lin_datedebut <= '${endDate} 23:59:59' and lin_datefin >= '${startDate} 00:00:00')`;
     const apiUrl = `${wsUrlformel}dklaccueil?DOLAPIKEY=${DOLAPIKEY}&sortfield=rowid&sortorder=ASC&sqlfilters=${encodeURIComponent(sqlFilter)}`;
 
     const response = await fetch(apiUrl, { signal });

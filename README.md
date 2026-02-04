@@ -2,6 +2,7 @@
 
 ## Release notes
 ### v3.0.4
+- Unification des en-têtes de page
 - Ajout du composant products
 - Ajout du composant stages
 ### V 3.0.3 
