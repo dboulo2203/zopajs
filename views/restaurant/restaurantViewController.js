@@ -1,3 +1,4 @@
+import { getBlocTitleDisplay, getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';
 import { fetchIntakePlaces, fetchMealProductIds, getRestaurantData } from './restaurantService.js';
@@ -14,10 +15,9 @@ let allPlaceIds = [];
 
 // Template HTML pour le contenu principal
 const restaurantContentString = `
-    <div class="d-flex justify-content-between" style="padding-top:60px">
-        <span class="fs-5" style="color:#8B2331"><i class="bi bi-cup-hot me-2"></i>Restaurant</span>
+    <div class="" style="padding-top:60px; margin-bottom:20px">
+    ${getPageTitleDisplay("Restaurant", "bi-cup-hot")}
     </div>
-    <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem" />
 
     <!-- Filtres de dates -->
     <div class="col-6">

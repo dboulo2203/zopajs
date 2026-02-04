@@ -1,6 +1,9 @@
 # zopajs
 
 ## Release notes
+### v3.0.4
+- Ajout du composant products
+- Ajout du composant stages
 ### V 3.0.3 
 - Développements de composants dropdown 
 ### V 3.0.3 

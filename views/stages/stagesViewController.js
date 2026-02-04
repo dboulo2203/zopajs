@@ -1,3 +1,4 @@
+import { getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';
 import { fetchStageProducts, getStagesData } from './stagesService.js';
@@ -7,10 +8,9 @@ let currentController = null;
 
 // Template HTML pour le contenu principal
 const stagesContentString = `
-    <div class="d-flex justify-content-between" style="padding-top:60px">
-        <span class="fs-5" style="color:#8B2331"><i class="bi bi-calendar3 me-2"></i>Planning des stages</span>
+    <div class="" style="padding-top:60px; margin-bottom:20px">
+        ${getPageTitleDisplay("Planning des stages", "bi bi-calendar3")}
     </div>
-    <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem" />
 
     <!-- Filtres de dates -->
     <div class="col-6">

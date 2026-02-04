@@ -1,0 +1,49 @@
+:root {
+    --primary-color: #8b4513;
+    --primary-hover: #6d3710;
+}
+
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.btn-primary-custom {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.border-primary-custom {
+    border-color: var(--primary-color) !important;
+}
+
+
+.btn-outline-primary-custom {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary-custom:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.result-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/*
+.result-row:hover {
+    background-color: #f8f9fa;
+} */
