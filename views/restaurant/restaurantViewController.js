@@ -63,37 +63,10 @@ const restaurantContentString = `
 
     <!-- Conteneur des tableaux -->
     <div id="tableContainer">
-        <!-- Table Lieu 1 -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable1">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu 1</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Conteneur dynamique pour les tableaux par lieu -->
+        <div id="placeTablesContainer"></div>
 
-        <!-- Table Lieu 3 -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable3">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu 3</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Lieu non défini -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTableNull">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu non défini</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Totaux -->
+        <!-- Table Totaux (seule table statique) -->
         <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
             <thead class="table-secondary">
                 <tr>
@@ -292,6 +265,21 @@ function updatePlaceTags() {
             updatePlaceTags();
         });
     });
+}
+
+// Créer dynamiquement un tableau HTML pour un lieu
+function createPlaceTable(placeKey, placeName) {
+    const tableId = `totauxTable_${placeKey}`;
+    const table = document.createElement('table');
+    table.className = 'table table-bordered table-sm meal-table mb-4';
+    table.id = tableId;
+    table.innerHTML = `
+        <thead class="table-secondary">
+            <tr><th>${placeName}</th></tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    return table;
 }
 
 // Formater la date en j/M
