@@ -13,6 +13,7 @@ import { displayToast } from '../../shared/bootstrapServices/bootstrapCommon.js'
 
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
+import { getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
 /**
  * when called from the url
  * get the parameters and launch the controller
@@ -54,9 +55,9 @@ export async function displayBookingContent(htlmPartId) {
 
         let output = '';
         output += `
-            <div class="d-flex  justify-content-between" style="padding-top:45px"   >
-                <span class="fs-5" style="color:#8B2331">${bedIcon} Display hosting booking</span>
-                <span id="extractButton" style="cursor: pointer">   ${copyIcon}</span>
+            <div class="d-flex  justify-content-between" style="margin-top:60px"   >
+            ${getPageTitleDisplay("Display hosting booking",)}
+               <span id="extractButton" style="cursor: pointer">   ${copyIcon}</span>
             </div>
             <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem"  / >
             <div id='componentMessage'></div>
@@ -75,7 +76,7 @@ export async function displayBookingContent(htlmPartId) {
                 </div>
                 <div class="row" >
                     <div class="col" >
-                        <button type="button"  class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Calculer</button>
+                        <button type="button"  style="margin-top:5px" class="btn btn-secondary" data-dismiss="modal" id="myBtnCompute">Calculer</button>
                     </div>
                 </div>
             </div> 

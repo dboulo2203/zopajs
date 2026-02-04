@@ -1,6 +1,6 @@
 // import { wsUrlformel, DOLAPIKEY } from '../../shared/assets/constants.js';
-import { getConfigurationValue } from '../../../shared/services/configurationService.js';
-import { getUSerToken } from '../../../shared/zopaServices/zopaLoginServices.js'
+import { getConfigurationValue } from '../../../../shared/services/configurationService.js';
+import { getUSerToken } from '../../../../shared/zopaServices/zopaLoginServices.js'
 /**
  * Load the language list from the database
  * the languages list is saved in the sessionStorage 

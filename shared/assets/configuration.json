@@ -1,6 +1,6 @@
 {
     "wsUrlformel": "https://kusala.fr/dolibarr/api/index.php/",
-    "version": "Powered by Dhagpo Kagyu  - ZopaJS App - v 3.0.3 -01 /02/2026",
+    "version": "Powered by Dhagpo Kagyu  - ZopaJS App - v 3.0.4 -04/02/2026",
     "leftMenu": [
         {
             "menuItemType": "menuitem",
@@ -40,7 +40,7 @@
             "menuItemid": "Produits",
             "menuItemName": "Produits",
             "menuItemAction": "urlCall",
-            "menuItemLink": "views/products/"
+            "menuItemLink": "views/products/products.html"
         },
         {
             "menuItemType": "menuitem",
@@ -79,14 +79,6 @@
             "menuItemIcon": "<i class='bi bi-house'></i>",
             "menuItemid": "Documentation",
             "menuItemName": "Documentation",
-            "menuItemAction": "urlCall",
-            "menuItemLink": "views/docu/docu.html"
-        },
-        {
-            "menuItemType": "menuitem",
-            "menuItemIcon": "<i class='bi bi-house'></i>",
-            "menuItemid": "Renan",
-            "menuItemName": "Aurelien",
             "menuItemAction": "urlCall",
             "menuItemLink": "views/docu/docu.html"
         }

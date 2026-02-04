@@ -39,7 +39,7 @@ export class PageTitleDisplay extends HTMLElement {
 
 
         this.innerHTML =  `
-            <div class="d-flex  justify-content-between" style="margin-top:0px">
+            <div class="d-flex justify-content-between" style="margin-top:0px">
                 <span class="fs-4" style="color:#8B2331"> ${iconString}${titleName}
                 </span>
             </div>
@@ -58,7 +58,7 @@ export function getPageTitleDisplay(blocName, blocIcon) {
 
     return `        
             <div class="d-flex  justify-content-between" style="margin-top:0px" >
-                <span class="fs-4" style="color:#8B2331" >${iconString} ${blocName}</span>
+                <span class="fs-4 text-danger-emphasis"  >${iconString} ${blocName}</span>
             </div>
             <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
                 `;
@@ -101,7 +101,7 @@ export function getBlocTitleDisplay(blocName, blocIcon) {
 
     return `        
             <div class="d-flex  justify-content-between" style="margin-top:0px" >
-                <span class="fs-5 " style="color:#8B2331" >${iconString} ${blocName}</span>
+                <span class="fs-5 text-danger-emphasis"  >${iconString} ${blocName}</span>
                 <div class="col-8 flex float-right text-end" style="cursor: pointer">            
                 
                     </div>
