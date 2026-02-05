@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(curl:*)",
-      "Bash(dir /b \"c:\\\\xampp\\\\htdocs\\\\zopajs\\\\views\\\\restaurant\")"
+      "Bash(dir /b \"c:\\\\xampp\\\\htdocs\\\\zopajs\\\\views\\\\restaurant\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

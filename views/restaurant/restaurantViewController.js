@@ -65,36 +65,12 @@ const restaurantContentString = `
     <div id="tableContainer">
         <!-- Conteneur dynamique pour les tableaux par lieu -->
         <div id="placeTablesContainer"></div>
-
-        <!-- Table Totaux (seule table statique) -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Totaux</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Conteneur pour le tableau Totaux -->
+        <div id="totauxTableContainer"></div>
     </div>
 
     <!-- Lignes de commande -->
-    <div class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
-    <div style="overflow-x: auto;">
-        <table class="table table-bordered table-sm" id="commandesTable">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Commande</th>
-                    <th>Produit</th>
-                    <th>Quantité</th>
-                    <th>Date début</th>
-                    <th>Date fin</th>
-                    <th>Lieu</th>
-                    <th>Type repas</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <div id="commandesTableContainer"></div>
 `;
 
 // Point d'entrée principal
@@ -280,6 +256,41 @@ function createPlaceTable(placeKey, placeName) {
         <tbody></tbody>
     `;
     return table;
+}
+
+// Générer le HTML du tableau Totaux
+function renderTotauxTable() {
+    return `
+        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
+            <thead class="table-secondary">
+                <tr><th>Totaux</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    `;
+}
+
+// Générer le HTML du tableau des commandes
+function renderCommandesTable() {
+    return `
+        <div class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm" id="commandesTable">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Commande</th>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Date début</th>
+                        <th>Date fin</th>
+                        <th>Lieu</th>
+                        <th>Type repas</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
 }
 
 // Formater la date en j/M
@@ -522,19 +533,22 @@ async function loadData() {
             }
         });
 
-        // Afficher le tableau Totaux seulement si plus d'1 lieu est sélectionné
-        const totauxTable = document.getElementById('totauxTable');
+        // Injecter le tableau Totaux dans son conteneur
+        const totauxContainer = document.getElementById('totauxTableContainer');
         const placesWithData = sortedPlaceKeys.filter(placeKey => {
             const placeData = countsByPlace[placeKey];
             return Object.values(placeData.countsByMealType).some(mealTypeHasData);
         });
 
         if (placesWithData.length > 1) {
-            totauxTable.classList.remove('hidden');
+            totauxContainer.innerHTML = renderTotauxTable();
             buildTableWithMealTypes('totauxTable', countsByMealType, 'Totaux', dates);
         } else {
-            totauxTable.classList.add('hidden');
+            totauxContainer.innerHTML = '';
         }
+
+        // Injecter le tableau Commandes
+        document.getElementById('commandesTableContainer').innerHTML = renderCommandesTable();
 
         // Construire le tableau des commandes (filtré par lieux sélectionnés)
         const filteredData = data.filter(item => {

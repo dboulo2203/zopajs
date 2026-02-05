@@ -1,0 +1,32 @@
+body {
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.fs-5 {
+    font-size: 1.1rem !important;
+}
+
+.form-label {
+    font-size: 0.95rem;
+}
+
+input, select {
+    font-size: 0.95rem;
+}
+
+th, td {
+    font-weight: 400;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.search-btn {
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    color: #722F37;
+}

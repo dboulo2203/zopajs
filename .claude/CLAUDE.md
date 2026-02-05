@@ -28,6 +28,20 @@ const nomPageContentString = `
 `;
 ```
 
+## Responsive et affichage mobile
+
+Pour éviter les problèmes d'affichage sur mobile (notamment le menu header avec les 3 points qui devient inaccessible), tous les tableaux susceptibles de dépasser la largeur de l'écran doivent être enveloppés dans un conteneur avec scroll horizontal :
+
+```html
+<div style="overflow-x: auto;">
+    <table class="table table-bordered table-sm">
+        <!-- contenu du tableau -->
+    </table>
+</div>
+```
+
+Cette règle s'applique à tous les tableaux de données (résultats, commandes, configurations, etc.).
+
 ## Appels API
 
 ### Clé API
