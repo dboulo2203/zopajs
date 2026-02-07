@@ -151,7 +151,7 @@ function getOrderStatusLabel(status) {
         '1': 'Validée',
         '3': 'Clôturée'
     };
-    return statuses[String(status)] || 'Inconnu';
+    return statuses[String(status)] || 'Non défini';
 }
 
 // Obtenir le libellé du statut facture
@@ -162,7 +162,7 @@ function getInvoiceStatusLabel(status, paye) {
         '1': 'Validée',
         '2': 'Payée'
     };
-    return statuses[String(status)] || 'Inconnu';
+    return statuses[String(status)] || 'Non défini';
 }
 
 // Obtenir le libellé du type de facture
@@ -192,15 +192,15 @@ function renderOrdersTable(data) {
         const montant = parseFloat(item.total_ttc) || 0;
         // Extraire le nom du premier produit (stage)
         const stage = (item.lines && item.lines.length > 0)
-            ? (item.lines[0].libelle || item.lines[0].product_label || item.lines[0].desc || '')
-            : '';
+            ? (item.lines[0].libelle || item.lines[0].product_label || item.lines[0].desc || 'Non défini')
+            : 'Non défini';
 
         // Nom de l'adhérent
-        const adherent = item.customer?.name || '';
+        const adherent = item.customer?.name || 'Non défini';
 
         rows += `<tr>
             <td><i class="bi bi-arrow-right"></i></td>
-            <td>${item.ref || ''}</td>
+            <td>${item.ref || 'Non défini'}</td>
             <td>${adherent}</td>
             <td>${formatDate(item.date_creation || item.datec)}</td>
             <td>${formatDate(item.tms || item.date_modification)}</td>
@@ -248,7 +248,7 @@ function renderInvoicesTable(data) {
 
         rows += `<tr>
             <td><i class="bi bi-arrow-right"></i></td>
-            <td>${item.ref || ''}</td>
+            <td>${item.ref || 'Non défini'}</td>
             <td>${getInvoiceTypeLabel(item.type)}</td>
             <td>${formatDate(item.date || item.datec)}</td>
             <td class="text-end">${formatMontant(montant)}</td>

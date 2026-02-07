@@ -166,7 +166,7 @@ function renderPaymentsByModeTable(data) {
         const montant = parseFloat(item.total) || 0;
         total += montant;
         rows += `<tr>
-            <td>${item.libelle || ''}</td>
+            <td>${item.libelle || 'Non défini'}</td>
             <td class="text-end">${formatMontant(montant)}</td>
         </tr>`;
     });
@@ -216,7 +216,7 @@ function renderPaymentsByAccountCodeTable(data) {
         total += montant;
         rows += `<tr>
             <td>${getFtypeLabel(item.ftype)}</td>
-            <td>${item.ccompta || ''}</td>
+            <td>${item.ccompta || 'Non défini'}</td>
             <td class="text-end">${formatMontant(montant)}</td>
         </tr>`;
     });
@@ -260,7 +260,7 @@ function renderInvoicesTable(data) {
         // Récupérer les infos du premier paiement
         const payment = item.payments && item.payments[0] ? item.payments[0] : {};
         const paymentAmount = parseFloat(payment.amount) || 0;
-        const paymentType = payment.type || '';
+        const paymentType = payment.type || 'Non défini';
         const paymentDate = payment.date || '';
 
         // Type de facture
@@ -268,7 +268,7 @@ function renderInvoicesTable(data) {
 
         rows += `<tr>
             <td><i class="bi bi-arrow-right"></i></td>
-            <td>${item.ref || ''}</td>
+            <td>${item.ref || 'Non défini'}</td>
             <td>${paymentType} (${formatMontant(paymentAmount)})</td>
             <td>${invoiceType}</td>
             <td>${formatDate(paymentDate)}</td>

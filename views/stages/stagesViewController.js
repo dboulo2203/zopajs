@@ -381,7 +381,7 @@ function buildConfigTable(stagesCounts, stageProducts) {
 
         // Maxim. inscrits
         const tdNbmax = document.createElement('td');
-        tdNbmax.textContent = product.nbmax || '';
+        tdNbmax.textContent = product.nbmax || 'Non défini';
         tr.appendChild(tdNbmax);
 
         // Partici. Obligat.
@@ -401,12 +401,12 @@ function buildConfigTable(stagesCounts, stageProducts) {
 
         // Analyse (place)
         const tdPlace = document.createElement('td');
-        tdPlace.textContent = product.place === '1' ? 'Institut' : (product.place || '');
+        tdPlace.textContent = product.place === '1' ? 'Institut' : (product.place || 'Non défini');
         tr.appendChild(tdPlace);
 
         // Compta
         const tdCompta = document.createElement('td');
-        tdCompta.textContent = product.analcompta;
+        tdCompta.textContent = product.analcompta || 'Non défini';
         tr.appendChild(tdCompta);
 
         // Prix
@@ -445,17 +445,17 @@ function buildCommandesTable(data) {
 
         // Commande (fk_commande)
         const tdCommande = document.createElement('td');
-        tdCommande.textContent = item.fk_commande || '';
+        tdCommande.textContent = item.fk_commande || 'Non défini';
         tr.appendChild(tdCommande);
 
         // Client (customername)
         const tdClient = document.createElement('td');
-        tdClient.textContent = item.customername || '';
+        tdClient.textContent = item.customername || 'Non défini';
         tr.appendChild(tdClient);
 
         // Produit (ref)
         const tdProduit = document.createElement('td');
-        tdProduit.textContent = item.ref || '';
+        tdProduit.textContent = item.ref || 'Non défini';
         tr.appendChild(tdProduit);
 
         // Quantité

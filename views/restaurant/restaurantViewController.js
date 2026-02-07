@@ -261,12 +261,14 @@ function createPlaceTable(placeKey, placeName) {
 // Générer le HTML du tableau Totaux
 function renderTotauxTable() {
     return `
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
-            <thead class="table-secondary">
-                <tr><th>Totaux</th></tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
+                <thead class="table-secondary">
+                    <tr><th>Totaux</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     `;
 }
 
@@ -528,7 +530,10 @@ async function loadData() {
             if (hasData) {
                 const tableId = `totauxTable_${placeKey}`;
                 const table = createPlaceTable(placeKey, placeData.name);
-                placeTablesContainer.appendChild(table);
+                const scrollWrapper = document.createElement('div');
+                scrollWrapper.style.overflowX = 'auto';
+                scrollWrapper.appendChild(table);
+                placeTablesContainer.appendChild(scrollWrapper);
                 buildTableWithMealTypes(tableId, placeData.countsByMealType, placeData.name, dates);
             }
         });
