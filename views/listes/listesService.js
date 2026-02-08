@@ -1,12 +1,11 @@
 import { getConfigurationValue } from '../../shared/services/configurationService.js';
-
-const DOLAPIKEY = 'OpK1D8otonWg690PIoj570KdHSCqCc04';
+import { getUSerToken } from '../../shared/zopaServices/zopaLoginServices.js';
 
 // Récupérer la liste des utilisateurs actifs
 export async function fetchUsers() {
     try {
         const wsUrlformel = getConfigurationValue("wsUrlformel");
-        const apiUrl = `${wsUrlformel}users/?DOLAPIKEY=${DOLAPIKEY}&sortorder=ASC&limit=100&active=1`;
+        const apiUrl = `${wsUrlformel}users/?DOLAPIKEY=${getUSerToken()}&sortorder=ASC&limit=100&active=1`;
         const response = await fetch(apiUrl);
         const data = await response.json();
         const users = {};
@@ -51,7 +50,7 @@ export async function fetchOrders(searchOption, userId, signal) {
         sqlfilters += ` and (t.fk_user_author=${userId})`;
     }
 
-    const apiUrl = `${wsUrlformel}dklaccueil/fullorders?DOLAPIKEY=${DOLAPIKEY}&sqlfilters=${encodeURIComponent(sqlfilters)}&sortfield=t.rowid&sortorder=ASC&limit=100`;
+    const apiUrl = `${wsUrlformel}dklaccueil/fullorders?DOLAPIKEY=${getUSerToken()}&sqlfilters=${encodeURIComponent(sqlfilters)}&sortfield=t.rowid&sortorder=ASC&limit=100`;
 
     const response = await fetch(apiUrl, { signal });
     if (!response.ok) {
@@ -88,7 +87,7 @@ export async function fetchInvoices(searchOption, userId, signal) {
         sqlfilters += ` and (t.fk_user_author:=:${userId})`;
     }
 
-    const apiUrl = `${wsUrlformel}invoices?DOLAPIKEY=${DOLAPIKEY}&sqlfilters=${encodeURIComponent(sqlfilters)}&sortfield=t.ref&sortorder=ASC&limit=100`;
+    const apiUrl = `${wsUrlformel}invoices?DOLAPIKEY=${getUSerToken()}&sqlfilters=${encodeURIComponent(sqlfilters)}&sortfield=t.ref&sortorder=ASC&limit=100`;
 
     const response = await fetch(apiUrl, { signal });
     if (!response.ok) {

@@ -1,13 +1,12 @@
 import { getConfigurationValue } from '../../shared/services/configurationService.js';
-
-const DOLAPIKEY = 'OpK1D8otonWg690PIoj570KdHSCqCc04';
+import { getUSerToken } from '../../shared/zopaServices/zopaLoginServices.js';
 
 // Récupérer les produits stages depuis l'API (ref commence par "STA" et tosell = 1)
 // Retourne un objet { ids: [...], products: { id: { id, ref, label, ... }, ... } }
 export async function fetchStageProducts() {
     try {
         const wsUrlformel = getConfigurationValue("wsUrlformel");
-        const apiUrl = `${wsUrlformel}products?DOLAPIKEY=${DOLAPIKEY}&sqlfilters=(t.ref:like:'STA%') AND (t.tosell:=:1)`;
+        const apiUrl = `${wsUrlformel}products?DOLAPIKEY=${getUSerToken()}&sqlfilters=(t.ref:like:'STA%') AND (t.tosell:=:1)`;
         const response = await fetch(apiUrl);
         if (!response.ok) {
             throw new Error(`API error: ${response.status}`);
@@ -53,7 +52,7 @@ export async function getStagesData(startDate, endDate, stageProductIds, signal)
     // Construire le filtre SQL - trouver les inscriptions qui chevauchent la plage de dates
     const productIdsStr = stageProductIds.join(',');
     const sqlFilter = `llx_commandedet.fk_product in (${productIdsStr}) and (lin_datedebut is not null) and (lin_datedebut <= '${endDate} 23:59:59' and lin_datefin >= '${startDate} 00:00:00')`;
-    const apiUrl = `${wsUrlformel}dklaccueil?DOLAPIKEY=${DOLAPIKEY}&sortfield=rowid&sortorder=ASC&sqlfilters=${encodeURIComponent(sqlFilter)}`;
+    const apiUrl = `${wsUrlformel}dklaccueil?DOLAPIKEY=${getUSerToken()}&sortfield=rowid&sortorder=ASC&sqlfilters=${encodeURIComponent(sqlFilter)}`;
 
     const response = await fetch(apiUrl, { signal });
     // L'API retourne 404 quand aucun résultat n'est trouvé
