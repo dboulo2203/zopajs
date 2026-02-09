@@ -9,7 +9,7 @@ import { footerViewDisplay } from '../../../shared/zopaAppservices/footerViewCon
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 import { searchIcon } from '../../../shared/assets/constants.js'
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
-import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components/components.js'
 
 
 /**

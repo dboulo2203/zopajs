@@ -13,7 +13,7 @@ import { displayToast } from '../../shared/bootstrapServices/bootstrapCommon.js'
 
 
 import { orderExtractViewDisplay } from './orderExtract/orderExtractViewCont.js'
-import { getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
+import { getPageTitleDisplay } from '../../shared/bootstrapServices/components/components.js';
 /**
  * when called from the url
  * get the parameters and launch the controller

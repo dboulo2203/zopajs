@@ -5,7 +5,7 @@ import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServic
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 
 // *** Shared ressoucres
-import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components/components.js'
 
 import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'

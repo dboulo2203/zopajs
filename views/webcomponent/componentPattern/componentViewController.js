@@ -2,7 +2,7 @@
 // import webServices
 import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServices.js'
 import { getUserLoginFromId } from '../../../shared/zopaServices/zopaListsServices.js'
-import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components/components.js'
 
 // *** Shared ressoucres
 import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources

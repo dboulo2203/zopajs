@@ -24,7 +24,7 @@
  * - setItems(items): Sets the items manually
  * - destroy(): Removes the selector from DOM
  */
-export class AutocompleteSelector {
+export default class AutocompleteSelector {
     constructor(container, options = {}) {
         // Get container element
         if (typeof container === 'string') {

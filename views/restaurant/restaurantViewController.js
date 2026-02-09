@@ -1,4 +1,4 @@
-import { getBlocTitleDisplay, getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
+import { getBlocTitleDisplay, getPageTitleDisplay } from '../../shared/bootstrapServices/components/components.js';
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';
 import { fetchIntakePlaces, fetchMealProductIds, fetchMealTypes, getRestaurantData } from './restaurantService.js';

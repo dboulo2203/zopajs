@@ -62,6 +62,8 @@ Le projet vise à construire une application de gestion des inscriptions à des 
 simpleField-pattern : 
     `<div class="fieldSimpleDisplay" > <span class="fw-light">${fieldName}</span> : <span>${ fieldValue }</span></div>`
 
+
+
 ### data access
 - les données de l'application sont extraites au moyen de web services situés dans le répertoire shared/appServices
 

@@ -9,7 +9,7 @@ import { launchInitialisation } from '../../../shared/zopaAppservices/initialisa
 
 import { addMultipleEnventListener, getAppPath, getFormattedDate } from '../../../shared/services/commonFunctions.js'
 import { displayToast } from '../../../shared/bootstrapServices/bootstrapCommon.js'
-import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
+import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components/components.js'
 
 import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue }
     from '../../../shared/zopaServices/zopaListsServices.js'

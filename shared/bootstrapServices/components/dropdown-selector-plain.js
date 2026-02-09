@@ -20,7 +20,7 @@
  * - setItems(items): Sets the items manually
  * - destroy(): Removes the selector from DOM
  */
-class DropdownSelector {
+export default class DropdownSelector {
     constructor(container, options = {}) {
         // Get container element
         if (typeof container === 'string') {

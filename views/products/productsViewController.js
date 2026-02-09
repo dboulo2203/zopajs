@@ -1,4 +1,4 @@
-import { getBlocTitleDisplay } from '../../shared/bootstrapServices/components.js';
+import { getBlocTitleDisplay } from '../../shared/bootstrapServices/components/components.js';
 import { addMultipleEnventListener, getAppPath } from '../../shared/services/commonFunctions.js';
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';

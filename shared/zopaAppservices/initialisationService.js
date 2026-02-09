@@ -9,7 +9,7 @@ import {
     loadCivilitiesTable, loadPublipostageTable, loadIncomeLevelsTable
 } from '../../shared/zopaServices/zopaListsServices.js'
 
-import { initWebComponents } from '../../shared/bootstrapServices/components.js'
+// import { initWebComponents } from '../../shared/bootstrapServices/components/components.js'
 import { setTheme } from '../../shared//bootstrapServices/bootstrapTheme.js'
 
 import { loadTranslations } from '../../shared/services/translationService.js'
@@ -20,7 +20,7 @@ import { loadTranslations } from '../../shared/services/translationService.js'
 export async function launchInitialisation() {
 
     await getConfigurationFromJson();
-    initWebComponents();
+    // initWebComponents();
     setTheme();
     await loadTranslations();
     await loadUsersTable();

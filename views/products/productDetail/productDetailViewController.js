@@ -2,7 +2,7 @@ import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCon
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js';
 import { fetchProductDetails, fetchRegisteredPersons } from './productDetailService.js';
 import { getevaluateOrderGlobalStatus } from '../../../shared/zopaServices/zopaOrderServices.js'
-import { getBlocTitleDisplay, getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js';
+import { getBlocTitleDisplay, getPageTitleDisplay } from '../../../shared/bootstrapServices/components/components.js';
 // Template HTML pour le contenu principal
 const productDetailContentString = `
     <div class="pb-4">

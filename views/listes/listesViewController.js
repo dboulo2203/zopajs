@@ -1,4 +1,4 @@
-import { getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
+import { getPageTitleDisplay } from '../../shared/bootstrapServices/components/components.js';
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';
 import { fetchUsers, fetchOrders, fetchInvoices } from './listesService.js';

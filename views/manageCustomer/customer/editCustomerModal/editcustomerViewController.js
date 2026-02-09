@@ -10,7 +10,7 @@ import { getCustomer } from "../../../../shared/zopaServices/zopaCustomerService
 
 // import { addMultipleEnventListener, getAppPath } from '../../../shared/services/commonFunctions.js'
 // import { displayToast } from '../../../shared/bootstrapServices/bootstrapCommon.js'
-// import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
+// import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components/components.js'
 
 // import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue }
 //     from '../../../shared/zopaServices/zopaListsServices.js'
