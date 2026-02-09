@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutocompleteSelector - Version JavaScript Plain</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .code-block code {
+            color: #212529;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class="bi bi-search"></i> AutocompleteSelector - Plain JavaScript
+            </span>
+            <div>
+                <a href="autocomplete-selector-demo.html" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-puzzle"></i> Version Web Component
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <!-- Introduction -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="h3 mb-3">AutocompleteSelector - Version JavaScript Plain</h1>
+                <p class="mb-0">
+                    Cette version utilise une classe JavaScript standard au lieu de la technologie Web Components.
+                    Elle offre les mêmes fonctionnalités d'autocomplete mais avec une approche JavaScript classique (ES6 Class).
+                </p>
+            </div>
+        </div>
+
+        <!-- Example 1: Basic Usage -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-1-circle"></i> Utilisation basique</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Tapez au moins 1 caractère pour voir la liste filtrée</p>
+
+                    <div id="autocomplete1"></div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue1()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearValue1()">
+                            <i class="bi bi-x-circle"></i> Effacer
+                        </button>
+                    </div>
+
+                    <div id="result1" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code HTML:</strong>
+                        <pre class="mb-2"><code>&lt;div id="autocomplete1"&gt;&lt;/div&gt;</code></pre>
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete1 = new AutocompleteSelector('#autocomplete1', {
+    apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+    apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+    placeholder: 'Tapez pour rechercher un produit...'
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 2: Pre-selected Value -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-2-circle"></i> Avec pré-sélection</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Un élément est pré-sélectionné via l'option <code>selectedId</code></p>
+
+                    <div id="autocomplete2"></div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue2()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                    </div>
+
+                    <div id="result2" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete2 = new AutocompleteSelector('#autocomplete2', {
+    apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+    apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+    selectedId: '226',
+    placeholder: 'Tapez pour rechercher un produit...'
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 3: Custom Min Characters -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-3-circle"></i> Nombre minimum de caractères</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Nécessite au moins 3 caractères pour déclencher la recherche</p>
+
+                    <div id="autocomplete3"></div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue3()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                    </div>
+
+                    <div id="result3" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete3 = new AutocompleteSelector('#autocomplete3', {
+    apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+    apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+    minChars: 3,
+    placeholder: 'Tapez au moins 3 caractères...'
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 4: Callbacks -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-4-circle"></i> Avec callbacks</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Utilisation des callbacks <code>onChange</code>, <code>onInput</code> et <code>onLoad</code></p>
+
+                    <div id="autocomplete4"></div>
+
+                    <div id="result4" class="alert alert-success mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete4 = new AutocompleteSelector('#autocomplete4', {
+    apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+    apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+    placeholder: 'Tapez pour rechercher...',
+    onChange: (value, item) => {
+        console.log('Sélection changée:', value, item);
+    },
+    onInput: (searchTerm) => {
+        console.log('Texte saisi:', searchTerm);
+    },
+    onLoad: (items) => {
+        console.log('Données chargées:', items.length, 'éléments');
+    }
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 5: Programmatic Control -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-5-circle"></i> Contrôle programmatique</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Utilisation des méthodes pour contrôler la sélection</p>
+
+                    <div id="autocomplete5"></div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="setValue5('226')">
+                            Sélectionner ID 226
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="setValue5('227')">
+                            Sélectionner ID 227
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="showValue5()">
+                            <i class="bi bi-eye"></i> Afficher la valeur
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearValue5()">
+                            <i class="bi bi-x-circle"></i> Effacer
+                        </button>
+                    </div>
+
+                    <div id="result5" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete = new AutocompleteSelector('#autocomplete5', {
+    // ... options
+});
+
+// Définir la valeur
+const success = autocomplete.setValue('226');
+
+// Obtenir la valeur
+const value = autocomplete.getValue();
+
+// Obtenir l'objet complet
+const item = autocomplete.getSelectedItem();
+
+// Effacer la sélection
+autocomplete.clear();</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="h5 mb-0"><i class="bi bi-book"></i> Documentation</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="h6 mb-3">Constructor</h3>
+                <pre class="code-block mb-0"><code>new AutocompleteSelector(container, options)</code></pre>
+
+                <h3 class="h6 mb-3 mt-4">Paramètres</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Paramètre</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>container</code></td>
+                            <td>String ou Element</td>
+                            <td>Sélecteur CSS ou élément DOM où insérer l'autocomplete</td>
+                        </tr>
+                        <tr>
+                            <td><code>options</code></td>
+                            <td>Object</td>
+                            <td>Configuration de l'autocomplete (voir tableau ci-dessous)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Options</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Type</th>
+                            <th>Défaut</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>apiUrl</code></td>
+                            <td>String</td>
+                            <td>null</td>
+                            <td>URL de l'API pour charger les données</td>
+                        </tr>
+                        <tr>
+                            <td><code>apiKey</code></td>
+                            <td>String</td>
+                            <td>null</td>
+                            <td>Clé API pour l'authentification</td>
+                        </tr>
+                        <tr>
+                            <td><code>selectedId</code></td>
+                            <td>String/Number</td>
+                            <td>null</td>
+                            <td>ID de l'élément à pré-sélectionner</td>
+                        </tr>
+                        <tr>
+                            <td><code>labelField</code></td>
+                            <td>String</td>
+                            <td>'label'</td>
+                            <td>Nom du champ à utiliser comme label</td>
+                        </tr>
+                        <tr>
+                            <td><code>valueField</code></td>
+                            <td>String</td>
+                            <td>'id'</td>
+                            <td>Nom du champ à utiliser comme valeur</td>
+                        </tr>
+                        <tr>
+                            <td><code>placeholder</code></td>
+                            <td>String</td>
+                            <td>'Tapez pour rechercher...'</td>
+                            <td>Texte placeholder de l'input</td>
+                        </tr>
+                        <tr>
+                            <td><code>minChars</code></td>
+                            <td>Number</td>
+                            <td>1</td>
+                            <td>Nombre minimum de caractères pour déclencher</td>
+                        </tr>
+                        <tr>
+                            <td><code>onChange</code></td>
+                            <td>Function</td>
+                            <td>null</td>
+                            <td>Callback appelé lors du changement de sélection</td>
+                        </tr>
+                        <tr>
+                            <td><code>onInput</code></td>
+                            <td>Function</td>
+                            <td>null</td>
+                            <td>Callback appelé à chaque frappe</td>
+                        </tr>
+                        <tr>
+                            <td><code>onLoad</code></td>
+                            <td>Function</td>
+                            <td>null</td>
+                            <td>Callback appelé après le chargement des données</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Méthodes</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Méthode</th>
+                            <th>Retour</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>getValue()</code></td>
+                            <td>Any</td>
+                            <td>Retourne la valeur de l'élément sélectionné</td>
+                        </tr>
+                        <tr>
+                            <td><code>getSelectedItem()</code></td>
+                            <td>Object</td>
+                            <td>Retourne l'objet complet de l'élément sélectionné</td>
+                        </tr>
+                        <tr>
+                            <td><code>setValue(value)</code></td>
+                            <td>Boolean</td>
+                            <td>Définit la sélection par valeur (retourne true si succès)</td>
+                        </tr>
+                        <tr>
+                            <td><code>clear()</code></td>
+                            <td>void</td>
+                            <td>Efface la sélection et vide l'input</td>
+                        </tr>
+                        <tr>
+                            <td><code>setItems(items)</code></td>
+                            <td>void</td>
+                            <td>Définit manuellement la liste des éléments</td>
+                        </tr>
+                        <tr>
+                            <td><code>setPlaceholder(text)</code></td>
+                            <td>void</td>
+                            <td>Change le texte du placeholder</td>
+                        </tr>
+                        <tr>
+                            <td><code>destroy()</code></td>
+                            <td>void</td>
+                            <td>Supprime l'autocomplete du DOM</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Avantages vs Web Components</h3>
+                <ul>
+                    <li><strong>Compatible :</strong> Fonctionne avec tous les navigateurs sans polyfill</li>
+                    <li><strong>Simple :</strong> Pas besoin de comprendre les Custom Elements</li>
+                    <li><strong>Flexible :</strong> Plus facile à intégrer dans du code existant</li>
+                    <li><strong>Callbacks :</strong> Système de callbacks plus familier</li>
+                    <li><strong>Contrôle :</strong> Accès direct à l'instance de la classe</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="autocomplete-selector-plain.js"></script>
+    <script>
+        // Example 1: Basic usage
+        const autocomplete1 = new AutocompleteSelector('#autocomplete1', {
+            apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+            apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+            placeholder: 'Tapez pour rechercher un produit...'
+        });
+
+        function showValue1() {
+            const value = autocomplete1.getValue();
+            const item = autocomplete1.getSelectedItem();
+            const result = document.getElementById('result1');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        function clearValue1() {
+            autocomplete1.clear();
+            const result = document.getElementById('result1');
+            result.classList.add('d-none');
+        }
+
+        // Example 2: Pre-selected value
+        const autocomplete2 = new AutocompleteSelector('#autocomplete2', {
+            apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+            apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+            selectedId: '226',
+            placeholder: 'Tapez pour rechercher un produit...'
+        });
+
+        function showValue2() {
+            const value = autocomplete2.getValue();
+            const item = autocomplete2.getSelectedItem();
+            const result = document.getElementById('result2');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        // Example 3: Custom min characters
+        const autocomplete3 = new AutocompleteSelector('#autocomplete3', {
+            apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+            apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+            minChars: 3,
+            placeholder: 'Tapez au moins 3 caractères...'
+        });
+
+        function showValue3() {
+            const value = autocomplete3.getValue();
+            const item = autocomplete3.getSelectedItem();
+            const result = document.getElementById('result3');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        // Example 4: Callbacks
+        const autocomplete4 = new AutocompleteSelector('#autocomplete4', {
+            apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+            apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+            placeholder: 'Tapez pour rechercher...',
+            onChange: (value, item) => {
+                const result = document.getElementById('result4');
+                if (item) {
+                    result.innerHTML = `
+                        <strong><i class="bi bi-check-circle"></i> Callback 'onChange' appelé!</strong><br>
+                        <strong>Valeur:</strong> ${value}<br>
+                        <strong>Label:</strong> ${item.label}<br>
+                        <strong>Ref:</strong> ${item.ref || 'N/A'}
+                    `;
+                } else {
+                    result.innerHTML = '<strong><i class="bi bi-x-circle"></i> Sélection effacée</strong>';
+                }
+                result.classList.remove('d-none');
+            },
+            onInput: (searchTerm) => {
+                console.log('Texte saisi:', searchTerm);
+            },
+            onLoad: (items) => {
+                console.log(`Données chargées: ${items.length} éléments`);
+            }
+        });
+
+        // Example 5: Programmatic control
+        const autocomplete5 = new AutocompleteSelector('#autocomplete5', {
+            apiUrl: 'https://kusala.fr/dolibarr/api/index.php/products',
+            apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
+            placeholder: 'Tapez pour rechercher...',
+            onLoad: (items) => {
+                const result = document.getElementById('result5');
+                if (items.length > 0) {
+                    const firstIds = items.slice(0, 5).map(item => item.id).join(', ');
+                    result.innerHTML = `
+                        <strong><i class="bi bi-info-circle"></i> Données chargées!</strong><br>
+                        Premiers IDs disponibles: ${firstIds}${items.length > 5 ? '...' : ''}
+                    `;
+                    result.classList.remove('d-none');
+                    result.classList.remove('alert-danger');
+                    result.classList.add('alert-info');
+                }
+            }
+        });
+
+        function setValue5(value) {
+            const success = autocomplete5.setValue(value);
+            const result = document.getElementById('result5');
+
+            if (!success) {
+                result.innerHTML = `
+                    <strong><i class="bi bi-exclamation-triangle"></i> Erreur!</strong><br>
+                    L'ID "${value}" n'existe pas dans les données chargées.
+                `;
+                result.classList.remove('d-none');
+                result.classList.remove('alert-info');
+                result.classList.add('alert-danger');
+            } else {
+                const item = autocomplete5.getSelectedItem();
+                result.innerHTML = `
+                    <strong><i class="bi bi-check-circle"></i> Succès!</strong><br>
+                    Valeur sélectionnée: ${value}<br>
+                    Label: ${item.label}
+                `;
+                result.classList.remove('d-none');
+                result.classList.remove('alert-danger');
+                result.classList.add('alert-info');
+            }
+        }
+
+        function showValue5() {
+            const value = autocomplete5.getValue();
+            const item = autocomplete5.getSelectedItem();
+            const result = document.getElementById('result5');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+                result.classList.remove('alert-danger');
+                result.classList.add('alert-info');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+                result.classList.remove('alert-danger');
+                result.classList.add('alert-info');
+            }
+        }
+
+        function clearValue5() {
+            autocomplete5.clear();
+        }
+    </script>
+</body>
+</html>

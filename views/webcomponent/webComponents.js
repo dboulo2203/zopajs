@@ -7,6 +7,7 @@ export function addslashes(str) {
 }
 
 
+// updatePlaceTags();
 /**
  * Bloc title component 
  * with attribute change

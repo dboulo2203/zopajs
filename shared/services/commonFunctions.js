@@ -232,3 +232,15 @@ export function findTibetanChars(text) {
   }
   return text; // Return empty array if no matches
 }
+
+
+export function getFormattedDate(thisDate) {
+  return new Intl.DateTimeFormat("fr-FR",
+    {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    }).format(thisDate * 1000)
+}

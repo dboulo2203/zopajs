@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutocompleteSelector - Démonstration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .code-block code {
+            color: #212529;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class="bi bi-search"></i> AutocompleteSelector - Web Component
+            </span>
+            <div>
+                <a href="dropdown-selector-demo.html" class="btn btn-sm btn-outline-light">
+                    <i class="bi bi-list-check"></i> DropdownSelector
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <!-- Introduction -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="h3 mb-3">Démonstration du Web Component AutocompleteSelector</h1>
+                <p class="mb-0">
+                    Ce composant web personnalisé fonctionne comme un autocomplete : la liste de sélection s'affiche
+                    lorsque l'utilisateur tape au moins un caractère dans un champ input. Les résultats sont filtrés
+                    en temps réel selon la saisie.
+                </p>
+            </div>
+        </div>
+
+        <!-- Example 1: Basic Usage -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-1-circle"></i> Utilisation basique</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Tapez au moins 1 caractère pour voir la liste filtrée</p>
+
+                    <autocomplete-selector
+                        id="autocomplete1"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        placeholder="Tapez pour rechercher un produit...">
+                    </autocomplete-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue1()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearValue1()">
+                            <i class="bi bi-x-circle"></i> Effacer
+                        </button>
+                    </div>
+
+                    <div id="result1" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code HTML:</strong>
+                        <pre class="mb-0"><code>&lt;autocomplete-selector
+    id="autocomplete1"
+    api-url="https://kusala.fr/dolibarr/api/index.php/products"
+    api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+    placeholder="Tapez pour rechercher un produit..."&gt;
+&lt;/autocomplete-selector&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 2: Pre-selected Value -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-2-circle"></i> Avec pré-sélection</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Un élément est pré-sélectionné via l'attribut <code>selected-id</code></p>
+
+                    <autocomplete-selector
+                        id="autocomplete2"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        selected-id="1"
+                        placeholder="Tapez pour rechercher un produit...">
+                    </autocomplete-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue2()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                    </div>
+
+                    <div id="result2" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code HTML:</strong>
+                        <pre class="mb-0"><code>&lt;autocomplete-selector
+    id="autocomplete2"
+    api-url="https://kusala.fr/dolibarr/api/index.php/products"
+    api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+    selected-id="1"
+    placeholder="Tapez pour rechercher un produit..."&gt;
+&lt;/autocomplete-selector&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 3: Custom Min Characters -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-3-circle"></i> Nombre minimum de caractères personnalisé</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Nécessite au moins 3 caractères pour déclencher la recherche</p>
+
+                    <autocomplete-selector
+                        id="autocomplete3"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        min-chars="3"
+                        placeholder="Tapez au moins 3 caractères...">
+                    </autocomplete-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue3()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                    </div>
+
+                    <div id="result3" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code HTML:</strong>
+                        <pre class="mb-0"><code>&lt;autocomplete-selector
+    id="autocomplete3"
+    api-url="https://kusala.fr/dolibarr/api/index.php/products"
+    api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+    min-chars="3"
+    placeholder="Tapez au moins 3 caractères..."&gt;
+&lt;/autocomplete-selector&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 4: Event Listeners -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-4-circle"></i> Avec écouteurs d'événements</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Les événements <code>input</code> et <code>change</code> sont déclenchés automatiquement</p>
+
+                    <autocomplete-selector
+                        id="autocomplete4"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        placeholder="Tapez pour rechercher...">
+                    </autocomplete-selector>
+
+                    <div id="result4" class="alert alert-success mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete = document.getElementById('autocomplete4');
+
+// Événement déclenché à chaque frappe
+autocomplete.addEventListener('input', (event) => {
+    console.log('Texte saisi:', event.detail.value);
+});
+
+// Événement déclenché lors de la sélection
+autocomplete.addEventListener('change', (event) => {
+    console.log('Valeur sélectionnée:', event.detail.value);
+    console.log('Objet complet:', event.detail.item);
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 5: Programmatic Control -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-5-circle"></i> Contrôle programmatique</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Utilisation des méthodes du composant pour contrôler la sélection</p>
+
+                    <autocomplete-selector
+                        id="autocomplete5"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        placeholder="Tapez pour rechercher...">
+                    </autocomplete-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="setValue5('1')">
+                            Sélectionner ID 1
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="setValue5('2')">
+                            Sélectionner ID 2
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="showValue5()">
+                            <i class="bi bi-eye"></i> Afficher la valeur
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearValue5()">
+                            <i class="bi bi-x-circle"></i> Effacer
+                        </button>
+                    </div>
+
+                    <div id="result5" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const autocomplete = document.getElementById('autocomplete5');
+
+// Définir la valeur
+autocomplete.setValue('1');
+
+// Obtenir la valeur
+const value = autocomplete.getValue();
+
+// Obtenir l'objet complet
+const item = autocomplete.getSelectedItem();
+
+// Effacer la sélection
+autocomplete.clear();</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="h5 mb-0"><i class="bi bi-book"></i> Documentation</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="h6 mb-3">Attributs</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Attribut</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Défaut</th>
+                            <th>Requis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>api-url</code></td>
+                            <td>String</td>
+                            <td>URL de l'API pour charger les données</td>
+                            <td>-</td>
+                            <td>Oui</td>
+                        </tr>
+                        <tr>
+                            <td><code>api-key</code></td>
+                            <td>String</td>
+                            <td>Clé API pour l'authentification</td>
+                            <td>-</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>selected-id</code></td>
+                            <td>String/Number</td>
+                            <td>ID de l'élément à pré-sélectionner</td>
+                            <td>-</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>label-field</code></td>
+                            <td>String</td>
+                            <td>Nom du champ à utiliser comme label</td>
+                            <td>'label'</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>value-field</code></td>
+                            <td>String</td>
+                            <td>Nom du champ à utiliser comme valeur</td>
+                            <td>'id'</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>placeholder</code></td>
+                            <td>String</td>
+                            <td>Texte placeholder de l'input</td>
+                            <td>'Tapez pour rechercher...'</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>min-chars</code></td>
+                            <td>Number</td>
+                            <td>Nombre minimum de caractères pour déclencher la recherche</td>
+                            <td>1</td>
+                            <td>Non</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Méthodes</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Méthode</th>
+                            <th>Retour</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>getValue()</code></td>
+                            <td>Any</td>
+                            <td>Retourne la valeur de l'élément sélectionné</td>
+                        </tr>
+                        <tr>
+                            <td><code>getSelectedItem()</code></td>
+                            <td>Object</td>
+                            <td>Retourne l'objet complet de l'élément sélectionné</td>
+                        </tr>
+                        <tr>
+                            <td><code>setValue(value)</code></td>
+                            <td>void</td>
+                            <td>Définit la sélection par valeur</td>
+                        </tr>
+                        <tr>
+                            <td><code>clear()</code></td>
+                            <td>void</td>
+                            <td>Efface la sélection et vide l'input</td>
+                        </tr>
+                        <tr>
+                            <td><code>setItems(items)</code></td>
+                            <td>void</td>
+                            <td>Définit manuellement la liste des éléments</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Événements</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Événement</th>
+                            <th>Detail</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>input</code></td>
+                            <td><code>{ value }</code></td>
+                            <td>Déclenché à chaque frappe dans l'input</td>
+                        </tr>
+                        <tr>
+                            <td><code>change</code></td>
+                            <td><code>{ value, item }</code></td>
+                            <td>Déclenché lorsque la sélection change</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Différences avec DropdownSelector</h3>
+                <ul>
+                    <li><strong>Déclenchement :</strong> Par saisie dans un input au lieu d'un clic sur un span/bouton</li>
+                    <li><strong>Filtrage :</strong> Filtrage automatique en temps réel basé sur la saisie</li>
+                    <li><strong>min-chars :</strong> Attribut supplémentaire pour contrôler le nombre minimum de caractères</li>
+                    <li><strong>clear() :</strong> Méthode supplémentaire pour effacer la sélection</li>
+                    <li><strong>Pas de recherche intégrée :</strong> Le filtrage est automatique, pas besoin de barre de recherche</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="autocomplete-selector.js"></script>
+    <script>
+        // Example 1: Show value
+        function showValue1() {
+            const autocomplete = document.getElementById('autocomplete1');
+            const value = autocomplete.getValue();
+            const item = autocomplete.getSelectedItem();
+            const result = document.getElementById('result1');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        function clearValue1() {
+            const autocomplete = document.getElementById('autocomplete1');
+            autocomplete.clear();
+            const result = document.getElementById('result1');
+            result.classList.add('d-none');
+        }
+
+        // Example 2: Show value
+        function showValue2() {
+            const autocomplete = document.getElementById('autocomplete2');
+            const value = autocomplete.getValue();
+            const item = autocomplete.getSelectedItem();
+            const result = document.getElementById('result2');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        // Example 3: Show value
+        function showValue3() {
+            const autocomplete = document.getElementById('autocomplete3');
+            const value = autocomplete.getValue();
+            const item = autocomplete.getSelectedItem();
+            const result = document.getElementById('result3');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        // Example 4: Event listeners
+        const autocomplete4 = document.getElementById('autocomplete4');
+        const result4 = document.getElementById('result4');
+
+        autocomplete4.addEventListener('input', (event) => {
+            result4.innerHTML = `
+                <strong><i class="bi bi-keyboard"></i> Événement 'input' déclenché!</strong><br>
+                <strong>Texte saisi:</strong> "${event.detail.value}"
+            `;
+            result4.classList.remove('d-none');
+        });
+
+        autocomplete4.addEventListener('change', (event) => {
+            const item = event.detail.item;
+            result4.innerHTML = `
+                <strong><i class="bi bi-check-circle"></i> Événement 'change' déclenché!</strong><br>
+                <strong>Valeur:</strong> ${event.detail.value}<br>
+                <strong>Label:</strong> ${item.label}<br>
+                <strong>Ref:</strong> ${item.ref || 'N/A'}
+            `;
+            result4.classList.remove('d-none');
+        });
+
+        // Example 5: Programmatic control
+        function setValue5(value) {
+            const autocomplete = document.getElementById('autocomplete5');
+            autocomplete.setValue(value);
+        }
+
+        function showValue5() {
+            const autocomplete = document.getElementById('autocomplete5');
+            const value = autocomplete.getValue();
+            const item = autocomplete.getSelectedItem();
+            const result = document.getElementById('result5');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        function clearValue5() {
+            const autocomplete = document.getElementById('autocomplete5');
+            autocomplete.clear();
+            const result = document.getElementById('result5');
+            result.classList.add('d-none');
+        }
+    </script>
+</body>
+</html>

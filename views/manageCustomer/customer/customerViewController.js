@@ -7,12 +7,13 @@ import { isCurrentUSerLogged } from '../../../shared/zopaServices/zopaLoginServi
 import { headerViewDisplay } from '../../../shared/zopaAppservices/headerViewCont.js'//***  shared ressources
 import { launchInitialisation } from '../../../shared/zopaAppservices/initialisationService.js'
 
-import { addMultipleEnventListener, getAppPath } from '../../../shared/services/commonFunctions.js'
+import { addMultipleEnventListener, getAppPath, getFormattedDate } from '../../../shared/services/commonFunctions.js'
 import { displayToast } from '../../../shared/bootstrapServices/bootstrapCommon.js'
 import { getPageTitleDisplay } from '../../../shared/bootstrapServices/components.js'
 
 import { getUserLoginFromId, getSelectFromDatabaseList, getSelectFromDatabaseListDropdown, getvalue }
     from '../../../shared/zopaServices/zopaListsServices.js'
+import { displayeditCustomerContent } from './editCustomerModal/editcustomerViewController.js';
 // import { personIcon, orderIcon, addOrderIcon, threedotsvertical, invoiceIcon } from '../../../shared/assets/constants.js'
 
 /**
@@ -59,15 +60,16 @@ export async function displayCustomerContent(htlmPartId, customerID) {
     if (customerInvoices != null)
         customerInvoices.sort((a, b) => b.date_creation - a.date_creation);
     // *** Display the controller skeleton
+    // ${getPageTitleDisplay("Customer", "bi-person")}
     let initString = `
     <div style="margin-top:60px">
    
-     ${getPageTitleDisplay("Customer", "bi-person")}
+     <dob-pagetitle titleName="Customer" titleIcon="bi-person"></dob-pagetitle>
+ 
           <div id='componentMessage'></div>
         
             <div class="row" id="customerIdentity" > Customer identity    
             </div>
-
             <div class="row" id="customerOrders" style="margin-top:20px"> 
             </div>
             <div class="row" id="customerInvoices" style="margin-top:20px">
@@ -96,6 +98,11 @@ export async function displayCustomerContent(htlmPartId, customerID) {
     addMultipleEnventListener(".invoiceLink", function (event) {
         window.location.href = `${getAppPath()}/views/manageCustomer/invoice/invoice.html?invoiceID=` + event.currentTarget.getAttribute('invoiceID') + `&indep=false`;
     });
+    document.querySelector("#editCustomer").addEventListener("click",
+        function (event) {
+            displayeditCustomerContent("modalSection", customerID)
+
+        });
 
     // document.querySelector("#addOrder").onclick = function (event) {
     //     try {
@@ -109,6 +116,17 @@ export async function displayCustomerContent(htlmPartId, customerID) {
     // }
 }
 
+
+//     <div style=""><span class="fs-5" style="color:#8B2331">Customer Identity</span></div>
+//     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
+
+{/* <div class="d-flex  justify-content-between" style="margin-top:0px" >
+    <span class="fs-5 " style="color:#8B2331" >${iconString} ${blocName}</span>
+    <div class="col-8 flex float-right text-end" style="cursor: pointer">
+        ${this.oldInner}
+    </div>
+</div> */}
+
 /**
  * Display customer identity
  * @param {*} customer 
@@ -116,49 +134,49 @@ export async function displayCustomerContent(htlmPartId, customerID) {
  */
 function displayCustomerIdentity(customer, customerOrders) {
     let output = '';
-    output += `<div style="margin-bottom:2px">`;
-    // output += `
-    //     <div style=""><span class="fs-5" style="color:#8B2331">Customer Identity</span></div>
-    //     <hr style = "margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />`;
-
     output += `
-        <dob-bloctitlev2 blocIcon ="bi-person" blocName = "Customer Identity" ></dob-bloctitlev2 >
-        <div class="col-md-12 main"  > <span  class="fw-light" style ="">Nom</span> : ${customer.name}</div>
-        <div class="col-md-12 main"  > <span class="fw-light" style ="">email</span> : ${customer.email}</div>
+        <div class="card shadow-sm  border border-1 bloc" >
+           <div class="card-body p-2 mb-4 bloc-body">
+                <div class="card-title bloc-title">
+                    <div class="d-flex  justify-content-between " style="margin-top:0px" >
+                        <span class="fs-5 text-danger-emphasis" ><i class="bi bi-person"></i> Customer Identity</span>
 
-        <div class="col-md-12 main"  > <span class="fw-light" style ="">Adresse</span> : ${customer.address}</div>
-        <div class="col-md-12 main"> <span class="fw-light" style ="">Zip</span> :  ${customer.zip}</div>
-        <div class="col-md-12 main"> <span class="fw-light" style ="">Ville</span> :  ${customer.town}</div>
-        <div class="col-md-12 main"> <span class="fw-light" style ="">Téléphone</span> :  ${customer.phone}</div>
-            <div class="col-md-12 main"> <span class="fw-light" style ="">Niveau de revenu</span> :  ${getvalue("incomeLevels", "rowid", customer.price_level)}</div>
-        <div class="col-md-12 main"> <span class="fw-light" style ="">Adhésion </span> : </div> ${evaluateCustomerSubscriptionStatus(customerOrders)}
-        <div class="col-md-12 main"> <span class="fw-light" style ="">Publipostage  </span> : </div>`;
-    output += `<div class="col-md-12 main"> <span class="fw-light" style ="">Adhérent créé par
-             ${getUserLoginFromId(customer.user_creation)}, le
-            ${new Intl.DateTimeFormat("fr-FR",
-        {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-        }).format(customer.date_creation * 1000)}, modifié par 
-                ${getUserLoginFromId(customer.user_modification)}, le
-            ${new Intl.DateTimeFormat("fr-FR",
-            {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-            }).format(customer.date_modification * 1000)}
+                        <div class="col-8 flex float-right text-end bloc-menu" style="cursor: pointer">            
+                            <div class="dropdown">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false" class="text-secondary" ><i class="bi bi-three-dots-vertical"></i> </a>
+                                <ul class="dropdown-menu " style="padding:10px">
+                                    <li id="editCustomer"><span> Modifier adhérent</span></li>
+                                </ul>
+                            </div>                   
+                        </div>
+                    </div>
+                    <hr style="margin-block-start:0.3rem;margin-block-end:0.3rem;margin-top:0px" />
+                </div>    
 
-            </span> </div>`;
-    output += `</div>`;
-    output += ``;
+                <div class="card-title bloc-bodycontent">
+                    <div class="col-md-12 fieldSimpleDisplay"  > <span  class="fw-light" style ="">Nom</span> : ${customer.name}</div>
+                    <div class="col-md-12 "  > <span class="fw-light" style ="">email</span> : ${customer.email}</div>
 
+                    <div class="col-md-12 "  > <span class="fw-light" style ="">Adresse</span> : ${customer.address}</div>
+                    <div class="col-md-12 "> <span class="fw-light" style ="">Zip</span> :  ${customer.zip}</div>
+                    <div class="col-md-12 "> <span class="fw-light" style ="">Ville</span> :  ${customer.town}</div>
+                    <div class="col-md-12 "> <span class="fw-light" style ="">Téléphone</span> :  ${customer.phone}</div>
+                        <div class="col-md-12 "> <span class="fw-light" style ="">Niveau de revenu</span> :  ${getvalue("incomeLevels", "rowid", customer.price_level)}</div>
+                    <div class="col-md-12 "> <span class="fw-light" style ="">Adhésion </span> :${evaluateCustomerSubscriptionStatus(customerOrders)} </div> 
+                    <div class="col-md-12 "> <span class="fw-light" style ="">Publipostage  </span> : </div>
+                    <div class="col-md-12 "> 
+                        <span class="fw-light" style ="">
+                            Adhérent créé par
+                                ${customer.user_creation}, le ${getFormattedDate(customer.date_creation * 1000)}, modifié par 
+                                    ${getUserLoginFromId(customer.user_modification)}, le
+                            ${getFormattedDate(customer.date_modification * 1000)}
+                        </span> 
+                    </div >
+                </div >
+            </div >
+        </div >`;
     return output;
-    // document.querySelector("#customerIdentity").innerHTML = output;
+
 }
 
 /**

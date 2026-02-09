@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropdownSelector - Démonstration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .code-block code {
+            color: #212529;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class="bi bi-list-check"></i> DropdownSelector - Web Component
+            </span>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <!-- Introduction -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h1 class="h3 mb-3">Démonstration du Web Component DropdownSelector</h1>
+                <p class="mb-0">
+                    Ce composant web personnalisé utilise Bootstrap dropdown pour créer une liste de sélection dynamique.
+                    Il charge les données depuis une API et permet de sélectionner un élément.
+                </p>
+            </div>
+        </div>
+
+        <!-- Example 1: Basic Usage -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-1-circle"></i> Utilisation basique</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Liste de produits chargée depuis l'API Dolibarr</p>
+
+                    <dropdown-selector
+                        id="selector1"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        placeholder="Choisissez un produit">
+                    </dropdown-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue1()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                    </div>
+
+                    <div id="result1" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code HTML:</strong>
+                        <pre class="mb-0"><code>&lt;dropdown-selector
+    id="selector1"
+    api-url="https://kusala.fr/dolibarr/api/index.php/products"
+    api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+    placeholder="Choisissez un produit"&gt;
+&lt;/dropdown-selector&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 2: Pre-selected Value -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-2-circle"></i> Avec pré-sélection</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Un élément est pré-sélectionné via l'attribut <code>selected-id</code></p>
+
+                    <dropdown-selector
+                        id="selector2"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        selected-id="1"
+                        placeholder="Choisissez un produit">
+                    </dropdown-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="showValue2()">
+                            <i class="bi bi-eye"></i> Afficher la valeur sélectionnée
+                        </button>
+                    </div>
+
+                    <div id="result2" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code HTML:</strong>
+                        <pre class="mb-0"><code>&lt;dropdown-selector
+    id="selector2"
+    api-url="https://kusala.fr/dolibarr/api/index.php/products"
+    api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+    selected-id="1"
+    placeholder="Choisissez un produit"&gt;
+&lt;/dropdown-selector&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 3: Event Listener -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-3-circle"></i> Avec écouteur d'événements</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">La sélection déclenche automatiquement un événement <code>change</code></p>
+
+                    <dropdown-selector
+                        id="selector3"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        placeholder="Choisissez un produit">
+                    </dropdown-selector>
+
+                    <div id="result3" class="alert alert-success mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const selector = document.getElementById('selector3');
+selector.addEventListener('change', (event) => {
+    console.log('Valeur sélectionnée:', event.detail.value);
+    console.log('Objet complet:', event.detail.item);
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example 4: Programmatic Control -->
+        <div class="demo-section">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-4-circle"></i> Contrôle programmatique</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Utilisation des méthodes du composant pour contrôler la sélection</p>
+
+                    <dropdown-selector
+                        id="selector4"
+                        api-url="https://kusala.fr/dolibarr/api/index.php/products"
+                        api-key="OpK1D8otonWg690PIoj570KdHSCqCc04"
+                        placeholder="Choisissez un produit">
+                    </dropdown-selector>
+
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="setValue4('1')">
+                            Sélectionner ID 1
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="setValue4('2')">
+                            Sélectionner ID 2
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="showValue4()">
+                            <i class="bi bi-eye"></i> Afficher la valeur
+                        </button>
+                    </div>
+
+                    <div id="result4" class="alert alert-info mt-3 d-none"></div>
+
+                    <div class="code-block mt-3">
+                        <strong>Code JavaScript:</strong>
+                        <pre class="mb-0"><code>const selector = document.getElementById('selector4');
+
+// Définir la valeur
+selector.setValue('1');
+
+// Obtenir la valeur
+const value = selector.getValue();
+
+// Obtenir l'objet complet
+const item = selector.getSelectedItem();</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h2 class="h5 mb-0"><i class="bi bi-book"></i> Documentation</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="h6 mb-3">Attributs</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Attribut</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Requis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>api-url</code></td>
+                            <td>String</td>
+                            <td>URL de l'API pour charger les données</td>
+                            <td>Oui</td>
+                        </tr>
+                        <tr>
+                            <td><code>api-key</code></td>
+                            <td>String</td>
+                            <td>Clé API pour l'authentification</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>selected-id</code></td>
+                            <td>String/Number</td>
+                            <td>ID de l'élément à pré-sélectionner</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>label-field</code></td>
+                            <td>String</td>
+                            <td>Nom du champ à utiliser comme label (défaut: 'label')</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>value-field</code></td>
+                            <td>String</td>
+                            <td>Nom du champ à utiliser comme valeur (défaut: 'id')</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td><code>placeholder</code></td>
+                            <td>String</td>
+                            <td>Texte affiché quand aucune sélection</td>
+                            <td>Non</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Méthodes</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Méthode</th>
+                            <th>Retour</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>getValue()</code></td>
+                            <td>Any</td>
+                            <td>Retourne la valeur de l'élément sélectionné</td>
+                        </tr>
+                        <tr>
+                            <td><code>getSelectedItem()</code></td>
+                            <td>Object</td>
+                            <td>Retourne l'objet complet de l'élément sélectionné</td>
+                        </tr>
+                        <tr>
+                            <td><code>setValue(value)</code></td>
+                            <td>void</td>
+                            <td>Définit la sélection par valeur</td>
+                        </tr>
+                        <tr>
+                            <td><code>setItems(items)</code></td>
+                            <td>void</td>
+                            <td>Définit manuellement la liste des éléments</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3 class="h6 mb-3 mt-4">Événements</h3>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Événement</th>
+                            <th>Detail</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>change</code></td>
+                            <td><code>{ value, item }</code></td>
+                            <td>Déclenché lorsque la sélection change</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="dropdown-selector.js"></script>
+    <script>
+        // Example 1: Show value
+        function showValue1() {
+            const selector = document.getElementById('selector1');
+            const value = selector.getValue();
+            const item = selector.getSelectedItem();
+            const result = document.getElementById('result1');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        // Example 2: Show value
+        function showValue2() {
+            const selector = document.getElementById('selector2');
+            const value = selector.getValue();
+            const item = selector.getSelectedItem();
+            const result = document.getElementById('result2');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+
+        // Example 3: Event listener
+        const selector3 = document.getElementById('selector3');
+        selector3.addEventListener('change', (event) => {
+            const result = document.getElementById('result3');
+            const item = event.detail.item;
+
+            result.innerHTML = `
+                <strong><i class="bi bi-check-circle"></i> Événement 'change' déclenché!</strong><br>
+                <strong>Valeur:</strong> ${event.detail.value}<br>
+                <strong>Label:</strong> ${item.label}<br>
+                <strong>Ref:</strong> ${item.ref || 'N/A'}
+            `;
+            result.classList.remove('d-none');
+        });
+
+        // Example 4: Programmatic control
+        function setValue4(value) {
+            const selector = document.getElementById('selector4');
+            selector.setValue(value);
+        }
+
+        function showValue4() {
+            const selector = document.getElementById('selector4');
+            const value = selector.getValue();
+            const item = selector.getSelectedItem();
+            const result = document.getElementById('result4');
+
+            if (item) {
+                result.innerHTML = `
+                    <strong>Valeur sélectionnée:</strong> ${value}<br>
+                    <strong>Label:</strong> ${item.label}<br>
+                    <strong>Ref:</strong> ${item.ref || 'N/A'}
+                `;
+                result.classList.remove('d-none');
+            } else {
+                result.innerHTML = '<strong>Aucune sélection</strong>';
+                result.classList.remove('d-none');
+            }
+        }
+    </script>
+</body>
+</html>

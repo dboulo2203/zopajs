@@ -92,7 +92,7 @@ function displayProductDetails(product) {
     const detailCardEl = document.getElementById('detailCard');
 
     const detailHTML = `
-        <div style="margin-top:60px"><div> 
+        <div style="margin-top:0px"><div> 
         <div class="card-header  border-bottom">
             ${getPageTitleDisplay("Produit")}
             ${getBlocTitleDisplay("Identité du produit")}
