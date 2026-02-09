@@ -1,1 +1,8 @@
+<<<<<<< HEAD
 nul
+=======
+node_modules/
+screenshot.png
+.claude/settings.json
+.claude/settings.local.json
+>>>>>>> bfed825639fed099b2ed3a021b5755a2729f7ee8

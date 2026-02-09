@@ -27,9 +27,8 @@ const stagesContentString = `
             </div>
         </div>
         <div class="row" style="padding-top:20px; padding-bottom:20px">
-            <div class="col d-flex gap-2">
+            <div class="col">
                 <button type="button" class="btn btn-secondary" id="searchBtn">Calculer</button>
-                <button type="button" class="btn btn-outline-danger hidden" id="cancelBtn">Annuler</button>
             </div>
         </div>
     </div>
@@ -44,53 +43,11 @@ const stagesContentString = `
     </div>
 
     <!-- Conteneur des tableaux -->
-    <div id="tableContainer">
-        <!-- Table Stagiaires par stage -->
-        <div class="mt-4 mb-2">Planning des stages</div>
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Title</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Configuration des stages -->
-        <div class="mt-4 mb-2">Configuration des stages</div>
-        <table class="table table-bordered table-sm meal-table" id="configTable">
-            <thead class="table-secondary">
-                <tr>
-                    <th>ID</th>
-                    <th>Label</th>
-                    <th>Maxim. inscrits</th>
-                    <th>Partici. Obligat.</th>
-                    <th>Héberg. Interdit</th>
-                    <th>Publié Zopaweb</th>
-                    <th>Analyse</th>
-                    <th>Compta</th>
-                    <th>Prix</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <div id="planningTableContainer"></div>
+    <div id="configTableContainer"></div>
 
     <!-- Lignes de commande -->
-    <div class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
-    <table class="table table-bordered table-sm" id="commandesTable">
-        <thead class="table-secondary">
-            <tr>
-                <th>Commande</th>
-                <th>Client</th>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div id="commandesTableContainer"></div>
 `;
 
 // Point d'entrée principal
@@ -118,9 +75,6 @@ function initEventListeners() {
     // Écouteur d'événement - clic sur le bouton de recherche
     document.getElementById('searchBtn').addEventListener('click', loadData);
 
-    // Écouteur d'événement - clic sur le bouton d'annulation
-    document.getElementById('cancelBtn').addEventListener('click', cancelLoad);
-
     // Permettre d'appuyer sur Entrée dans les champs de date pour lancer la recherche
     document.getElementById('dateDebut').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') loadData();
@@ -128,14 +82,6 @@ function initEventListeners() {
     document.getElementById('dateFin').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') loadData();
     });
-}
-
-// Annuler le chargement en cours
-function cancelLoad() {
-    if (currentController) {
-        currentController.abort();
-        showLoading(false);
-    }
 }
 
 // Formater la date en j/M
@@ -180,18 +126,77 @@ function isDateInRange(targetDate, startTimestamp, endTimestamp) {
 function showLoading(show) {
     const loader = document.getElementById('loadingIndicator');
     const searchBtn = document.getElementById('searchBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
     if (show) {
         loader.classList.remove('hidden');
-        cancelBtn.classList.remove('hidden');
         searchBtn.style.pointerEvents = 'none';
         searchBtn.style.opacity = '0.5';
     } else {
         loader.classList.add('hidden');
-        cancelBtn.classList.add('hidden');
         searchBtn.style.pointerEvents = 'auto';
         searchBtn.style.opacity = '1';
     }
+}
+
+// Générer le HTML du tableau Planning des stages
+function renderPlanningTable() {
+    return `
+        <div class="mb-2">Planning des stages</div>
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm meal-table mb-2" id="totauxTable">
+                <thead class="table-secondary">
+                    <tr><th>Title</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
+}
+
+// Générer le HTML du tableau Configuration des stages
+function renderConfigTable() {
+    return `
+        <div class="mt-2 mb-2">Configuration des stages</div>
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm meal-table" id="configTable">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>ID</th>
+                        <th>Label</th>
+                        <th>Maxim. inscrits</th>
+                        <th>Partici. Obligat.</th>
+                        <th>Héberg. Interdit</th>
+                        <th>Publié Zopaweb</th>
+                        <th>Analyse</th>
+                        <th>Compta</th>
+                        <th>Prix</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
+}
+
+// Générer le HTML du tableau des commandes
+function renderCommandesTable() {
+    return `
+        <div class="mt-2 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm" id="commandesTable">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Commande</th>
+                        <th>Client</th>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Date début</th>
+                        <th>Date fin</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
 }
 
 // Charger les données et remplir les tableaux
@@ -271,6 +276,11 @@ async function loadData() {
                 }
             });
         });
+
+        // Injecter les tableaux dans leurs conteneurs
+        document.getElementById('planningTableContainer').innerHTML = renderPlanningTable();
+        document.getElementById('configTableContainer').innerHTML = renderConfigTable();
+        document.getElementById('commandesTableContainer').innerHTML = renderCommandesTable();
 
         // Construire le tableau avec une ligne par stage
         buildTable('totauxTable', stagesCounts, dates);
@@ -371,7 +381,7 @@ function buildConfigTable(stagesCounts, stageProducts) {
 
         // Maxim. inscrits
         const tdNbmax = document.createElement('td');
-        tdNbmax.textContent = product.nbmax || '';
+        tdNbmax.textContent = product.nbmax || 'Non défini';
         tr.appendChild(tdNbmax);
 
         // Partici. Obligat.
@@ -391,12 +401,12 @@ function buildConfigTable(stagesCounts, stageProducts) {
 
         // Analyse (place)
         const tdPlace = document.createElement('td');
-        tdPlace.textContent = product.place === '1' ? 'Institut' : (product.place || '');
+        tdPlace.textContent = product.place === '1' ? 'Institut' : (product.place || 'Non défini');
         tr.appendChild(tdPlace);
 
         // Compta
         const tdCompta = document.createElement('td');
-        tdCompta.textContent = product.analcompta;
+        tdCompta.textContent = product.analcompta || 'Non défini';
         tr.appendChild(tdCompta);
 
         // Prix
@@ -435,17 +445,17 @@ function buildCommandesTable(data) {
 
         // Commande (fk_commande)
         const tdCommande = document.createElement('td');
-        tdCommande.textContent = item.fk_commande || '';
+        tdCommande.textContent = item.fk_commande || 'Non défini';
         tr.appendChild(tdCommande);
 
         // Client (customername)
         const tdClient = document.createElement('td');
-        tdClient.textContent = item.customername || '';
+        tdClient.textContent = item.customername || 'Non défini';
         tr.appendChild(tdClient);
 
         // Produit (ref)
         const tdProduit = document.createElement('td');
-        tdProduit.textContent = item.ref || '';
+        tdProduit.textContent = item.ref || 'Non défini';
         tr.appendChild(tdProduit);
 
         // Quantité

@@ -6,6 +6,17 @@
         "build": "node build/build.js"
     },
     "dependencies": {
-        "bootstrap": "^5.3.8"
-    }
+        "bootstrap": "^5.3.8",
+        "puppeteer": "^24.37.2"
+    },
+    "description": "- Unification des en-têtes de page\r - Ajout du composant products\r - Ajout du composant stages\r ### V 3.0.3 \r - Développements de composants dropdown \r ### V 3.0.3 \r - Ajout d'un module restaurant généré par AI\r - Menu gauche configurable\r - Réorganisation de l'architecture : partiee view, partie shared/services",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://gitlab.dhagpo.org/dhagpo/zopa/zopajs"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs"
 }

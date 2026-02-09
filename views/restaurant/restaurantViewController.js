@@ -1,7 +1,7 @@
 import { getBlocTitleDisplay, getPageTitleDisplay } from '../../shared/bootstrapServices/components.js';
 import { headerViewDisplay } from '../../shared/zopaAppservices/headerViewCont.js';
 import { launchInitialisation } from '../../shared/zopaAppservices/initialisationService.js';
-import { fetchIntakePlaces, fetchMealProductIds, getRestaurantData } from './restaurantService.js';
+import { fetchIntakePlaces, fetchMealProductIds, fetchMealTypes, getRestaurantData } from './restaurantService.js';
 
 // Controller pour annuler les requêtes précédentes
 let currentController = null;
@@ -12,6 +12,9 @@ let selectedPlaces = new Set();
 
 // Tous les IDs de lieux pour la logique "Tous les lieux"
 let allPlaceIds = [];
+
+// Données des types de repas (Végétarien, Non-végétarien, etc.)
+let mealTypesData = {};
 
 // Template HTML pour le contenu principal
 const restaurantContentString = `
@@ -60,62 +63,14 @@ const restaurantContentString = `
 
     <!-- Conteneur des tableaux -->
     <div id="tableContainer">
-        <!-- Table Lieu 1 -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable1">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu 1</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Lieu 3 -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable3">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu 3</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Lieu non défini -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTableNull">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Lieu non défini</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Table Totaux -->
-        <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Totaux</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Conteneur dynamique pour les tableaux par lieu -->
+        <div id="placeTablesContainer"></div>
+        <!-- Conteneur pour le tableau Totaux -->
+        <div id="totauxTableContainer"></div>
     </div>
 
     <!-- Lignes de commande -->
-    <div class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
-    <table class="table table-bordered table-sm" id="commandesTable">
-        <thead class="table-secondary">
-            <tr>
-                <th>Commande</th>
-                <th>Produit</th>
-                <th>Quantité</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-                <th>Lieu</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div id="commandesTableContainer"></div>
 `;
 
 // Point d'entrée principal
@@ -169,8 +124,13 @@ function initEventListeners() {
 
 // Initialiser le sélecteur de lieux
 async function initPlaceSelector() {
-    const places = await fetchIntakePlaces();
+    // Charger les lieux et les types de repas en parallèle
+    const [places, mealTypes] = await Promise.all([
+        fetchIntakePlaces(),
+        fetchMealTypes()
+    ]);
     placesData = places;
+    mealTypesData = mealTypes;
 
     const dropdown = document.getElementById('placeDropdown');
     dropdown.innerHTML = '';
@@ -283,6 +243,58 @@ function updatePlaceTags() {
     });
 }
 
+// Créer dynamiquement un tableau HTML pour un lieu
+function createPlaceTable(placeKey, placeName) {
+    const tableId = `totauxTable_${placeKey}`;
+    const table = document.createElement('table');
+    table.className = 'table table-bordered table-sm meal-table mb-4';
+    table.id = tableId;
+    table.innerHTML = `
+        <thead class="table-secondary">
+            <tr><th>${placeName}</th></tr>
+        </thead>
+        <tbody></tbody>
+    `;
+    return table;
+}
+
+// Générer le HTML du tableau Totaux
+function renderTotauxTable() {
+    return `
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm meal-table mb-4" id="totauxTable">
+                <thead class="table-secondary">
+                    <tr><th>Totaux</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
+}
+
+// Générer le HTML du tableau des commandes
+function renderCommandesTable() {
+    return `
+        <div class="mt-4 mb-2">Lignes de commande impliquées dans le calcul des tableaux</div>
+        <div style="overflow-x: auto;">
+            <table class="table table-bordered table-sm" id="commandesTable">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Commande</th>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Date début</th>
+                        <th>Date fin</th>
+                        <th>Lieu</th>
+                        <th>Type repas</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    `;
+}
+
 // Formater la date en j/M
 function formatDateShort(date) {
     return `${date.getDate()}/${date.getMonth() + 1}`;
@@ -389,38 +401,33 @@ async function loadData() {
         // Obtenir la plage de dates
         const dates = getDateRange(startDate, endDate);
 
-        // Initialiser les compteurs - total et par lieu
+        // Initialiser les compteurs pour un type de repas
         const initCounts = () => ({
             'Matin': {},
             'Midi': {},
             'Soir': {}
         });
 
-        const counts = initCounts();
-        const counts1 = initCounts();
-        const counts3 = initCounts();
-        const countsNull = initCounts();
+        // Initialiser les compteurs pour tous les types de repas (végé, non-végé, non défini)
+        const initCountsByMealType = () => ({});
 
-        dates.forEach(date => {
-            const key = formatDateAPI(date);
-            ['Matin', 'Midi', 'Soir'].forEach(meal => {
-                counts[meal][key] = 0;
-                counts1[meal][key] = 0;
-                counts3[meal][key] = 0;
-                countsNull[meal][key] = 0;
-            });
-        });
+        // Compteur pour les totaux généraux (par type de repas)
+        const countsByMealType = initCountsByMealType();
+
+        // Objet dynamique pour stocker les compteurs par lieu
+        const countsByPlace = {};
 
         // Traiter chaque ligne
         data.forEach(item => {
             const ref = item.ref || '';
-            const mealType = getMealType(ref);
+            const mealTime = getMealType(ref); // Matin, Midi, Soir
 
-            if (!mealType) return;
+            if (!mealTime) return;
 
             const startTs = item.array_options?.options_lin_datedebut;
             const endTs = item.array_options?.options_lin_datefin;
             const intakePlace = item.array_options?.options_lin_intakeplace;
+            const mealTypeId = item.array_options?.options_lin_room;
             if (!startTs || !endTs) return;
 
             // Déterminer la clé du lieu pour le filtrage
@@ -428,6 +435,53 @@ async function loadData() {
 
             // Ignorer si le lieu n'est pas sélectionné
             if (!selectedPlaces.has(placeKey)) return;
+
+            // Déterminer le type de repas (Végétarien, Non-végétarien, Non défini)
+            // Si mealTypeId est invalide (null, undefined, array, etc.), on utilise 'null' comme clé
+            const isValidMealTypeId = mealTypeId && typeof mealTypeId !== 'object' && mealTypesData[mealTypeId];
+            const mealTypeKey = isValidMealTypeId ? String(mealTypeId) : 'null';
+            const mealTypeName = isValidMealTypeId ? mealTypesData[mealTypeId] : 'Non défini';
+
+            // Créer dynamiquement le compteur pour ce lieu s'il n'existe pas encore
+            if (!countsByPlace[placeKey]) {
+                const placeName = placeKey === 'null'
+                    ? 'Lieu non défini'
+                    : (places[placeKey] || `Lieu ${placeKey}`);
+
+                countsByPlace[placeKey] = {
+                    name: placeName,
+                    countsByMealType: {}
+                };
+            }
+
+            // Créer dynamiquement le compteur pour ce type de repas dans ce lieu
+            if (!countsByPlace[placeKey].countsByMealType[mealTypeKey]) {
+                countsByPlace[placeKey].countsByMealType[mealTypeKey] = {
+                    name: mealTypeName,
+                    counts: initCounts()
+                };
+                // Initialiser toutes les dates à 0
+                dates.forEach(date => {
+                    const dateKey = formatDateAPI(date);
+                    ['Matin', 'Midi', 'Soir'].forEach(meal => {
+                        countsByPlace[placeKey].countsByMealType[mealTypeKey].counts[meal][dateKey] = 0;
+                    });
+                });
+            }
+
+            // Créer dynamiquement le compteur global pour ce type de repas
+            if (!countsByMealType[mealTypeKey]) {
+                countsByMealType[mealTypeKey] = {
+                    name: mealTypeName,
+                    counts: initCounts()
+                };
+                dates.forEach(date => {
+                    const dateKey = formatDateAPI(date);
+                    ['Matin', 'Midi', 'Soir'].forEach(meal => {
+                        countsByMealType[mealTypeKey].counts[meal][dateKey] = 0;
+                    });
+                });
+            }
 
             const qty = parseInt(item.qty) || 1;
 
@@ -440,54 +494,66 @@ async function loadData() {
             dates.forEach(date => {
                 if (isDateInRange(date, startTs, endTs)) {
                     const key = formatDateAPI(date);
-                    // Total
-                    counts[mealType][key] += mealsPerDay;
-                    // Par lieu (placeKey déjà normalisé en string)
-                    if (placeKey === '1') {
-                        counts1[mealType][key] += mealsPerDay;
-                    } else if (placeKey === '3') {
-                        counts3[mealType][key] += mealsPerDay;
-                    } else if (placeKey === 'null') {
-                        countsNull[mealType][key] += mealsPerDay;
-                    }
+                    // Total général par type de repas
+                    countsByMealType[mealTypeKey].counts[mealTime][key] += mealsPerDay;
+                    // Par lieu et type de repas (dynamique)
+                    countsByPlace[placeKey].countsByMealType[mealTypeKey].counts[mealTime][key] += mealsPerDay;
                 }
             });
         });
 
-        // Construire les tableaux avec les noms des lieux (si sélectionnés)
-        const table1 = document.getElementById('totauxTable1');
-        const table3 = document.getElementById('totauxTable3');
-        const tableNull = document.getElementById('totauxTableNull');
+        // Vider le conteneur des tableaux par lieu
+        const placeTablesContainer = document.getElementById('placeTablesContainer');
+        placeTablesContainer.innerHTML = '';
 
-        if (selectedPlaces.has('1')) {
-            table1.classList.remove('hidden');
-            buildTable('totauxTable1', counts1, places['1'] || 'Lieu 1', dates);
+        // Définir l'ordre d'affichage : lieux numériques triés, puis 'null' en dernier
+        const sortedPlaceKeys = Object.keys(countsByPlace).sort((a, b) => {
+            if (a === 'null') return 1;  // 'null' va à la fin
+            if (b === 'null') return -1;
+            return parseInt(a) - parseInt(b);  // Tri numérique pour les autres
+        });
+
+        // Fonction pour vérifier si un type de repas a des données
+        const mealTypeHasData = (mealTypeData) => {
+            return Object.values(mealTypeData.counts).some(mealCounts =>
+                Object.values(mealCounts).some(value => value > 0)
+            );
+        };
+
+        // Construire dynamiquement les tableaux pour chaque lieu ayant des données
+        sortedPlaceKeys.forEach(placeKey => {
+            const placeData = countsByPlace[placeKey];
+
+            // Vérifier si ce lieu a des données (au moins un type de repas avec des valeurs > 0)
+            const hasData = Object.values(placeData.countsByMealType).some(mealTypeHasData);
+
+            if (hasData) {
+                const tableId = `totauxTable_${placeKey}`;
+                const table = createPlaceTable(placeKey, placeData.name);
+                const scrollWrapper = document.createElement('div');
+                scrollWrapper.style.overflowX = 'auto';
+                scrollWrapper.appendChild(table);
+                placeTablesContainer.appendChild(scrollWrapper);
+                buildTableWithMealTypes(tableId, placeData.countsByMealType, placeData.name, dates);
+            }
+        });
+
+        // Injecter le tableau Totaux dans son conteneur
+        const totauxContainer = document.getElementById('totauxTableContainer');
+        const placesWithData = sortedPlaceKeys.filter(placeKey => {
+            const placeData = countsByPlace[placeKey];
+            return Object.values(placeData.countsByMealType).some(mealTypeHasData);
+        });
+
+        if (placesWithData.length > 1) {
+            totauxContainer.innerHTML = renderTotauxTable();
+            buildTableWithMealTypes('totauxTable', countsByMealType, 'Totaux', dates);
         } else {
-            table1.classList.add('hidden');
+            totauxContainer.innerHTML = '';
         }
 
-        if (selectedPlaces.has('3')) {
-            table3.classList.remove('hidden');
-            buildTable('totauxTable3', counts3, places['3'] || 'Lieu 3', dates);
-        } else {
-            table3.classList.add('hidden');
-        }
-
-        if (selectedPlaces.has('null')) {
-            tableNull.classList.remove('hidden');
-            buildTable('totauxTableNull', countsNull, 'Lieu non défini', dates);
-        } else {
-            tableNull.classList.add('hidden');
-        }
-
-        // Afficher le tableau Totaux seulement si plus d'1 lieu est sélectionné
-        const totauxTable = document.getElementById('totauxTable');
-        if (selectedPlaces.size > 1) {
-            totauxTable.classList.remove('hidden');
-            buildTable('totauxTable', counts, 'Totaux', dates);
-        } else {
-            totauxTable.classList.add('hidden');
-        }
+        // Injecter le tableau Commandes
+        document.getElementById('commandesTableContainer').innerHTML = renderCommandesTable();
 
         // Construire le tableau des commandes (filtré par lieux sélectionnés)
         const filteredData = data.filter(item => {
@@ -520,7 +586,7 @@ async function loadData() {
     }
 }
 
-// Fonction pour construire un tableau avec titre dans l'en-tête
+// Fonction pour construire un tableau avec titre dans l'en-tête (ancienne version)
 function buildTable(tableId, countsData, title, dates) {
     const table = document.getElementById(tableId);
     const thead = table.querySelector('thead tr');
@@ -558,6 +624,103 @@ function buildTable(tableId, countsData, title, dates) {
         });
 
         tbody.appendChild(tr);
+    });
+}
+
+// Fonction pour construire un tableau avec groupes par type de repas (Végétarien, Non-végétarien, Non défini)
+function buildTableWithMealTypes(tableId, countsByMealType, title, dates) {
+    const table = document.getElementById(tableId);
+    const thead = table.querySelector('thead tr');
+    const tbody = table.querySelector('tbody');
+
+    // Construire l'en-tête : titre + type de repas + dates
+    thead.innerHTML = '';
+    const thTitle = document.createElement('th');
+    thTitle.textContent = title;
+    thTitle.style.width = '70px';
+    thTitle.style.minWidth = '70px';
+    thead.appendChild(thTitle);
+    const thType = document.createElement('th');
+    thType.textContent = 'Type';
+    thType.style.width = '70px';
+    thType.style.minWidth = '70px';
+    thead.appendChild(thType);
+    dates.forEach(date => {
+        const th = document.createElement('th');
+        th.textContent = formatDateShort(date);
+        thead.appendChild(th);
+    });
+
+    // Trier les types de repas : d'abord les numériques, puis 'null' en dernier
+    const sortedMealTypeKeys = Object.keys(countsByMealType).sort((a, b) => {
+        if (a === 'null') return 1;
+        if (b === 'null') return -1;
+        return parseInt(a) - parseInt(b);
+    });
+
+    // Construire les lignes groupées par type de repas
+    const meals = ['Matin', 'Midi', 'Soir'];
+    tbody.innerHTML = '';
+
+    let isFirstGroup = true;
+    sortedMealTypeKeys.forEach(mealTypeKey => {
+        const mealTypeData = countsByMealType[mealTypeKey];
+
+        // Vérifier si ce type de repas a des données
+        const hasData = Object.values(mealTypeData.counts).some(mealCounts =>
+            Object.values(mealCounts).some(value => value > 0)
+        );
+
+        if (!hasData) return;
+
+        // Ajouter une ligne de séparation entre les groupes (sauf pour le premier)
+        if (!isFirstGroup) {
+            const separatorRow = document.createElement('tr');
+            separatorRow.className = 'meal-type-separator';
+            const separatorCell = document.createElement('td');
+            separatorCell.colSpan = 2 + dates.length;
+            separatorCell.style.borderTop = '1px solid #6c757d';
+            separatorCell.style.padding = '0';
+            separatorCell.style.height = '0';
+            separatorRow.appendChild(separatorCell);
+            tbody.appendChild(separatorRow);
+        }
+        isFirstGroup = false;
+
+        // Créer les 3 lignes pour ce type de repas (Matin, Midi, Soir)
+        meals.forEach((meal, mealIndex) => {
+            const tr = document.createElement('tr');
+
+            // Première colonne : Matin/Midi/Soir
+            const tdMeal = document.createElement('td');
+            tdMeal.textContent = meal;
+            tdMeal.style.width = '70px';
+            tdMeal.style.minWidth = '70px';
+            tr.appendChild(tdMeal);
+
+            // Deuxième colonne : Type de repas (affiché sur chaque ligne)
+            const tdType = document.createElement('td');
+            tdType.textContent = mealTypeData.name;
+            tdType.style.fontStyle = 'italic';
+            tdType.style.color = '#6c757d';
+            tdType.style.width = '70px';
+            tdType.style.minWidth = '70px';
+            tr.appendChild(tdType);
+
+            // Colonnes des dates
+            dates.forEach(date => {
+                const key = formatDateAPI(date);
+                const td = document.createElement('td');
+                const value = Math.round(mealTypeData.counts[meal][key] || 0);
+                td.textContent = value > 0 ? value : '';
+                if (value > 0) {
+                    td.classList.add('table-warning');
+                }
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
     });
 }
 
@@ -618,6 +781,13 @@ function buildCommandesTable(data, places) {
         const intakePlace = item.array_options?.options_lin_intakeplace;
         tdLieu.textContent = places[intakePlace] || intakePlace || '';
         tr.appendChild(tdLieu);
+
+        // Type de repas (mealtype)
+        const tdMealType = document.createElement('td');
+        const mealTypeId = item.array_options?.options_lin_room;
+        const isValidMealType = mealTypeId && typeof mealTypeId !== 'object' && mealTypesData[mealTypeId];
+        tdMealType.textContent = isValidMealType ? mealTypesData[mealTypeId] : 'Non défini';
+        tr.appendChild(tdMealType);
 
         tbody.appendChild(tr);
     });

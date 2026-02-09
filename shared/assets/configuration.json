@@ -60,11 +60,27 @@
         },
         {
             "menuItemType": "menuitem",
-            "menuItemIcon": "<i class='bi bi-cup-hot'></i>",
+            "menuItemIcon": "<i class='bi bi-calendar3'></i>",
             "menuItemid": "stage",
             "menuItemName": "Stages",
             "menuItemAction": "urlCall",
             "menuItemLink": "views/stages/stages.html"
+        },
+        {
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-calculator'></i>",
+            "menuItemid": "comptabilite",
+            "menuItemName": "Comptabilité",
+            "menuItemAction": "urlCall",
+            "menuItemLink": "views/comptabilite/comptabilite.html"
+        },
+        {
+            "menuItemType": "menuitem",
+            "menuItemIcon": "<i class='bi bi-card-list'></i>",
+            "menuItemid": "listes",
+            "menuItemName": "Listes",
+            "menuItemAction": "urlCall",
+            "menuItemLink": "views/listes/listes.html"
         },
         {
             "menuItemType": "hr",
