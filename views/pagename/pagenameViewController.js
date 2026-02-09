@@ -128,6 +128,7 @@ function displayblockname1Content(htmlPlaceid, params) {
         apiKey: 'OpK1D8otonWg690PIoj570KdHSCqCc04',
         placeholder: 'Tapez pour rechercher un produit (autocomplete)...'
     });
+
     // *** add event handlers
     let testbutton = document.getElementById('testbutton');
     testbutton.addEventListener('click', (event) => {
